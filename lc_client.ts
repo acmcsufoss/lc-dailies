@@ -38,15 +38,24 @@ export class LCClient {
    */
   public async getDailyQuestion(): Promise<LCDailyQuestion> {
     return await fetch("https://leetcode.com/graphql/", {
-      "headers": {
-        "accept": "*/*",
+      headers: {
+        accept: "*/*",
         "accept-language": "en-US,en;q=0.9",
-        "authorization": "",
+        authorization: "",
         "content-type": "application/json",
       },
-      "body":
+      body:
         '{"query":"\\n    query questionOfToday {\\n  activeDailyCodingChallengeQuestion {\\n    date\\n    userStatus\\n    link\\n    question {\\n      acRate\\n      difficulty\\n      freqBar\\n      frontendQuestionId: questionFrontendId\\n      isFavor\\n      paidOnly: isPaidOnly\\n      status\\n      title\\n      titleSlug\\n      hasVideoSolution\\n      hasSolution\\n      topicTags {\\n        name\\n        id\\n        slug\\n      }\\n    }\\n  }\\n}\\n    ","variables":{},"operationName":"questionOfToday"}',
-      "method": "POST",
-    }).then((response) => response.json());
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((json) => ({
+        date: json.data.activeDailyCodingChallengeQuestion.date,
+        title: json.data.activeDailyCodingChallengeQuestion.question.title,
+        difficulty:
+          json.data.activeDailyCodingChallengeQuestion.question.difficulty,
+        url:
+          `https://leetcode.com${json.data.activeDailyCodingChallengeQuestion.link}`,
+      }));
   }
 }

@@ -18,4 +18,4 @@ jobs:
           deno-version: v1.x
 
       - name: Run script
-        run: deno run -A main.ts
+        run: deno task start
