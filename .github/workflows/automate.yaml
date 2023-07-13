@@ -19,3 +19,5 @@ jobs:
 
       - name: Run script
         run: deno task start
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
