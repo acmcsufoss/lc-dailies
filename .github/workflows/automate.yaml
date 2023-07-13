@@ -1,0 +1,21 @@
+name: LC-Dailies
+
+on:
+  schedule:
+    - cron: "0 21 */2 * *" # Runs every day at 9PM UTC (2PM PST the same day)
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: actions/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Run script
+        run: deno run -A main.ts
