@@ -2,7 +2,7 @@ name: LC-Dailies
 
 on:
   schedule:
-    - cron: "0 21 */2 * *" # Runs every day at 9PM UTC (2PM PST the same day)
+    - cron: "0 0 * * *" # Daily Leetcode question updates daily at UTC midnight (https://crontab.guru/#0_0_*_*_*)
   workflow_dispatch: # Allow manual trigger
 
 jobs:
