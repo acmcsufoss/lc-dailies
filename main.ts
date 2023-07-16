@@ -1,5 +1,5 @@
 import { WEBHOOK_URL } from "./env.ts";
-import * as discord_webhook from "./discord_webhook.ts";
+import * as discord from "./discord.ts";
 import * as lc_client from "./lc_client.ts";
 import * as snacks from "./snacks.ts";
 
@@ -11,7 +11,7 @@ async function main() {
   const client = new lc_client.LCClient();
   const question = await client.getDailyQuestion();
   const content = formatLCDailyQuestion(question);
-  await discord_webhook.execute({
+  await discord.executeWebhook({
     url: WEBHOOK_URL,
     data: { content },
   });
