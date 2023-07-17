@@ -53,7 +53,6 @@
     "https://deno.land/x/discord_api_types@0.37.48/payloads/v10/voice.ts": "62d03a540f2e78e5f3989f71a0ee1ec682ef7306a4fa096f89118cbd82351d47",
     "https://deno.land/x/discord_api_types@0.37.48/payloads/v10/webhook.ts": "7fc370f40a84f12a6e57ddda7cf2814f15039d6320b46979db0b49d5b91e303b",
     "https://deno.land/x/discord_api_types@0.37.48/rest/common.ts": "f20e7611ccb70ce8070278aa79b720738e6aa126bc20a56a7aeda52c24597bff",
-    "https://deno.land/x/discord_api_types@0.37.48/rest/mod.ts": "7d90c4fb7515d07c044b47331ed0535949a61999740915ae92eeef6163119c30",
     "https://deno.land/x/discord_api_types@0.37.48/rest/v10/application.ts": "980ee20ddd6888b43eb136f73dbe026a3c4c0884286f5431da5f078dab9b51f0",
     "https://deno.land/x/discord_api_types@0.37.48/rest/v10/auditLog.ts": "39a0914b6c51445023d82c3e3e66c9866cbb3cb6774d3e7eac63414ea9bcbfec",
     "https://deno.land/x/discord_api_types@0.37.48/rest/v10/autoModeration.ts": "3d388fd9a91c34f04b5e3e1b6ffe12029fb48b511f37ff88042325ec6cbc6605",

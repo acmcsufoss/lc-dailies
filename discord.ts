@@ -1,4 +1,8 @@
-import type { discord_api_types } from "./deps.ts";
+import type {
+  RESTPostAPIApplicationCommandsJSONBody,
+  RESTPostAPIWebhookWithTokenJSONBody,
+} from "./deps.ts";
+
 /**
  * ExecuteWebhookOptions are the options for a webhook message.
  */
@@ -11,7 +15,7 @@ export interface ExecuteWebhookOptions {
   /**
    * data is the webhook data.
    */
-  data: discord_api_types.RESTPostAPIWebhookWithTokenJSONBody;
+  data: RESTPostAPIWebhookWithTokenJSONBody;
 }
 
 /**
@@ -20,7 +24,7 @@ export interface ExecuteWebhookOptions {
 export interface RegisterCommandOptions {
   botID: string;
   botToken: string;
-  app: discord_api_types.RESTPostAPIApplicationCommandsJSONBody;
+  app: RESTPostAPIApplicationCommandsJSONBody;
 }
 
 /**

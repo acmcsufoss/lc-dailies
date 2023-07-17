@@ -1,5 +1,6 @@
 import * as discord from "../discord.ts";
-import { DISCORD_CLIENT_ID } from "./env.ts";
+import * as env from "./env.ts";
+import { APP_LC } from "./app.ts";
 
 if (import.meta.main) {
   await main();
@@ -8,9 +9,9 @@ if (import.meta.main) {
 export async function main() {
   // Overwrite the Discord Application Command.
   await discord.registerCommand({
-    app: APP_TLDR,
     botID: env.DISCORD_CLIENT_ID,
     botToken: env.DISCORD_TOKEN,
+    app: APP_LC,
   });
 }
 
