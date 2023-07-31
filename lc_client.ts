@@ -30,6 +30,26 @@ export interface LCDailyQuestion {
 }
 
 /**
+ * LCRecentSubmission is the representation of Leetcode's recent submission per user.
+ */
+export interface LCRecentSubmission {
+  /**
+   * id is the id details of the submission.
+   */
+  id: string;
+
+  /**
+   * title is the title of the submission.
+   */
+  title: string;
+
+  /**
+   * timestamp is the time the submission was submitted.
+   */
+  timestamp: string;
+}
+
+/**
  * LCClient is the client for Leetcode.
  */
 export class LCClient {
@@ -49,6 +69,9 @@ export class LCClient {
       method: "POST",
     })
       .then((response) => response.json())
+      /**
+       * Map the result of the graphql query into the shape of a LCDailyQuestion instance.
+       */
       .then((json) => ({
         date: json.data.activeDailyCodingChallengeQuestion.date,
         title: json.data.activeDailyCodingChallengeQuestion.question.title,
@@ -57,5 +80,40 @@ export class LCClient {
         url:
           `https://leetcode.com${json.data.activeDailyCodingChallengeQuestion.link}`,
       }));
+  }
+
+  /**
+   * getRecentSubmissions gets the recent submissions from Leetcode by username.
+   */
+  public async getRecentSubmissions(
+    username: string,
+    limit: number,
+  ): Promise<LCRecentSubmission[]> {
+    return await fetch("https://leetcode.com/graphql/", {
+      "headers": {
+        "accept": "*/*",
+        "accept-language": "en-US,en;q=0.9",
+        "authorization": "",
+        "content-type": "application/json",
+      },
+      "method": "POST",
+      body: JSON.stringify({
+        operationName: "recentAcSubmissions",
+        query:
+          "\n    query recentAcSubmissions($username: String!, $limit: Int!) {\n  recentAcSubmissionList(username: $username, limit: $limit) {\n    id\n    title\n    titleSlug\n    timestamp\n  }\n}\n    ",
+        variables: { username, limit },
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) =>
+        json.data.recentAcSubmissionList
+          .map((
+            acSubmission: { id: string; title: string; timestamp: string },
+          ) => ({
+            id: acSubmission.id,
+            title: acSubmission.title,
+            timestamp: acSubmission.timestamp,
+          }))
+      );
   }
 }
