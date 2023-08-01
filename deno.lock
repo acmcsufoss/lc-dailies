@@ -76,5 +76,16 @@
     "https://deno.land/x/discord_api_types@0.37.48/utils/internals.ts": "cb70895ba89f7947c38f7fa447b0190cb14b5585be323414cda53d2ccb19b16c",
     "https://deno.land/x/discord_api_types@0.37.48/utils/v10.ts": "056bd036f8c65365ff28eb63ec6897811d51921cca6d068392dd1ca5b397ae62",
     "https://deno.land/x/discord_api_types@0.37.48/v10.ts": "f3f23492c59e77859aba5b34431edf3668c37f722d7f70c2e1ef7ba4bcda3010"
+  },
+  "npm": {
+    "specifiers": {
+      "@types/node": "@types/node@18.16.19"
+    },
+    "packages": {
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
+      }
+    }
   }
 }

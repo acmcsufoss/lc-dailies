@@ -1,8 +1,12 @@
 import type {
   APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
+  APIInteractionResponse,
 } from "../../deps.ts";
-import { ApplicationCommandOptionType } from "../../deps.ts";
+import {
+  ApplicationCommandOptionType,
+  InteractionResponseType,
+} from "../../deps.ts";
 
 export const REGISTER = "register";
 export const REGISTER_DESCRIPTION = "Register your Leetcode account";
@@ -43,5 +47,18 @@ export function parseRegisterOptions(
 
   return {
     [REGISTER_LC_USERNAME]: usernameOption.value,
+  };
+}
+
+export interface RegisterResponse {
+}
+export function makeRegisterInteractionResponse(
+  r: RegisterResponse,
+): APIInteractionResponse {
+  return {
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: {
+      content: `Minted ${r.type} perk with ID ${r.id}`,
+    },
   };
 }
