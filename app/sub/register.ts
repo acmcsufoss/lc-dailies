@@ -38,7 +38,20 @@ export function parseRegisterOptions(
 ): {
   [REGISTER_LC_USERNAME]: string;
 } {
-  const usernameOption = options.find((option) =>
+  const registerOption = options.find((option) => option.name === REGISTER);
+  if (!registerOption) {
+    throw new Error("No options provided");
+  }
+  if (
+    registerOption.type !== ApplicationCommandOptionType.Subcommand
+  ) {
+    throw new Error("Invalid option type");
+  }
+  if (!registerOption.options) {
+    throw new Error("No options provided");
+  }
+
+  const usernameOption = registerOption.options.find((option) =>
     option.name === REGISTER_LC_USERNAME
   );
   if (usernameOption?.type !== ApplicationCommandOptionType.String) {

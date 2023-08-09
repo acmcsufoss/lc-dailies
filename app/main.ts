@@ -35,7 +35,7 @@ export async function main() {
   console.log(
     "LC-Dailies application command:\n",
     `- Local: http://localhost:${env.PORT}/\n`,
-    `- Invite: https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands`,
+    `- Invite: https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands\n`,
     `- Info: https://discord.com/developers/applications/${env.DISCORD_CLIENT_ID}/information`,
   );
 
@@ -57,7 +57,7 @@ export async function main() {
  * handle is the HTTP handler for the Boardd application command.
  */
 export async function handle(request: Request): Promise<Response> {
-  const { error, body } = await discord.verify(request, env.DISCORD_CLIENT_ID);
+  const { error, body } = await discord.verify(request, env.DISCORD_PUBLIC_KEY);
   if (error !== null) {
     return error;
   }

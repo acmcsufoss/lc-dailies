@@ -37,7 +37,7 @@ export class LeaderboardClient {
     if (playerResult.value) {
       throw new Error("Player already registered");
     }
-
+    // TODO: Check if lc_username is valid or an existing username.
     const registerResult = await this.kv
       .atomic()
       .check(playerResult)

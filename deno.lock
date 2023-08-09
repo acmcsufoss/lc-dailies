@@ -75,7 +75,9 @@
     "https://deno.land/x/discord_api_types@0.37.48/rpc/v10.ts": "fbaad9f3d73fce88e76b0e52ad5345093f18077e4293937c9ec0ee24415b9a93",
     "https://deno.land/x/discord_api_types@0.37.48/utils/internals.ts": "cb70895ba89f7947c38f7fa447b0190cb14b5585be323414cda53d2ccb19b16c",
     "https://deno.land/x/discord_api_types@0.37.48/utils/v10.ts": "056bd036f8c65365ff28eb63ec6897811d51921cca6d068392dd1ca5b397ae62",
-    "https://deno.land/x/discord_api_types@0.37.48/v10.ts": "f3f23492c59e77859aba5b34431edf3668c37f722d7f70c2e1ef7ba4bcda3010"
+    "https://deno.land/x/discord_api_types@0.37.48/v10.ts": "f3f23492c59e77859aba5b34431edf3668c37f722d7f70c2e1ef7ba4bcda3010",
+    "https://esm.sh/tweetnacl@1.0.3": "8ea8ead1e3376ee6dbb067a332c52e7e97296777b6c2bc33839d4b398c1ab0fc",
+    "https://esm.sh/v130/tweetnacl@1.0.3/denonext/tweetnacl.mjs": "75e9a8900d060c3ca95751fba891f56539b2f07b584240e89e6069dd11b8af31"
   },
   "npm": {
     "specifiers": {
