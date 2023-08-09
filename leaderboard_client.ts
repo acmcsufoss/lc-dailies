@@ -1,3 +1,5 @@
+import { RegisterResponse } from "./app/sub/register.ts";
+
 /**
  * LeaderboardPlayer is a registered player in the leaderboard.
  */
@@ -27,13 +29,24 @@ export class LeaderboardClient {
   /**
    * registerPlayer registers the lc_username to the key and the value to the player.
    */
-  public async registerPlayer(player: LeaderboardPlayer): Promise<void> {
+  public async registerPlayer(
+    player: LeaderboardPlayer,
+  ): Promise<RegisterResponse> {
     const key = [LeaderboardKvKey.PLAYERS, player.lc_username];
     const playerResult = await this.kv.get<LeaderboardPlayer>(key);
     if (playerResult.value) {
       throw new Error("Player already registered");
     }
-    await this.kv.set(key, player);
+
+    const registerResult = await this.kv
+      .atomic()
+      .check(playerResult)
+      .set(key, player)
+      .commit();
+    if (!registerResult.ok) {
+      throw new Error("Failed to register player");
+    }
+    return player;
   }
 }
 

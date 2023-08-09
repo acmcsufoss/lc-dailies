@@ -50,15 +50,27 @@ export function parseRegisterOptions(
   };
 }
 
+/**
+ * RegisterResponse is the response for the register subcommand.
+ */
 export interface RegisterResponse {
+  /**
+   * lc_username is the Leetcode username of the player.
+   */
+  lc_username: string;
 }
+
+/**
+ * makeRegisterInteractionResponse makes the interaction response for the register subcommand.
+ */
 export function makeRegisterInteractionResponse(
   r: RegisterResponse,
 ): APIInteractionResponse {
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      content: `Minted ${r.type} perk with ID ${r.id}`,
+      content:
+        `Your Leetcode username ${r.lc_username} is now registered to the leaderboard!`,
     },
   };
 }

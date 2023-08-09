@@ -1,6 +1,5 @@
 import type {
   APIInteraction,
-  APIInteractionResponseChannelMessageWithSource,
   APIInteractionResponseDeferredChannelMessageWithSource,
 } from "../deps.ts";
 import {
@@ -14,7 +13,11 @@ import * as discord from "../discord.ts";
 import * as env from "./env.ts";
 import { APP_LC } from "./app.ts";
 import { LeaderboardClient } from "../leaderboard_client.ts";
-import { parseRegisterOptions } from "./sub/register.ts";
+import {
+  makeRegisterInteractionResponse,
+  parseRegisterOptions,
+  REGISTER,
+} from "./sub/register.ts";
 
 if (import.meta.main) {
   await main();
@@ -106,16 +109,13 @@ export async function handle(request: Request): Promise<Response> {
           const options = parseRegisterOptions(interaction.data.options);
           const kv = await Deno.openKv();
           const leaderboard = new LeaderboardClient(kv);
-          leaderboard.registerPlayer({
+          const registerResponse = await leaderboard.registerPlayer({
             discord_id: interaction.member.user.id,
             lc_username: options.lc_username,
           });
-          return Response.json({
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: {
-              content: `Minted ${r.type} perk with ID ${r.id}`,
-            } satisfies APIInteractionResponseChannelMessageWithSource,
-          });
+          return Response.json(
+            makeRegisterInteractionResponse(registerResponse),
+          );
         }
       }
 
