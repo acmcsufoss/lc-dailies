@@ -1,8 +1,13 @@
 import type {
   APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
+  APIInteractionResponse,
 } from "../../deps.ts";
-import { ApplicationCommandOptionType } from "../../deps.ts";
+import {
+  ApplicationCommandOptionType,
+  InteractionResponseType,
+} from "../../deps.ts";
+import type * as leaderboard from "../../leaderboard/mod.ts";
 
 export const SUBMIT = "submit";
 export const SUBMIT_DESCRIPTION =
@@ -44,5 +49,19 @@ export function parseSubmitOptions(
 
   return {
     [SUBMIT_SUBMISSION_URL]: usernameOption.value,
+  };
+}
+
+/**
+ * makeSubmitInteractionResponse makes the interaction response for the register subcommand.
+ */
+export function makeSubmitInteractionResponse(
+  r: leaderboard.SubmitResponse,
+): APIInteractionResponse {
+  return {
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: {
+      content: `Your submission was ${r.ok ? "successful" : "unsuccessful"}.`,
+    },
   };
 }

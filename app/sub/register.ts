@@ -7,6 +7,7 @@ import {
   ApplicationCommandOptionType,
   InteractionResponseType,
 } from "../../deps.ts";
+import type * as leaderboard from "../../leaderboard/mod.ts";
 
 export const REGISTER = "register";
 export const REGISTER_DESCRIPTION = "Register your Leetcode account";
@@ -64,20 +65,10 @@ export function parseRegisterOptions(
 }
 
 /**
- * RegisterResponse is the response for the register subcommand.
- */
-export interface RegisterResponse {
-  /**
-   * lc_username is the Leetcode username of the player.
-   */
-  lc_username: string;
-}
-
-/**
  * makeRegisterInteractionResponse makes the interaction response for the register subcommand.
  */
 export function makeRegisterInteractionResponse(
-  r: RegisterResponse,
+  r: leaderboard.RegisterResponse,
 ): APIInteractionResponse {
   return {
     type: InteractionResponseType.ChannelMessageWithSource,

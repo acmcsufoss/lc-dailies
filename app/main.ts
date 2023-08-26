@@ -11,13 +11,20 @@ import {
 } from "../deps.ts";
 import * as discord from "../discord.ts";
 import * as env from "./env.ts";
+import * as lc from "../lc_client.ts";
+import type { LeaderboardClient } from "../leaderboard/mod.ts";
+import { DenoKvLeaderboardClient } from "../leaderboard/denokv/mod.ts";
 import { APP_LC } from "./app.ts";
-import { LeaderboardClient } from "../leaderboard_client.ts";
 import {
   makeRegisterInteractionResponse,
   parseRegisterOptions,
   REGISTER,
 } from "./sub/register.ts";
+import {
+  makeSubmitInteractionResponse,
+  parseSubmitOptions,
+  SUBMIT,
+} from "./sub/submit.ts";
 
 if (import.meta.main) {
   await main();
@@ -40,19 +47,9 @@ export async function main() {
   );
 
   // Start the server.
-  const server = Deno.listen({ port: env.PORT });
-  for await (const conn of server) {
-    serveHttp(conn);
-  }
-
-  async function serveHttp(conn: Deno.Conn) {
-    const httpConn = Deno.serveHttp(conn);
-    for await (const requestEvent of httpConn) {
-      const response = await handle(requestEvent.request);
-      requestEvent.respondWith(response);
-    }
-  }
+  Deno.serve({ port: env.PORT }, handle);
 }
+
 /**
  * handle is the HTTP handler for the Boardd application command.
  */
@@ -107,14 +104,25 @@ export async function handle(request: Request): Promise<Response> {
       switch (name) {
         case REGISTER: {
           const options = parseRegisterOptions(interaction.data.options);
-          const kv = await Deno.openKv();
-          const leaderboard = new LeaderboardClient(kv);
-          const registerResponse = await leaderboard.registerPlayer({
-            discord_id: interaction.member.user.id,
-            lc_username: options.lc_username,
-          });
+          const l = await makeLeaderboardClient();
+          const registerResponse = await l.register(
+            interaction.member.user.id,
+            options.lc_username,
+          );
           return Response.json(
             makeRegisterInteractionResponse(registerResponse),
+          );
+        }
+
+        case SUBMIT: {
+          const options = parseSubmitOptions(interaction.data.options);
+          const l = await makeLeaderboardClient();
+          const submitResponse = await l.submit(
+            interaction.member.user.id,
+            options.submission_url,
+          );
+          return Response.json(
+            makeSubmitInteractionResponse(submitResponse),
           );
         }
       }
@@ -134,4 +142,11 @@ export async function handle(request: Request): Promise<Response> {
       return new Response("Invalid request", { status: 400 });
     }
   }
+}
+
+async function makeLeaderboardClient(): Promise<LeaderboardClient> {
+  return new DenoKvLeaderboardClient(
+    await Deno.openKv(),
+    new lc.LCClient(),
+  );
 }

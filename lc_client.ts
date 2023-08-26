@@ -1,5 +1,5 @@
 /**
- * LCDailyQuestion is the representation of Leetcode's daily question.
+ * DailyQuestion is the representation of Leetcode's daily question.
  *
  * Sample:
  * Daily Leetcode Question for 2021-10-20 (date)
@@ -7,7 +7,12 @@
  * Difficulty: Medium (question.difficulty)
  * Link: https://leetcode.com/problems/find-eventual-safe-states/ (link)
  */
-export interface LCDailyQuestion {
+export interface DailyQuestion {
+  /**
+   * name is the name of the daily question.
+   */
+  name: string;
+
   /**
    * date is the date the daily question was posted.
    */
@@ -30,16 +35,21 @@ export interface LCDailyQuestion {
 }
 
 /**
- * LCRecentSubmission is the representation of Leetcode's recent submission per user.
+ * RecentSubmission is the representation of Leetcode's recent submission per user.
  */
-export interface LCRecentSubmission {
+export interface RecentSubmission {
   /**
    * id is the id details of the submission.
    */
   id: string;
 
   /**
-   * title is the title of the submission.
+   * name is the name of the question of the submission.
+   */
+  name: string;
+
+  /**
+   * title is the title of the question of the submission.
    */
   title: string;
 
@@ -54,66 +64,140 @@ export interface LCRecentSubmission {
  */
 export class LCClient {
   /**
-   * getDailyQuestion gets the daily question from Leetcode.
+   * verifyUser verifies the user by username.
    */
-  public async getDailyQuestion(): Promise<LCDailyQuestion> {
-    return await fetch("https://leetcode.com/graphql/", {
-      headers: {
-        accept: "*/*",
-        "accept-language": "en-US,en;q=0.9",
-        authorization: "",
-        "content-type": "application/json",
-      },
-      body:
-        '{"query":"\\n    query questionOfToday {\\n  activeDailyCodingChallengeQuestion {\\n    date\\n    userStatus\\n    link\\n    question {\\n      acRate\\n      difficulty\\n      freqBar\\n      frontendQuestionId: questionFrontendId\\n      isFavor\\n      paidOnly: isPaidOnly\\n      status\\n      title\\n      titleSlug\\n      hasVideoSolution\\n      hasSolution\\n      topicTags {\\n        name\\n        id\\n        slug\\n      }\\n    }\\n  }\\n}\\n    ","variables":{},"operationName":"questionOfToday"}',
-      method: "POST",
-    })
-      .then((response) => response.json())
-      /**
-       * Map the result of the graphql query into the shape of a LCDailyQuestion instance.
-       */
-      .then((json) => ({
-        date: json.data.activeDailyCodingChallengeQuestion.date,
-        title: json.data.activeDailyCodingChallengeQuestion.question.title,
-        difficulty:
-          json.data.activeDailyCodingChallengeQuestion.question.difficulty,
-        url:
-          `https://leetcode.com${json.data.activeDailyCodingChallengeQuestion.link}`,
-      }));
+  public async verifyUser(username: string): Promise<boolean> {
+    const response = await fetch(`https://leetcode.com/${username}/`);
+    return response.status === 200;
+  }
+
+  // TODO: Get last 10 daily questions.
+
+  /**
+   * listDailyQuestions gets the last `amount` of daily questions from Leetcode since `asOfYear` and `asOfMonth`.
+   */
+  public async listDailyQuestions(
+    limit: number,
+    asOfYear: number,
+    asOfMonth: number,
+  ): Promise<DailyQuestion[]> {
+    const dailies: DailyQuestion[] = [];
+    let currentYear = asOfYear;
+    let currentMonth = asOfMonth;
+
+    while (dailies.length < limit) {
+      const response = await gql(
+        JSON.stringify({
+          operationName: "dailyCodingQuestionRecords",
+          query:
+            "\n    query dailyCodingQuestionRecords($year: Int!, $month: Int!) {\n  dailyCodingChallengeV2(year: $year, month: $month) {\n    challenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n      difficulty\n      }\n    }\n    weeklyChallenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n      }\n    }\n  }\n}\n    ",
+          variables: { year: currentYear, month: currentMonth },
+        }),
+      );
+      const json = await response.json();
+      const challenges = json.data.dailyCodingChallengeV2.challenges
+        .reverse() as Array<{
+          date: string;
+          question: {
+            title: string;
+            titleSlug: string;
+            difficulty: string;
+          };
+        }>;
+      for (const challenge of challenges) {
+        if (dailies.length === limit) {
+          break;
+        }
+
+        dailies.push({
+          name: challenge.question.titleSlug,
+          date: challenge.date,
+          title: challenge.question.title,
+          difficulty: challenge.question.difficulty,
+          url: makeQuestionURL(challenge.question.titleSlug),
+        });
+      }
+
+      currentMonth--;
+      if (currentMonth === 0) {
+        currentMonth = 12;
+        currentYear--;
+      }
+    }
+
+    return dailies;
   }
 
   /**
-   * getRecentSubmissions gets the recent submissions from Leetcode by username.
+   * getRecentAcceptedSubmissions gets the recent accepted submissions from
+   * Leetcode by username.
    */
-  public async getRecentSubmissions(
+  public async getRecentAcceptedSubmissions(
     username: string,
     limit: number,
-  ): Promise<LCRecentSubmission[]> {
-    return await fetch("https://leetcode.com/graphql/", {
-      "headers": {
-        "accept": "*/*",
-        "accept-language": "en-US,en;q=0.9",
-        "authorization": "",
-        "content-type": "application/json",
-      },
-      "method": "POST",
-      body: JSON.stringify({
+  ): Promise<RecentSubmission[]> {
+    return await gql(
+      JSON.stringify({
         operationName: "recentAcSubmissions",
         query:
           "\n    query recentAcSubmissions($username: String!, $limit: Int!) {\n  recentAcSubmissionList(username: $username, limit: $limit) {\n    id\n    title\n    titleSlug\n    timestamp\n  }\n}\n    ",
         variables: { username, limit },
       }),
-    })
+    )
       .then((response) => response.json())
+      /**
+       * Map the result of the graphql query into the shape of a LCDailyQuestion instance.
+       */
       .then((json) =>
         json.data.recentAcSubmissionList
           .map((
-            acSubmission: { id: string; title: string; timestamp: string },
-          ) => ({
+            acSubmission: {
+              id: string;
+              title: string;
+              timestamp: string;
+              titleSlug: string;
+            },
+          ): RecentSubmission => ({
             id: acSubmission.id,
+            name: acSubmission.titleSlug,
             title: acSubmission.title,
             timestamp: acSubmission.timestamp,
           }))
       );
   }
 }
+
+function makeQuestionURL(titleSlug: string): string {
+  return `https://leetcode.com/problems/${titleSlug}/`;
+}
+
+/**
+ * gql executes a query to Leetcode's GraphQL API.
+ */
+async function gql(body: string): Promise<Response> {
+  return await fetch("https://leetcode.com/graphql/", {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      "accept-language": "en-US,en;q=0.9",
+      authorization: "",
+      "content-type": "application/json",
+    },
+    body,
+  });
+}
+
+/**
+ * parseSubmissionID parses the submission ID from the submission URL.
+ */
+export function parseSubmissionID(submissionURLOrID: string): string {
+  if (LEETCODE_SUBMISSIONS_URL_PATTERN.test(submissionURLOrID)) {
+    return submissionURLOrID.replace(LEETCODE_SUBMISSIONS_URL_PATTERN, "")
+      .replace(/\/$/, "");
+  }
+
+  return submissionURLOrID;
+}
+
+const LEETCODE_SUBMISSIONS_URL_PATTERN =
+  /^https:\/\/leetcode\.com\/(problems\/.*\/submissions\/|submissions\/detail\/)/;
