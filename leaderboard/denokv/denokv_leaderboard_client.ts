@@ -56,14 +56,14 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     season: leaderboard.Season,
     prevSeasonResult: Deno.KvEntryMaybe<leaderboard.Season> | null,
   ): Promise<void> {
-    // Update the season ID.
-    const updateOp = this.kv.atomic();
+    // Update the season.
+    const updateSeasonOp = this.kv.atomic();
     if (prevSeasonResult) {
-      updateOp.check(prevSeasonResult);
+      updateSeasonOp.check(prevSeasonResult);
     }
 
     // Update the season.
-    const updateSeasonResult = await updateOp.set(
+    const updateSeasonResult = await updateSeasonOp.set(
       [LeaderboardKvPrefix.SEASONS, season.id],
       season,
     ).commit();
@@ -71,8 +71,14 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
       throw new Error("Failed to update season");
     }
 
+    // Update the season ID.
+    const updateSeasonIDOp = this.kv.atomic();
+    if (prevSeasonResult) {
+      updateSeasonIDOp.check(prevSeasonResult);
+    }
+
     // Update the current season ID.
-    const updateSeasonIDResult = await updateOp.set(
+    const updateSeasonIDResult = await updateSeasonIDOp.set(
       [LeaderboardKvPrefix.SEASON_ID],
       season.id,
     ).commit();
@@ -147,11 +153,13 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
 
     // Check if the submission is part of the current season.
     const seasonStartDate = new Date(season.start_date);
+    const acceptedSubmissionDate = fromLCTimestamp(
+      acceptedSubmission.timestamp,
+    );
     const isSubmissionInSeason = checkDateInWeek(
       seasonStartDate.getTime(),
-      fromLCTimestamp(acceptedSubmission.timestamp).getTime(),
+      acceptedSubmissionDate.getTime(),
     );
-    // console.log({ acceptedSubmission, seasonStartDate, isSubmissionInSeason }); // TODO: Remove!
     if (!isSubmissionInSeason) {
       throw new Error("Submission not in season");
     }
@@ -168,7 +176,6 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     const recentDailyQuestion = recentDailyQuestions
       .find((q) => q.name === acceptedSubmission.name);
     if (!recentDailyQuestion) {
-      console.log({ recentDailyQuestions });
       throw new Error("Question not found");
     }
 
@@ -253,7 +260,7 @@ function checkDateInWeek(startOfWeek: number, date: number): boolean {
 
 function getStartOfWeek(restartMs = 0, date = new Date()): number {
   let startOfWeek = new Date(date).setUTCHours(0, 0, 0, 0) -
-    (DAY * date.getUTCDay()) +
+    (DAY * (date.getUTCDay())) +
     restartMs;
   if (startOfWeek > date.getTime()) {
     startOfWeek -= WEEK;
