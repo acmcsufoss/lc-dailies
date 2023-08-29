@@ -1,6 +1,8 @@
 import type {
   APIInteraction,
+  APIInteractionResponse,
   APIInteractionResponseDeferredChannelMessageWithSource,
+  APIUser,
 } from "../deps.ts";
 import {
   ApplicationCommandOptionType,
@@ -9,10 +11,8 @@ import {
   MessageFlags,
   Utils,
 } from "../deps.ts";
-import * as discord from "../discord.ts";
-import * as env from "./env.ts";
-import * as lc from "../lc_client.ts";
-import type { LeaderboardClient } from "../leaderboard/mod.ts";
+import * as discord from "../discord/mod.ts";
+import * as lc from "../lc/mod.ts";
 import { DenoKvLeaderboardClient } from "../leaderboard/denokv/mod.ts";
 import { APP_LC } from "./app.ts";
 import {
@@ -25,6 +25,15 @@ import {
   parseSubmitOptions,
   SUBMIT,
 } from "./sub/submit.ts";
+import * as env from "./env.ts";
+import * as snacks from "./snacks.ts";
+
+const kv = await Deno.openKv();
+const lcClient = new lc.LCClient();
+const leaderboardClient = new DenoKvLeaderboardClient(
+  kv,
+  lcClient,
+);
 
 if (import.meta.main) {
   await main();
@@ -54,6 +63,18 @@ export async function main() {
  * handle is the HTTP handler for the Boardd application command.
  */
 export async function handle(request: Request): Promise<Response> {
+  // Handle the daily webhook.
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/daily/") && request.method === "POST") {
+    const token = url.pathname.slice("/daily/".length);
+    if (token !== env.WEBHOOK_TOKEN) {
+      return new Response("Invalid token", { status: 401 });
+    }
+
+    return handleExecuteDailyWebhook();
+  }
+
+  // Verify the request is coming from Discord.
   const { error, body } = await discord.verify(request, env.DISCORD_PUBLIC_KEY);
   if (error !== null) {
     return error;
@@ -103,26 +124,20 @@ export async function handle(request: Request): Promise<Response> {
       // Handle the subcommand.
       switch (name) {
         case REGISTER: {
-          const options = parseRegisterOptions(interaction.data.options);
-          const l = await makeLeaderboardClient();
-          const registerResponse = await l.register(
-            interaction.member.user.id,
-            options.lc_username,
-          );
           return Response.json(
-            makeRegisterInteractionResponse(registerResponse),
+            await handleRegisterSubcommand(
+              interaction.member.user,
+              parseRegisterOptions(interaction.data.options),
+            ),
           );
         }
 
         case SUBMIT: {
-          const options = parseSubmitOptions(interaction.data.options);
-          const l = await makeLeaderboardClient();
-          const submitResponse = await l.submit(
-            interaction.member.user.id,
-            options.submission_url,
-          );
           return Response.json(
-            makeSubmitInteractionResponse(submitResponse),
+            await handleSubmitSubcommand(
+              interaction.member.user,
+              parseSubmitOptions(interaction.data.options),
+            ),
           );
         }
       }
@@ -144,9 +159,47 @@ export async function handle(request: Request): Promise<Response> {
   }
 }
 
-async function makeLeaderboardClient(): Promise<LeaderboardClient> {
-  return new DenoKvLeaderboardClient(
-    await Deno.openKv(),
-    new lc.LCClient(),
+async function handleExecuteDailyWebhook(): Promise<Response> {
+  const question = await lcClient.getDailyQuestion();
+  const content = formatLCDailyQuestion(question);
+  await discord.executeWebhook({
+    url: env.DISCORD_WEBHOOK_URL,
+    data: { content },
+  });
+
+  return new Response("OK");
+}
+
+async function handleRegisterSubcommand(
+  user: APIUser,
+  options: ReturnType<typeof parseRegisterOptions>,
+): Promise<APIInteractionResponse> {
+  const registerResponse = await leaderboardClient.register(
+    user.id,
+    options.lc_username,
   );
+
+  return makeRegisterInteractionResponse(registerResponse);
+}
+
+async function handleSubmitSubcommand(
+  user: APIUser,
+  options: ReturnType<typeof parseSubmitOptions>,
+): Promise<APIInteractionResponse> {
+  const submitResponse = await leaderboardClient.submit(
+    user.id,
+    lc.parseSubmissionID(options.submission_url),
+  );
+
+  return makeSubmitInteractionResponse(submitResponse);
+}
+
+function formatLCDailyQuestion(question: lc.DailyQuestion): string {
+  return [
+    `## Daily Leetcode Question for ${question.date}`,
+    `**Question**: ${question.title}`,
+    `**Difficulty**: ${question.difficulty}`,
+    `**Link**: <${question.url}>`,
+    `**Snack**: Here is a snack to get your brain working: ${snacks.pickRandom()}`,
+  ].join("\n");
 }

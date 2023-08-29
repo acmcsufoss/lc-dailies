@@ -10,6 +10,7 @@ export type {
   APIInteractionResponse,
   APIInteractionResponseChannelMessageWithSource,
   APIInteractionResponseDeferredChannelMessageWithSource,
+  APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIWebhookWithTokenJSONBody,
 } from "https://deno.land/x/discord_api_types@0.37.55/v10.ts";
