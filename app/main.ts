@@ -14,6 +14,7 @@ import {
 import * as discord from "../discord/mod.ts";
 import * as lc from "../lc/mod.ts";
 import { DenoKvLeaderboardClient } from "../leaderboard/denokv/mod.ts";
+import * as server from "../server/mod.ts";
 import { APP_LC } from "./app.ts";
 import {
   makeRegisterInteractionResponse,
@@ -40,32 +41,57 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  // Overwrite the Discord Application Command.
-  await discord.registerCommand({
-    botID: env.DISCORD_CLIENT_ID,
-    botToken: env.DISCORD_TOKEN,
-    app: APP_LC,
-  });
-
-  // Log the application command.
-  console.log(
-    "LC-Dailies application command:\n",
-    `- Local: http://localhost:${env.PORT}/\n`,
-    `- Invite: https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands\n`,
-    `- Info: https://discord.com/developers/applications/${env.DISCORD_CLIENT_ID}/information`,
-  );
+  const s = new server.Server(env.PORT)
+    .get(
+      new URLPattern({ pathname: "/latest-season" }),
+      handleGetLatestSeason,
+    )
+    .get(
+      new URLPattern({ pathname: "/seasons" }),
+      handleGetSeasons,
+    )
+    .get(
+      new URLPattern({ pathname: "/seasons/:season_id" }),
+      handleGetSeason,
+    )
+    .post(
+      new URLPattern({ pathname: "/" }),
+      handlePostDiscordInteraction,
+    )
+    .post(
+      new URLPattern({ pathname: "/daily/:token" }),
+      handlePostDailyWebhook,
+    );
 
   // Start the server.
-  Deno.serve({ port: env.PORT }, handle);
+  await s.serve(async () => {
+    // Overwrite the Discord Application Command.
+    await discord.registerCommand({
+      botID: env.DISCORD_CLIENT_ID,
+      botToken: env.DISCORD_TOKEN,
+      app: APP_LC,
+    });
+
+    // Log the application command.
+    console.log(
+      "LC-Dailies application command:\n",
+      `- Local: http://localhost:${env.PORT}/\n`,
+      `- Invite: https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands\n`,
+      `- Info: https://discord.com/developers/applications/${env.DISCORD_CLIENT_ID}/information`,
+    );
+  });
 }
 
 /**
- * handle is the HTTP handler for the Boardd application command.
+ * handleDiscordInteraction is the HTTP handler for the LC-Dailies application
+ * command.
  */
-export async function handle(request: Request): Promise<Response> {
+export async function handleDiscordInteraction(
+  request: server.ServerRequest,
+): Promise<Response> {
   // Handle the daily webhook.
   const url = new URL(request.url);
-  if (url.pathname.startsWith("/daily/") && request.method === "POST") {
+  if (url.pathname.startsWith("/daily/") && request.request.method === "POST") {
     const token = url.pathname.slice("/daily/".length);
     if (token !== env.WEBHOOK_TOKEN) {
       return new Response("Invalid token", { status: 401 });
@@ -157,6 +183,20 @@ export async function handle(request: Request): Promise<Response> {
       return new Response("Invalid request", { status: 400 });
     }
   }
+}
+
+/**
+ * handlePostDailyWebhook is the HTTP handler for the LC-Dailies daily webhook.
+ */
+export async function handlePostDailyWebhook(
+  request: server.ServerRequest,
+): Promise<Response> {
+  const token = request.params["token"];
+  if (token !== env.WEBHOOK_TOKEN) {
+    return new Response("Invalid token", { status: 401 });
+  }
+
+  return await handleExecuteDailyWebhook();
 }
 
 async function handleExecuteDailyWebhook(): Promise<Response> {
