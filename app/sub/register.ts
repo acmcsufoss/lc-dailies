@@ -73,8 +73,9 @@ export function makeRegisterInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      content:
-        `Your Leetcode username ${r.lc_username} is now registered to the leaderboard!`,
+      content: `Your Leetcode username was ${
+        r.ok ? "registered" : "not registered"
+      }.`,
     },
   };
 }

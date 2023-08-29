@@ -5,7 +5,8 @@
     "lock": "deno cache --lock-write deps.ts",
     "all": "deno task udd && deno lint && deno fmt",
     "start": "deno run -A --unstable app/main.ts",
-    "ngrok": "ngrok http 8080"
+    "ngrok": "ngrok http 8080",
+    "cf:deploy": "deno run -A cloudflare/deploy.ts"
     // TODO: make a PR add Deno KV insights
     // Reference: https://github.com/cbinzer/deno-kv-insights#readme
   }

@@ -71,7 +71,22 @@ export class LCClient {
     return response.status === 200;
   }
 
-  // TODO: Get last 10 daily questions.
+  /**
+   * getDailyQuestion gets the daily question from Leetcode.
+   */
+  public async getDailyQuestion(): Promise<DailyQuestion> {
+    const date = new Date();
+    const [question] = await this.listDailyQuestions(
+      1,
+      date.getFullYear(),
+      date.getMonth() + 1,
+    );
+    if (!question) {
+      throw new Error("No daily question found");
+    }
+
+    return question;
+  }
 
   /**
    * listDailyQuestions gets the last `amount` of daily questions from Leetcode since `asOfYear` and `asOfMonth`.
