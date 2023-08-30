@@ -3,8 +3,8 @@ import type {
   DailyQuestion,
   LCClient,
   RecentSubmission,
-} from "../../lc_client.ts";
-import type { Season } from "../leaderboard_client.ts";
+} from "../../lc/mod.ts";
+import type { Season } from "../mod.ts";
 import { DenoKvLeaderboardClient } from "./mod.ts";
 
 const FAKE_DISCORD_USER_ID = "fake_discord_user_id";
@@ -67,6 +67,10 @@ class FakeLCClient implements LCClient {
     __: number,
   ): Promise<RecentSubmission[]> {
     return Promise.resolve(FAKE_RECENT_SUBMISSIONS);
+  }
+
+  public getDailyQuestion(): Promise<DailyQuestion> {
+    return Promise.resolve(FAKE_LC_QUESTION);
   }
 }
 

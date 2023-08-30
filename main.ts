@@ -18,17 +18,25 @@ async function main() {
     kv,
     lcClient,
   );
+
   const s = new server.Server(env.PORT)
     .post(
       new URLPattern({ pathname: "/" }),
-      app.makeDiscordAppHandler(
-        leaderboardClient,
-        env.DISCORD_PUBLIC_KEY,
-        env.DISCORD_CHANNEL_ID,
-      ),
+      (() => {
+        const handle = app.makeDiscordAppHandler(
+          leaderboardClient,
+          env.DISCORD_PUBLIC_KEY,
+          env.DISCORD_CHANNEL_ID,
+        );
+        return async (r: server.ServerRequest) =>
+          await handle(r).catch((e) => {
+            console.error(e);
+            return new Response("Internal Server Error", { status: 500 });
+          });
+      })(),
     )
     .post(
-      new URLPattern({ pathname: "/daily/:token" }),
+      new URLPattern({ pathname: "/webhook/:token" }),
       handlers.makeDailyWebhookPostHandler(
         lcClient,
         env.DISCORD_WEBHOOK_URL,
@@ -37,32 +45,54 @@ async function main() {
     )
     .get(
       new URLPattern({ pathname: "/seasons" }),
-      // TODO: Add an implementation for makeSeasonsGetHandler.
-      handlers.makeSeasonsGetHandler(),
+      handlers.makeSeasonsGetHandler(leaderboardClient),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
-      // TODO: Add an implementation for makeSeasonGetHandler.
-      handlers.makeSeasonGetHandler(),
+      handlers.makeSeasonGetHandler(leaderboardClient),
+    )
+    .get(
+      new URLPattern({ pathname: "/invite" }),
+      () =>
+        Promise.resolve(
+          Response.redirect(makeInviteURL(env.DISCORD_APPLICATION_ID)),
+        ),
     );
 
-  s.serve(async () => {
-    // Overwrite the Discord Application Command.
-    await discord.registerCommand({
-      app: APP_LC,
-      botID: env.DISCORD_CLIENT_ID,
-      botToken: env.DISCORD_TOKEN,
-    });
-
-    console.log(
-      "Invite Boardd to your server:",
-      `https://discord.com/api/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&scope=applications.commands`,
-      "\n",
-      "Discord application information:",
-      `https://discord.com/developers/applications/${env.DISCORD_CLIENT_ID}/bot`,
-      "\n",
-      "Latest season:",
-      `http://127:0.0.1:${env.PORT}/seasons/latest`,
-    );
+  await s.serve(onLoad).finished.finally(() => {
+    kv.close();
   });
+}
+
+/**
+ * onLoad is callback which is called when the server starts listening.
+ */
+async function onLoad() {
+  // Overwrite the Discord Application Command.
+  await discord.registerCommand({
+    app: APP_LC,
+    applicationID: env.DISCORD_APPLICATION_ID,
+    botToken: env.DISCORD_TOKEN,
+  });
+
+  console.log(
+    "- Discord application information:",
+    `https://discord.com/developers/applications/${env.DISCORD_APPLICATION_ID}/`,
+  );
+  console.log(
+    "- Interaction endpoint:",
+    `http://127.0.0.1:${env.PORT}/`,
+  );
+  console.log(
+    "- Invite LC-Dailies to your server:",
+    `http://127.0.0.1:${env.PORT}/invite/`,
+  );
+  console.log(
+    "- Latest season:",
+    `http://127.0.0.1:${env.PORT}/seasons/latest/`,
+  );
+}
+
+function makeInviteURL(applicationID: string) {
+  return `https://discord.com/api/oauth2/authorize?client_id=${applicationID}&scope=applications.commands`;
 }

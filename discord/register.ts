@@ -4,7 +4,7 @@ import type { RESTPostAPIApplicationCommandsJSONBody } from "../deps.ts";
  * RegisterCommandOptions is the initialization to register a Discord application command.
  */
 export interface RegisterCommandOptions {
-  botID: string;
+  applicationID: string;
   botToken: string;
   app: RESTPostAPIApplicationCommandsJSONBody;
 }
@@ -13,10 +13,10 @@ export interface RegisterCommandOptions {
  * makeRegisterCommandsURL makes the URL to register a Discord application command.
  */
 export function makeRegisterCommandsURL(
-  clientID: string,
+  applicationID: string,
   base = DISCORD_API_URL,
 ) {
-  return new URL(`${base}/applications/${clientID}/commands`);
+  return new URL(`${base}/applications/${applicationID}/commands`);
 }
 
 /**
@@ -32,7 +32,7 @@ export function makeBotAuthorization(botToken: string) {
 export async function registerCommand(
   options: RegisterCommandOptions,
 ): Promise<void> {
-  const url = makeRegisterCommandsURL(options.botID);
+  const url = makeRegisterCommandsURL(options.applicationID);
   const response = await fetch(url, {
     method: "POST",
     headers: new Headers([

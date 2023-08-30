@@ -15,9 +15,9 @@ export const PORT = parseInt(Deno.env.get("PORT") || "8080");
 export const WEBHOOK_TOKEN = Deno.env.get("WEBHOOK_TOKEN")!;
 
 /**
- * DISCORD_CLIENT_ID is the client ID of the Discord application.
+ * DISCORD_APPLICATION_ID is the application ID of the Discord application.
  */
-export const DISCORD_CLIENT_ID = Deno.env.get("DISCORD_CLIENT_ID")!;
+export const DISCORD_APPLICATION_ID = Deno.env.get("DISCORD_APPLICATION_ID")!;
 
 /**
  * DISCORD_TOKEN is the token of the Discord application.

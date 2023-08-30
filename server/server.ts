@@ -115,7 +115,10 @@ export class Server {
     }) => void,
   ): Deno.Server {
     return Deno.serve(
-      { port: this.port, onListen },
+      {
+        port: this.port,
+        onListen,
+      },
       async (request) => {
         for (const [pattern, handler] of this.handlerMap) {
           const match = pattern.exec(request.url);
@@ -137,6 +140,7 @@ export class Server {
             url,
             params,
           });
+
           return response;
         }
 
