@@ -40,15 +40,17 @@ export function parseSubmitOptions(
 ): {
   [SUBMIT_SUBMISSION_URL]: string;
 } {
-  const usernameOption = options.find((option) =>
+  const submissionURLOption = options.find((option) =>
     option.name === SUBMIT_SUBMISSION_URL
   );
-  if (usernameOption?.type !== ApplicationCommandOptionType.String) {
-    throw new Error("Expected a string for the username option.");
+  if (submissionURLOption?.type !== ApplicationCommandOptionType.String) {
+    // TODO: Remove console.log.
+    console.log({ submissionURLOption });
+    throw new Error("Expected a string for the submission URL option");
   }
 
   return {
-    [SUBMIT_SUBMISSION_URL]: usernameOption.value,
+    [SUBMIT_SUBMISSION_URL]: submissionURLOption.value,
   };
 }
 

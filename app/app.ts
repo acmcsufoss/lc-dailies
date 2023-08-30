@@ -123,6 +123,8 @@ export function makeDiscordAppHandler(
             const handleSubmitSubcommand = makeSubmitSubcommandHandler(
               leaderboardClient,
             );
+            // TODO: Debug `submit` subcommand.
+            console.log({ interaction });
             return Response.json(
               await handleSubmitSubcommand(
                 interaction.member.user,
