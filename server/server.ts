@@ -50,10 +50,10 @@ export type HandlerMap = Map<URLPattern, Handler>;
 export class Server {
   constructor(
     public readonly port: number = 8080,
+    public handlerMap: HandlerMap = new Map(),
     public readonly response404: Response = new Response("Not found", {
       status: 404,
     }),
-    public handlerMap: HandlerMap = new Map(),
   ) {}
 
   /**
