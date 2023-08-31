@@ -1,6 +1,6 @@
 import * as env from "./env.ts";
 import * as lc from "./lc/mod.ts";
-import * as lc_dailies from "./server/servers/lc_dailies/mod.ts";
+import * as lc_dailies from "./servers/lc_dailies/mod.ts";
 import { DenoKvLeaderboardClient } from "./leaderboard/denokv/mod.ts";
 
 if (import.meta.main) {
