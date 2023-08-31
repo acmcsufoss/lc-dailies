@@ -40,12 +40,23 @@ export function parseSubmitOptions(
 ): {
   [SUBMIT_SUBMISSION_URL]: string;
 } {
-  const submissionURLOption = options.find((option) =>
+  const submitOption = options.find((option) => option.name === SUBMIT);
+  if (!submitOption) {
+    throw new Error("No options provided");
+  }
+  if (
+    submitOption.type !== ApplicationCommandOptionType.Subcommand
+  ) {
+    throw new Error("Invalid option type");
+  }
+  if (!submitOption.options) {
+    throw new Error("No options provided");
+  }
+
+  const submissionURLOption = submitOption.options.find((option) =>
     option.name === SUBMIT_SUBMISSION_URL
   );
   if (submissionURLOption?.type !== ApplicationCommandOptionType.String) {
-    // TODO: Remove console.log.
-    console.log({ submissionURLOption });
     throw new Error("Expected a string for the submission URL option");
   }
 

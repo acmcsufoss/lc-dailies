@@ -180,7 +180,6 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     }
 
     // Check if the question is part of the season.
-    console.log({ season, recentDailyQuestion }); // TODO: Remove!
     const isQuestionInSeason = checkDateInWeek(
       new Date(season.start_date).getTime(),
       new Date(recentDailyQuestion.date).getTime(),

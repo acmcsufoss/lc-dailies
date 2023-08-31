@@ -42,7 +42,7 @@ export interface Season {
   /**
    * submissions is the map of submissions in the season.
    */
-  submissions: { [discord_user_id: string]: string[] }; // TODO: Change to question ID if submission is successful.
+  submissions: { [discord_user_id: string]: string[] }; // TODO: Change from string[] to lc.DailySubmission[].
 }
 
 /**

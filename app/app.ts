@@ -123,8 +123,6 @@ export function makeDiscordAppHandler(
             const handleSubmitSubcommand = makeSubmitSubcommandHandler(
               leaderboardClient,
             );
-            // TODO: Debug `submit` subcommand.
-            console.log({ interaction });
             return Response.json(
               await handleSubmitSubcommand(
                 interaction.member.user,
@@ -162,8 +160,6 @@ function makeRegisterSubcommandHandler(
     user: APIUser,
     options: ReturnType<typeof parseRegisterOptions>,
   ): Promise<APIInteractionResponse> {
-    // TODO: Remove console.log.
-    console.log("Registering " + user.id + " with " + options.lc_username);
     const registerResponse = await leaderboardClient.register(
       user.id,
       options.lc_username,
@@ -183,8 +179,6 @@ function makeSubmitSubcommandHandler(
     user: APIUser,
     options: ReturnType<typeof parseSubmitOptions>,
   ): Promise<APIInteractionResponse> {
-    // TODO: Remove console.log.
-    console.log("Submitting " + user.id + " with " + options.submission_url);
     const submitResponse = await leaderboardClient.submit(
       user.id,
       lc.parseSubmissionID(options.submission_url),
