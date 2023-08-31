@@ -1,9 +1,9 @@
-import type { RESTPostAPIWebhookWithTokenJSONBody } from "./deps.ts";
+import type { RESTPostAPIWebhookWithTokenJSONBody } from "../deps.ts";
 
 /**
- * Options are the options for a webhook message.
+ * ExecuteWebhookOptions are the options for a webhook message.
  */
-export interface Options {
+export interface ExecuteWebhookOptions {
   /**
    * url is the webhook url.
    */
@@ -18,7 +18,7 @@ export interface Options {
 /**
  * @see https://discord.com/developers/docs/resources/webhook#execute-webhook
  */
-export function execute(o: Options) {
+export function executeWebhook(o: ExecuteWebhookOptions) {
   return fetch(o.url, {
     method: "POST",
     headers: {

@@ -1,30 +1,39 @@
-import { WEBHOOK_URL } from "./env.ts";
-import * as discord_webhook from "./discord_webhook.ts";
-import * as lc_client from "./lc_client.ts";
-import * as snacks from "./snacks.ts";
+import * as env from "./env.ts";
+import * as lc from "./lc/mod.ts";
+import * as lc_dailies from "./server/servers/lc_dailies/mod.ts";
+import { DenoKvLeaderboardClient } from "./leaderboard/denokv/mod.ts";
 
 if (import.meta.main) {
   await main();
 }
 
 async function main() {
-  const client = new lc_client.LCClient();
-  const question = await client.getDailyQuestion();
-  const content = formatLCDailyQuestion(question);
-  await discord_webhook.execute({
-    url: WEBHOOK_URL,
-    data: { content },
-  });
-}
+  const kv = await Deno.openKv();
+  const lcClient = new lc.LCClient();
+  const leaderboardClient = new DenoKvLeaderboardClient(
+    kv,
+    lcClient,
+  );
+  const s = lc_dailies.makeLCDailiesServer(
+    env.PORT,
+    env.DISCORD_APPLICATION_ID,
+    env.DISCORD_PUBLIC_KEY,
+    env.DISCORD_CHANNEL_ID,
+    env.DISCORD_WEBHOOK_URL,
+    env.WEBHOOK_TOKEN,
+    lcClient,
+    leaderboardClient,
+  );
 
-function formatLCDailyQuestion(
-  question: lc_client.LCDailyQuestion,
-): string {
-  return [
-    `## Daily Leetcode Question for ${question.date}`,
-    `**Question**: ${question.title}`,
-    `**Difficulty**: ${question.difficulty}`,
-    `**Link**: <${question.url}>`,
-    `**Snack**: Here is a snack to get your brain working: ${snacks.pickRandom()}`,
-  ].join("\n");
+  await s.serve(
+    lc_dailies.makeOnLoad(
+      env.PORT,
+      env.DISCORD_APPLICATION_ID,
+      env.DISCORD_TOKEN,
+    ),
+  )
+    .finished
+    .finally(() => {
+      kv.close();
+    });
 }
