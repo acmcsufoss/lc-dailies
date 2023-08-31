@@ -1,7 +1,7 @@
-import { assertEquals, assertRejects } from "../../../deps.ts";
-import * as fake_lc from "../../lc/fake_client.ts";
-import type { Season } from "../../leaderboard/mod.ts";
-import { DenoKvLeaderboardClient } from "../denokv/mod.ts";
+import { assertEquals, assertRejects } from "~/deps.ts";
+import * as fake_lc from "~/lib/lc/fake_client.ts";
+import type { Season } from "~/lib/leaderboard/mod.ts";
+import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
 
 const FAKE_DISCORD_USER_ID = "fake_discord_user_id";
 const FAKE_SEASON_START_DATE = new Date("2023-07-30");

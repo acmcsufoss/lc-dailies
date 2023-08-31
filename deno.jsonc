@@ -7,7 +7,8 @@
     "test": "deno test --unstable",
     "start": "deno run -A --unstable main.ts",
     "ngrok": "ngrok http 8080"
-    // TODO: make a PR add Deno KV insights
-    // Reference: https://github.com/cbinzer/deno-kv-insights#readme
+  },
+  "imports": {
+    "~/": "./"
   }
 }

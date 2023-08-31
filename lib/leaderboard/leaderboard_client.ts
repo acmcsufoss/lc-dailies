@@ -1,4 +1,4 @@
-import type * as lc from "../lc/mod.ts";
+import type * as lc from "~/lib/lc/mod.ts";
 
 /**
  * Player is a registered player in the leaderboard.

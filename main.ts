@@ -1,8 +1,8 @@
-import * as env from "./env.ts";
-import * as lc from "./lib/lc/mod.ts";
-import * as api from "./api/mod.ts";
-import { Router } from "./lib/router/mod.ts";
-import { DenoKvLeaderboardClient } from "./lib/leaderboard/denokv/mod.ts";
+import { DenoKvLeaderboardClient } from "~/lib/leaderboard/denokv/mod.ts";
+import { Router } from "~/lib/router/mod.ts";
+import * as lc from "~/lib/lc/mod.ts";
+import * as api from "~/api/mod.ts";
+import * as env from "~/env.ts";
 
 if (import.meta.main) {
   await main();
