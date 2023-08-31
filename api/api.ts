@@ -1,8 +1,8 @@
 import * as discord from "../lib/discord/mod.ts";
-import * as app from "../app/mod.ts";
-import * as lc from "../lc/mod.ts";
-import * as leaderboard from "../leaderboard/mod.ts";
+import * as lc from "../lib/lc/mod.ts";
+import * as leaderboard from "../lib/leaderboard/mod.ts";
 import * as router from "../lib/router/mod.ts";
+import * as discord_app from "./discord_app/mod.ts";
 import { makeDailyWebhookPostHandler } from "./dailies.ts";
 import { makeSeasonGetHandler, makeSeasonsGetHandler } from "./seasons.ts";
 
@@ -22,7 +22,7 @@ export function makeAPIRouter(
   return new router.Router()
     .post(
       new URLPattern({ pathname: "/" }),
-      app.makeDiscordAppHandler(
+      discord_app.makeDiscordAppHandler(
         leaderboardClient,
         discordPublicKey,
         discordChannelID,
@@ -68,7 +68,7 @@ export function makeOnListen(
   return async function onLoad() {
     // Overwrite the Discord Application Command.
     await discord.registerCommand({
-      app: app.APP_LC,
+      app: discord_app.APP_LC,
       applicationID: discordApplicationID,
       botToken: discordToken,
     });

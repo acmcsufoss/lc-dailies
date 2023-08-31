@@ -1,4 +1,4 @@
-import type { RESTPostAPIApplicationCommandsJSONBody } from "../deps.ts";
+import type { RESTPostAPIApplicationCommandsJSONBody } from "../../deps.ts";
 
 /**
  * RegisterCommandOptions is the initialization to register a Discord application command.
