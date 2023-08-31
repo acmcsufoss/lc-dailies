@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../../deps.ts";
+import { assertEquals, assertRejects } from "../../../deps.ts";
 import * as fake_lc from "../../lc/fake_client.ts";
 import type { Season } from "../../leaderboard/mod.ts";
 import { DenoKvLeaderboardClient } from "../denokv/mod.ts";

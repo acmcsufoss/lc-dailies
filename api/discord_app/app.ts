@@ -4,18 +4,18 @@ import type {
   APIInteractionResponseDeferredChannelMessageWithSource,
   APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
-} from "../deps.ts";
+} from "../../deps.ts";
 import {
   ApplicationCommandOptionType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
   Utils,
-} from "../deps.ts";
-import * as router from "../lib/router/mod.ts";
-import * as discord from "../lib/discord/mod.ts";
-import * as lc from "../lc/mod.ts";
-import * as leaderboard from "../leaderboard/mod.ts";
+} from "../../deps.ts";
+import * as router from "../../lib/router/mod.ts";
+import * as discord from "../../lib/discord/mod.ts";
+import * as lc from "../../lib/lc/mod.ts";
+import * as leaderboard from "../../lib/leaderboard/mod.ts";
 import {
   makeRegisterInteractionResponse,
   parseRegisterOptions,

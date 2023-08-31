@@ -1,6 +1,6 @@
 import * as discord from "../lib/discord/mod.ts";
 import * as router from "../lib/router/mod.ts";
-import * as lc from "../lc/mod.ts";
+import * as lc from "../lib/lc/mod.ts";
 import * as snacks from "./snacks.ts";
 
 /**

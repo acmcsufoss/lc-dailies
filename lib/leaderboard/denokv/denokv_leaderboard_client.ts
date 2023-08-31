@@ -1,4 +1,4 @@
-import { DAY, ulid, WEEK } from "../../deps.ts";
+import { DAY, ulid, WEEK } from "../../../deps.ts";
 import type * as lc from "../../lc/mod.ts";
 import * as leaderboard from "../mod.ts";
 

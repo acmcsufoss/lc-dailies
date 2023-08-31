@@ -1,4 +1,4 @@
-import * as leaderboard from "../leaderboard/mod.ts";
+import * as leaderboard from "../lib/leaderboard/mod.ts";
 import * as router from "../lib/router/mod.ts";
 
 /**
