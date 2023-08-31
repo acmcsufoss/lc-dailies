@@ -1,16 +1,16 @@
-import * as discord from "../../lib/discord/mod.ts";
-import * as app from "../../app/mod.ts";
-import * as lc from "../../lc/mod.ts";
-import * as leaderboard from "../../leaderboard/mod.ts";
-import * as server from "../../lib/server/mod.ts";
-import * as handlers from "./handlers/mod.ts";
+import * as discord from "../lib/discord/mod.ts";
+import * as app from "../app/mod.ts";
+import * as lc from "../lc/mod.ts";
+import * as leaderboard from "../leaderboard/mod.ts";
+import * as router from "../lib/router/mod.ts";
+import { makeDailyWebhookPostHandler } from "./dailies.ts";
+import { makeSeasonGetHandler, makeSeasonsGetHandler } from "./seasons.ts";
 
 /**
- * makeLCDailiesServer creates a server which handles requests on the
+ * makeAPIRouter creates a router which handles requests on the
  * LC-Dailies API.
  */
-export function makeLCDailiesServer(
-  port: number,
+export function makeAPIRouter(
   discordApplicationID: string,
   discordPublicKey: string,
   discordChannelID: string,
@@ -19,7 +19,7 @@ export function makeLCDailiesServer(
   lcClient: lc.LCClient,
   leaderboardClient: leaderboard.LeaderboardClient,
 ) {
-  return new server.Server(port)
+  return new router.Router()
     .post(
       new URLPattern({ pathname: "/" }),
       app.makeDiscordAppHandler(
@@ -30,7 +30,7 @@ export function makeLCDailiesServer(
     )
     .post(
       new URLPattern({ pathname: "/webhook/:token" }),
-      handlers.makeDailyWebhookPostHandler(
+      makeDailyWebhookPostHandler(
         lcClient,
         webhookURL,
         webhookToken,
@@ -38,11 +38,11 @@ export function makeLCDailiesServer(
     )
     .get(
       new URLPattern({ pathname: "/seasons" }),
-      handlers.makeSeasonsGetHandler(leaderboardClient),
+      makeSeasonsGetHandler(leaderboardClient),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
-      handlers.makeSeasonGetHandler(leaderboardClient),
+      makeSeasonGetHandler(leaderboardClient),
     )
     .get(
       new URLPattern({ pathname: "/invite" }),
@@ -57,7 +57,7 @@ export function makeLCDailiesServer(
  * makeOnLoad creates a function which is called when the server is
  * loaded.
  */
-export function makeOnLoad(
+export function makeOnListen(
   port: number,
   discordApplicationID: string,
   discordToken: string,

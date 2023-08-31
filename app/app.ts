@@ -12,7 +12,7 @@ import {
   MessageFlags,
   Utils,
 } from "../deps.ts";
-import * as server from "../lib/server/mod.ts";
+import * as router from "../lib/router/mod.ts";
 import * as discord from "../lib/discord/mod.ts";
 import * as lc from "../lc/mod.ts";
 import * as leaderboard from "../leaderboard/mod.ts";
@@ -51,7 +51,7 @@ export function makeDiscordAppHandler(
   discordChannelID: string,
 ) {
   return async function handleDiscordApp(
-    request: server.ServerRequest,
+    request: router.RouterRequest,
   ): Promise<Response> {
     // Verify the request is coming from Discord.
     const { error, body } = await discord.verify(

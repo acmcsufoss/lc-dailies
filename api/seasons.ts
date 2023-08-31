@@ -1,5 +1,5 @@
-import * as leaderboard from "../../../../leaderboard/mod.ts";
-import * as server from "../../../../lib/server/mod.ts";
+import * as leaderboard from "../leaderboard/mod.ts";
+import * as router from "../lib/router/mod.ts";
 
 /**
  * makeSeasonsGetHandler makes a handler that returns a list of seasons.
@@ -26,7 +26,7 @@ export function makeSeasonGetHandler(
    * handleGetSeason handles GET requests to the season endpoint.
    */
   return async function handleGetSeason(
-    request: server.ServerRequest,
+    request: router.RouterRequest,
   ): Promise<Response> {
     const seasonID = request.params["season_id"];
     if (!seasonID) {
