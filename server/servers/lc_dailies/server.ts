@@ -22,18 +22,11 @@ export function makeLCDailiesServer(
   return new server.Server(port)
     .post(
       new URLPattern({ pathname: "/" }),
-      (() => {
-        const handle = app.makeDiscordAppHandler(
-          leaderboardClient,
-          discordPublicKey,
-          discordChannelID,
-        );
-        return async (r: server.ServerRequest) =>
-          await handle(r).catch((e) => {
-            console.error(e);
-            return new Response("Internal Server Error", { status: 500 });
-          });
-      })(),
+      app.makeDiscordAppHandler(
+        leaderboardClient,
+        discordPublicKey,
+        discordChannelID,
+      ),
     )
     .post(
       new URLPattern({ pathname: "/webhook/:token" }),

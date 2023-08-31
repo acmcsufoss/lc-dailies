@@ -1,4 +1,7 @@
-export { assertEquals } from "https://deno.land/std@0.200.0/assert/mod.ts";
+export {
+  assertEquals,
+  assertRejects,
+} from "https://deno.land/std@0.200.0/assert/mod.ts";
 
 export { load } from "https://deno.land/std@0.200.0/dotenv/mod.ts";
 export * from "https://deno.land/std@0.200.0/datetime/constants.ts";

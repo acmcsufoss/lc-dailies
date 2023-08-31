@@ -1,4 +1,4 @@
-import { assertEquals } from "../../deps.ts";
+import { assertEquals, assertRejects } from "../../deps.ts";
 import * as fake_lc from "../../lc/fake_client.ts";
 import type { Season } from "../../leaderboard/mod.ts";
 import { DenoKvLeaderboardClient } from "../denokv/mod.ts";
@@ -35,6 +35,15 @@ Deno.test("DenoKvLeaderboardClient", async (t) => {
       fake_lc.FAKE_LC_USERNAME,
     );
     assertEquals(result.ok, true);
+  });
+
+  await t.step("register same username", () => {
+    assertRejects(async () => {
+      await client.register(
+        FAKE_DISCORD_USER_ID,
+        fake_lc.FAKE_LC_USERNAME,
+      );
+    });
   });
 
   await t.step("submit", async () => {

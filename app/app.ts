@@ -150,46 +150,46 @@ export function makeDiscordAppHandler(
       }
     }
   };
+}
 
-  function makeRegisterSubcommandHandler(
-    leaderboardClient: leaderboard.LeaderboardClient,
-  ) {
-    /**
-     * handleRegisterSubcommand handles the register subcommand.
-     */
-    return async function handleRegisterSubcommand(
-      user: APIUser,
-      options: ReturnType<typeof parseRegisterOptions>,
-    ): Promise<APIInteractionResponse> {
-      // TODO: Remove console.log.
-      console.log("Registering " + user.id + " with " + options.lc_username);
-      const registerResponse = await leaderboardClient.register(
-        user.id,
-        options.lc_username,
-      );
+function makeRegisterSubcommandHandler(
+  leaderboardClient: leaderboard.LeaderboardClient,
+) {
+  /**
+   * handleRegisterSubcommand handles the register subcommand.
+   */
+  return async function handleRegisterSubcommand(
+    user: APIUser,
+    options: ReturnType<typeof parseRegisterOptions>,
+  ): Promise<APIInteractionResponse> {
+    // TODO: Remove console.log.
+    console.log("Registering " + user.id + " with " + options.lc_username);
+    const registerResponse = await leaderboardClient.register(
+      user.id,
+      options.lc_username,
+    );
 
-      return makeRegisterInteractionResponse(registerResponse);
-    };
-  }
+    return makeRegisterInteractionResponse(registerResponse);
+  };
+}
 
-  function makeSubmitSubcommandHandler(
-    leaderboardClient: leaderboard.LeaderboardClient,
-  ) {
-    /**
-     * handleSubmitSubcommand handles the submit subcommand.
-     */
-    return async function handleSubmitSubcommand(
-      user: APIUser,
-      options: ReturnType<typeof parseSubmitOptions>,
-    ): Promise<APIInteractionResponse> {
-      // TODO: Remove console.log.
-      console.log("Submitting " + user.id + " with " + options.submission_url);
-      const submitResponse = await leaderboardClient.submit(
-        user.id,
-        lc.parseSubmissionID(options.submission_url),
-      );
+function makeSubmitSubcommandHandler(
+  leaderboardClient: leaderboard.LeaderboardClient,
+) {
+  /**
+   * handleSubmitSubcommand handles the submit subcommand.
+   */
+  return async function handleSubmitSubcommand(
+    user: APIUser,
+    options: ReturnType<typeof parseSubmitOptions>,
+  ): Promise<APIInteractionResponse> {
+    // TODO: Remove console.log.
+    console.log("Submitting " + user.id + " with " + options.submission_url);
+    const submitResponse = await leaderboardClient.submit(
+      user.id,
+      lc.parseSubmissionID(options.submission_url),
+    );
 
-      return makeSubmitInteractionResponse(submitResponse);
-    };
-  }
+    return makeSubmitInteractionResponse(submitResponse);
+  };
 }
