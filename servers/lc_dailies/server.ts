@@ -1,9 +1,9 @@
-import * as app from "../../../app/mod.ts";
-import * as discord from "../../../discord/mod.ts";
-import * as lc from "../../../lc/mod.ts";
-import * as leaderboard from "../../../leaderboard/mod.ts";
-import * as server from "../../../server/mod.ts";
-import * as handlers from "../../../server/handlers/mod.ts";
+import * as discord from "../../lib/discord/mod.ts";
+import * as app from "../../app/mod.ts";
+import * as lc from "../../lc/mod.ts";
+import * as leaderboard from "../../leaderboard/mod.ts";
+import * as server from "../../lib/server/mod.ts";
+import * as handlers from "./handlers/mod.ts";
 
 /**
  * makeLCDailiesServer creates a server which handles requests on the

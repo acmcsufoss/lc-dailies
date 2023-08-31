@@ -12,10 +12,10 @@ import {
   MessageFlags,
   Utils,
 } from "../deps.ts";
-import * as leaderboard from "../leaderboard/mod.ts";
-import * as server from "../server/mod.ts";
-import * as discord from "../discord/mod.ts";
+import * as server from "../lib/server/mod.ts";
+import * as discord from "../lib/discord/mod.ts";
 import * as lc from "../lc/mod.ts";
+import * as leaderboard from "../leaderboard/mod.ts";
 import {
   makeRegisterInteractionResponse,
   parseRegisterOptions,
