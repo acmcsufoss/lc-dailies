@@ -1,0 +1,31 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        deno-version: [canary]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno-version }}
+
+      - name: Format
+        run: deno fmt && git diff-index --quiet HEAD
+
+      - name: Lint
+        run: deno lint && git diff-index --quiet HEAD
+
+      - name: Test
+        run: deno task test
