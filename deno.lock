@@ -1,6 +1,8 @@
 {
   "version": "2",
   "remote": {
+    "https://cdn.skypack.dev/-/tweetnacl@v1.0.3-G4yM3nQ8lnXXlGGQADqJ/dist=es2019,mode=imports/optimized/tweetnacl.js": "d26554516df57e5cb58954e90c633c8871b4e66016b9fe4e07a36db5430bc8c7",
+    "https://cdn.skypack.dev/tweetnacl@1.0.3": "6610aad2ac175c2d575995fc7de8ed552c2e5e05aef80ed8588cf3c6e2db61d7",
     "https://deno.land/std@0.200.0/assert/_constants.ts": "8a9da298c26750b28b326b297316cdde860bc237533b07e1337c021379e6b2a9",
     "https://deno.land/std@0.200.0/assert/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
     "https://deno.land/std@0.200.0/assert/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
@@ -105,8 +107,6 @@
     "https://deno.land/x/discord_api_types@0.37.56/utils/internals.ts": "cb70895ba89f7947c38f7fa447b0190cb14b5585be323414cda53d2ccb19b16c",
     "https://deno.land/x/discord_api_types@0.37.56/utils/v10.ts": "056bd036f8c65365ff28eb63ec6897811d51921cca6d068392dd1ca5b397ae62",
     "https://deno.land/x/discord_api_types@0.37.56/v10.ts": "f3f23492c59e77859aba5b34431edf3668c37f722d7f70c2e1ef7ba4bcda3010",
-    "https://deno.land/x/ulid@v0.3.0/mod.ts": "f7ff065b66abd485051fc68af23becef6ccc7e81f7774d7fcfd894a4b2da1984",
-    "https://esm.sh/tweetnacl@1.0.3": "fe5086fc2857018dc6118351ec0790016454d787af13301d65331c9a08eabb6a",
-    "https://esm.sh/v125/tweetnacl@1.0.3/denonext/tweetnacl.mjs": "e3f326d197a7d2dc580dc57db86b5adb6374d9a64de2d5b6a1711612c930c1c7"
+    "https://deno.land/x/ulid@v0.3.0/mod.ts": "f7ff065b66abd485051fc68af23becef6ccc7e81f7774d7fcfd894a4b2da1984"
   }
 }
