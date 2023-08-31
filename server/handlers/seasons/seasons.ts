@@ -33,8 +33,6 @@ export function makeSeasonGetHandler(
       return new Response("Missing season ID", { status: 400 });
     }
 
-    console.log({ seasonID });
-
     const season =
       await (seasonID === "latest"
         ? leaderboardClient.getCurrentSeason()
