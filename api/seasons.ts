@@ -1,5 +1,5 @@
-import * as leaderboard from "~/lib/leaderboard/mod.ts";
-import * as router from "~/lib/router/mod.ts";
+import * as leaderboard from "/lc-dailies/lib/leaderboard/mod.ts";
+import * as router from "/lc-dailies/lib/router/mod.ts";
 
 /**
  * makeSeasonsGetHandler makes a handler that returns a list of seasons.

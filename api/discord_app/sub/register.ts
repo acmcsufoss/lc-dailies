@@ -2,12 +2,12 @@ import type {
   APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
   APIInteractionResponse,
-} from "~/deps.ts";
+} from "/lc-dailies/deps.ts";
 import {
   ApplicationCommandOptionType,
   InteractionResponseType,
-} from "~/deps.ts";
-import type * as leaderboard from "~/lib/leaderboard/mod.ts";
+} from "/lc-dailies/deps.ts";
+import type * as leaderboard from "/lc-dailies/lib/leaderboard/mod.ts";
 
 export const REGISTER = "register";
 export const REGISTER_DESCRIPTION = "Register your Leetcode account";

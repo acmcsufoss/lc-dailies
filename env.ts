@@ -1,4 +1,4 @@
-import { load } from "~/deps.ts";
+import { load } from "/lc-dailies/deps.ts";
 
 await load({ export: true });
 
