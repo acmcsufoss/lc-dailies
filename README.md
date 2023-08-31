@@ -24,7 +24,7 @@ The server is automatically deployed on push to the `main` branch via
 
 ### Daily webhook invocation
 
-The daily webhook is invoked by making a POST request to the `/daily/:token`
+The daily webhook is invoked by making a POST request to the `/webhook/:token`
 endpoint.
 
 Set up a cron job to make the request at the desired time. Supabase supports
