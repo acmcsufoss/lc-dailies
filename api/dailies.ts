@@ -1,6 +1,6 @@
-import * as discord from "../../../../lib/discord/mod.ts";
-import * as server from "../../../../lib/server/mod.ts";
-import * as lc from "../../../../lc/mod.ts";
+import * as discord from "../lib/discord/mod.ts";
+import * as router from "../lib/router/mod.ts";
+import * as lc from "../lc/mod.ts";
 import * as snacks from "./snacks.ts";
 
 /**
@@ -15,7 +15,7 @@ export function makeDailyWebhookPostHandler(
    * handlePostDailyWebhook handles POST requests to the daily webhook.
    */
   return async function handlePostDailyWebhook(
-    request: server.ServerRequest,
+    request: router.RouterRequest,
   ): Promise<Response> {
     const token = request.params["token"];
     if (webhookToken && token !== webhookToken) {

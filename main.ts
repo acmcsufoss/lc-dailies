@@ -1,6 +1,7 @@
 import * as env from "./env.ts";
 import * as lc from "./lc/mod.ts";
-import * as lc_dailies from "./servers/lc_dailies/mod.ts";
+import * as api from "./api/mod.ts";
+import { Router } from "./lib/router/mod.ts";
 import { DenoKvLeaderboardClient } from "./leaderboard/denokv/mod.ts";
 
 if (import.meta.main) {
@@ -14,8 +15,7 @@ async function main() {
     kv,
     lcClient,
   );
-  const s = lc_dailies.makeLCDailiesServer(
-    env.PORT,
+  const r = api.makeAPIRouter(
     env.DISCORD_APPLICATION_ID,
     env.DISCORD_PUBLIC_KEY,
     env.DISCORD_CHANNEL_ID,
@@ -25,12 +25,16 @@ async function main() {
     leaderboardClient,
   );
 
-  await s.serve(
-    lc_dailies.makeOnLoad(
-      env.PORT,
-      env.DISCORD_APPLICATION_ID,
-      env.DISCORD_TOKEN,
-    ),
+  await Router.serve(
+    {
+      port: env.PORT,
+      onListen: api.makeOnListen(
+        env.PORT,
+        env.DISCORD_APPLICATION_ID,
+        env.DISCORD_TOKEN,
+      ),
+    },
+    r,
   )
     .finished
     .finally(() => {
