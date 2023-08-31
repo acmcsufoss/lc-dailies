@@ -16,12 +16,12 @@ export type {
   APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIWebhookWithTokenJSONBody,
-} from "https://deno.land/x/discord_api_types@0.37.55/v10.ts";
+} from "https://deno.land/x/discord_api_types@0.37.56/v10.ts";
 export {
   ApplicationCommandOptionType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
   Utils,
-} from "https://deno.land/x/discord_api_types@0.37.55/v10.ts";
+} from "https://deno.land/x/discord_api_types@0.37.56/v10.ts";
 export { default as nacl } from "https://esm.sh/tweetnacl@1.0.3";

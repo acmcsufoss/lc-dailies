@@ -1,5 +1,5 @@
-import * as leaderboard from "../../../leaderboard/mod.ts";
-import * as server from "../../../server/mod.ts";
+import * as leaderboard from "../../../../leaderboard/mod.ts";
+import * as server from "../../../../lib/server/mod.ts";
 
 /**
  * makeSeasonsGetHandler makes a handler that returns a list of seasons.
