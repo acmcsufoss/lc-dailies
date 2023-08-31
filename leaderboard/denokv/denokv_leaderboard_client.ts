@@ -189,15 +189,18 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     }
 
     // Check if the question is already registered in the current season for the player.
-    const isQuestionRegistered = season.submissions[discord_user_id]
-      ?.includes(recentDailyQuestion.name);
-    if (isQuestionRegistered) {
+    const registeredQuestion = season.submissions[discord_user_id]
+      ?.[recentDailyQuestion.name];
+    if (registeredQuestion) {
       throw new Error("Question already registered");
     }
 
     // Add the submission to the player's submissions.
-    season.submissions[discord_user_id] ??= [];
-    season.submissions[discord_user_id].push(recentDailyQuestion.name);
+    season.submissions[discord_user_id] ??= {};
+    season.submissions[discord_user_id][recentDailyQuestion.name] = {
+      id: acceptedSubmission.id,
+      date: acceptedSubmissionDate.toUTCString(),
+    };
 
     // Add player to the season if not already in the season.
     season.players[discord_user_id] ??= maybePlayerResult.value;

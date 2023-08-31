@@ -18,7 +18,12 @@ const FAKE_SEASON: Season = {
     [fake_lc.FAKE_LC_QUESTION_NAME]: fake_lc.FAKE_LC_QUESTION,
   },
   submissions: {
-    [FAKE_DISCORD_USER_ID]: [fake_lc.FAKE_LC_QUESTION_NAME],
+    [FAKE_DISCORD_USER_ID]: {
+      [fake_lc.FAKE_LC_QUESTION_NAME]: {
+        id: fake_lc.FAKE_RECENT_SUBMISSION_ID,
+        date: "Mon, 31 Jul 2023 00:00:00 GMT",
+      },
+    },
   },
 };
 

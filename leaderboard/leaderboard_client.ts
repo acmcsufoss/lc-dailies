@@ -16,6 +16,21 @@ export interface Player {
 }
 
 /**
+ * Submission is a submission in the leaderboard.
+ */
+export interface Submission {
+  /**
+   * id is the ID of the submission.
+   */
+  id: string;
+
+  /**
+   * date is the date of the submission.
+   */
+  date: string;
+}
+
+/**
  * Season is a season of the leaderboard.
  */
 export interface Season {
@@ -42,7 +57,11 @@ export interface Season {
   /**
    * submissions is the map of submissions in the season.
    */
-  submissions: { [discord_user_id: string]: string[] }; // TODO: Change from string[] to lc.DailySubmission[].
+  submissions: {
+    [discord_user_id: string]: {
+      [lc_question_name: string]: Submission;
+    };
+  };
 }
 
 /**
