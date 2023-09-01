@@ -4,6 +4,7 @@ const DENOFLARE_VERSION_TAG = "v0.5.12";
 const DENOFLARE_MODULE_URL =
   `https://deno.land/x/denoflare@${DENOFLARE_VERSION_TAG}`;
 const DENOFLARE_CONFIG_FILENAME = ".denoflare";
+const DENOFLARE_SCRIPT_NAME = "lc-dailies";
 
 if (import.meta.main) {
   await deploy();
@@ -19,16 +20,13 @@ async function deploy() {
   const config = {
     $schema: `${DENOFLARE_MODULE_URL}/common/config.schema.json`,
     scripts: {
-      /*
-       * TODO: Rename "main" to "lc-dailies" <https://denoflare.dev/guides/serve>.
-       */
-      main: {
-        path: "cloudflare/main.ts",
+      [DENOFLARE_SCRIPT_NAME]: {
+        path: "cloudflare/workers/daily.ts",
         localPort: 8080,
       },
     },
     profiles: {
-      myprofile: {
+      profile: {
         accountId: CF_ACCOUNT_ID,
         apiToken: CF_API_TOKEN,
       },
@@ -38,7 +36,6 @@ async function deploy() {
     DENOFLARE_CONFIG_FILENAME,
     JSON.stringify(config),
   );
-  console.log({ config });
 
   try {
     // Create a child process running denoflare CLI.
@@ -49,7 +46,7 @@ async function deploy() {
         "--unstable",
         `${DENOFLARE_MODULE_URL}/cli/cli.ts`,
         "push",
-        "main",
+        DENOFLARE_SCRIPT_NAME,
       ],
       stdin: "piped",
       stdout: "piped",
