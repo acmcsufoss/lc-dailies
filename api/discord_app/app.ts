@@ -4,18 +4,18 @@ import type {
   APIInteractionResponseDeferredChannelMessageWithSource,
   APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
-} from "/lc-dailies/deps.ts";
+} from "~/deps.ts";
 import {
   ApplicationCommandOptionType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
   Utils,
-} from "/lc-dailies/deps.ts";
-import * as router from "/lc-dailies/lib/router/mod.ts";
-import * as discord from "/lc-dailies/lib/discord/mod.ts";
-import * as lc from "/lc-dailies/lib/lc/mod.ts";
-import * as leaderboard from "/lc-dailies/lib/leaderboard/mod.ts";
+} from "~/deps.ts";
+import * as router from "~/lib/router/mod.ts";
+import * as discord from "~/lib/discord/mod.ts";
+import * as lc from "~/lib/lc/mod.ts";
+import * as leaderboard from "~/lib/leaderboard/mod.ts";
 import {
   makeRegisterInteractionResponse,
   parseRegisterOptions,

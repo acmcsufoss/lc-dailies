@@ -1,8 +1,8 @@
-import { DenoKvLeaderboardClient } from "/lc-dailies/lib/leaderboard/denokv/mod.ts";
-import { Router } from "/lc-dailies/lib/router/mod.ts";
-import * as lc from "/lc-dailies/lib/lc/mod.ts";
-import * as api from "/lc-dailies/api/mod.ts";
-import * as env from "/lc-dailies/env.ts";
+import { DenoKvLeaderboardClient } from "~/lib/leaderboard/denokv/mod.ts";
+import { Router } from "~/lib/router/mod.ts";
+import * as lc from "~/lib/lc/mod.ts";
+import * as api from "~/api/mod.ts";
+import * as env from "~/env.ts";
 
 if (import.meta.main) {
   await main();

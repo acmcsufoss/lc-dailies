@@ -1,4 +1,4 @@
-import { nacl } from "/lc-dailies/deps.ts";
+import { nacl } from "~/deps.ts";
 
 /**
  * verify verifies whether the request is coming from Discord.
