@@ -1,4 +1,4 @@
-import type { RESTPostAPIWebhookWithTokenJSONBody } from "~/deps.ts";
+import type { RESTPostAPIWebhookWithTokenJSONBody } from "lc-dailies/deps.ts";
 
 /**
  * ExecuteWebhookOptions are the options for a webhook message.

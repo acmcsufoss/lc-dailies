@@ -1,6 +1,6 @@
-import { DAY, ulid, WEEK } from "~/deps.ts";
-import type * as lc from "~/lib/lc/mod.ts";
-import * as leaderboard from "~/lib/leaderboard/mod.ts";
+import { DAY, ulid, WEEK } from "lc-dailies/deps.ts";
+import type * as lc from "lc-dailies/lib/lc/mod.ts";
+import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 
 /**
  * DenoKvLeaderboardClient is the client for the leaderboard.
