@@ -20,10 +20,13 @@ export default {
    * See: <https://crontab.guru/#0_0_*_*_*>.
    */
   fetch(event: ScheduledEvent, env: Env) {
-    if (event.cron !== "0 0 * * *") {
-      return new Response("Unexpected cron schedule", { status: 400 });
-    }
+    // TODO: Fix this with `deno task cf:serve`.
 
-    return fetch(env.WEBHOOK_URL, { method: "POST" });
+    // if (event.cron !== "0 0 * * *") {
+    //   return new Response("Unexpected cron schedule", { status: 400 });
+    // }
+
+    console.log({ env });
+    // return fetch(env.WEBHOOK_URL, { method: "POST" });
   },
 };

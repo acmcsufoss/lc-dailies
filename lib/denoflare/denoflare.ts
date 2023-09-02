@@ -15,7 +15,7 @@ export interface DenoflareOptions {
   cfAccountID: string;
   cfAPIToken: string;
   localPort: number;
-  subcommand: "push" | "serve";
+  args: string[];
 }
 
 /**
@@ -53,8 +53,7 @@ export async function denoflare(options: DenoflareOptions) {
         "-A",
         "--unstable",
         `${moduleURL}/cli/cli.ts`,
-        options.subcommand,
-        options.scriptName,
+        ...options.args,
       ],
       stdin: "piped",
       stdout: "piped",
