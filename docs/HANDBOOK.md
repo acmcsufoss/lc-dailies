@@ -42,7 +42,7 @@ All that is required to use the tool is a Discord account with the `Verified`
 role on the [ACM CSUF Discord server](https://acmcsuf.com/discord).
 
 - This slash command is only available to members with the `Verified` role.
-- This slash command is available in the `📚algo-chat` text channel of the
+- This slash command is available in all text channels of the
   [ACM CSUF Discord server](https://acmcsuf.com/discord).
 
 ### Register your Leetcode username
@@ -63,7 +63,7 @@ Once you have registered your Leetcode username, you are ready to participate in
 our weekly competitions.
 
 - Type `/lc submit` in the `📚algo-chat` text channel to use the slash command.
-- Populate the required field `submission_url` with the URL to your accepted
+- Populate the required field `lc_submission_url` with the URL to your accepted
   Leetcode solution of a daily challenge from the current season e.g. all
   Leetcode dailies announced since the previous Sunday at midnight UTC.
 - Press <kbd>Enter</kbd> to submit the solution.
@@ -72,7 +72,7 @@ our weekly competitions.
 - If the submission was successful, your submission will be added to
   [the leaderboard](https://lc-dailies.deno.dev/seasons/latest).
 
-|                            Valid `submission_url` values                             |
+|                           Valid `lc_submission_url` values                           |
 | :----------------------------------------------------------------------------------: |
 | `https://leetcode.com/problems/implement-stack-using-queues/submissions/1035629181/` |
 |                `https://leetcode.com/submissions/detail/1035629181/`                 |
