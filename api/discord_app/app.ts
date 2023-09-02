@@ -189,7 +189,7 @@ function makeSubmitSubcommandHandler(
 }
 
 /**
- * withErrorResponse wraps around the discord app handler to catch any errors
+ * withErrorResponse wraps around the Discord app handler to catch any errors
  * and return a response using the error message.
  */
 export function withErrorResponse(
