@@ -22,10 +22,12 @@ export function makeAPIRouter(
   return new router.Router()
     .post(
       new URLPattern({ pathname: "/" }),
-      discord_app.makeDiscordAppHandler(
-        leaderboardClient,
-        discordPublicKey,
-        discordChannelID,
+      discord_app.withErrorResponse(
+        discord_app.makeDiscordAppHandler(
+          leaderboardClient,
+          discordPublicKey,
+          discordChannelID,
+        ),
       ),
     )
     .post(
