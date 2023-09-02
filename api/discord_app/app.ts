@@ -187,3 +187,8 @@ function makeSubmitSubcommandHandler(
     return makeSubmitInteractionResponse(submitResponse);
   };
 }
+
+/**
+ * withErrorResponse wraps around the discord app handler to catch any errors
+ * and return a response using the error message.
+ */
