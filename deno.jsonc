@@ -11,6 +11,6 @@
     "cf:serve": "deno run -A cf/serve.ts"
   },
   "imports": {
-    "~/": "./"
+    "lc-dailies/": "./"
   }
 }

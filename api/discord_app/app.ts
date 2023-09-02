@@ -4,18 +4,18 @@ import type {
   APIInteractionResponseDeferredChannelMessageWithSource,
   APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
-} from "~/deps.ts";
+} from "lc-dailies/deps.ts";
 import {
   ApplicationCommandOptionType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
   Utils,
-} from "~/deps.ts";
-import * as router from "~/lib/router/mod.ts";
-import * as discord from "~/lib/discord/mod.ts";
-import * as lc from "~/lib/lc/mod.ts";
-import * as leaderboard from "~/lib/leaderboard/mod.ts";
+} from "lc-dailies/deps.ts";
+import * as router from "lc-dailies/lib/router/mod.ts";
+import * as discord from "lc-dailies/lib/discord/mod.ts";
+import * as lc from "lc-dailies/lib/lc/mod.ts";
+import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import {
   makeRegisterInteractionResponse,
   parseRegisterOptions,
@@ -185,5 +185,34 @@ function makeSubmitSubcommandHandler(
     );
 
     return makeSubmitInteractionResponse(submitResponse);
+  };
+}
+
+/**
+ * withErrorResponse wraps around the Discord app handler to catch any errors
+ * and return a response using the error message.
+ */
+export function withErrorResponse(
+  oldHandle: router.RouterHandler["handle"],
+): router.RouterHandler["handle"] {
+  return async function handle(
+    request: router.RouterRequest,
+  ): Promise<Response> {
+    return await oldHandle(request)
+      .catch((error) => {
+        if (!(error instanceof Error)) {
+          throw error;
+        }
+
+        return Response.json(
+          {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `Error: ${error.message}`,
+              flags: MessageFlags.Ephemeral,
+            },
+          } satisfies APIInteractionResponse,
+        );
+      });
   };
 }
