@@ -192,3 +192,27 @@ function makeSubmitSubcommandHandler(
  * withErrorResponse wraps around the discord app handler to catch any errors
  * and return a response using the error message.
  */
+export function withErrorResponse(
+  oldHandle: router.RouterHandler["handle"],
+): router.RouterHandler["handle"] {
+  return async function handle(
+    request: router.RouterRequest,
+  ): Promise<Response> {
+    return await oldHandle(request)
+      .catch((error) => {
+        if (!(error instanceof Error)) {
+          throw error;
+        }
+
+        return Response.json(
+          {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `Error: ${error.message}`,
+              flags: MessageFlags.Ephemeral,
+            },
+          } satisfies APIInteractionResponse,
+        );
+      });
+  };
+}
