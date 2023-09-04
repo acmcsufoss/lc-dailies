@@ -10,8 +10,8 @@ const CF_ACCOUNT_ID = Deno.env.get("CF_ACCOUNT_ID")!;
 const CF_API_TOKEN = Deno.env.get("CF_API_TOKEN")!;
 const WEBHOOK_URL = Deno.env.get("WEBHOOK_URL")!;
 
-const DENOFLARE_SCRIPT_NAME = "lc-daily";
-const DENOFLARE_SCRIPT_SPECIFIER = "cf/daily/daily.ts";
+const DENOFLARE_SCRIPT_NAME = "lc-dailies";
+const DENOFLARE_SCRIPT_SPECIFIER = "cf/dailies/dailies.ts";
 
 async function daily(...args: string[]) {
   return await denoflare({
