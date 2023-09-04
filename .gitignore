@@ -1,3 +1,4 @@
 
 .env
 ngrok.exe
+.denoflare
