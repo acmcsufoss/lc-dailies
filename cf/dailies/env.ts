@@ -4,7 +4,7 @@ import {
   DENOFLARE_VERSION_TAG,
 } from "lc-dailies/lib/denoflare/mod.ts";
 
-await load({ export: true, allowEmptyValues: true });
+await load({ export: true, examplePath: null });
 
 const CF_ACCOUNT_ID = Deno.env.get("CF_ACCOUNT_ID")!;
 const CF_API_TOKEN = Deno.env.get("CF_API_TOKEN")!;
