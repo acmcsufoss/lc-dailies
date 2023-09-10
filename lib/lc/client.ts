@@ -1,3 +1,6 @@
+import { makeQuestionURL } from "./urls.ts";
+import { gql } from "./gql.ts";
+
 /**
  * DailyQuestion is the representation of Leetcode's daily question.
  *
@@ -181,52 +184,3 @@ export class LCClient {
       );
   }
 }
-
-function makeQuestionURL(titleSlug: string): string {
-  return `https://leetcode.com/problems/${titleSlug}/`;
-}
-
-/**
- * gql executes a query to Leetcode's GraphQL API.
- */
-async function gql(body: string): Promise<Response> {
-  return await fetch("https://leetcode.com/graphql/", {
-    method: "POST",
-    headers: {
-      accept: "*/*",
-      "accept-language": "en-US,en;q=0.9",
-      authorization: "",
-      "content-type": "application/json",
-    },
-    body,
-  });
-}
-
-/**
- * parseSubmissionID parses the submission ID from the submission URL.
- */
-export function parseSubmissionID(submissionURLOrID: string): string {
-  let submissionID = submissionURLOrID;
-  try {
-    const url = new URL(submissionURLOrID);
-    if (LEETCODE_SUBMISSIONS_PATHNAME_PATTERN.test(url.pathname)) {
-      submissionID = url.pathname
-        .replace(LEETCODE_SUBMISSIONS_PATHNAME_PATTERN, "")
-        .replace(/\/$/, "");
-    }
-  } catch {
-    // noop
-  }
-  return submissionID;
-}
-
-const LEETCODE_SUBMISSIONS_PATHNAME_PATTERN =
-  /^\/(problems\/.*\/submissions\/|submissions\/detail\/)/;
-
-/**
- * Valid submission URLs: This entails a full URL or the direct submission ID.
- * https://leetcode.com/problems/implement-stack-using-queues/submissions/1035629181/
- * https://leetcode.com/submissions/detail/1035629181/
- * 1035629181
- * https://leetcode.com/problems/unique-paths/submissions/1039832006/?envType=daily-question&envId=2023-09-03
- */
