@@ -78,6 +78,14 @@ our weekly competitions.
 |                `https://leetcode.com/submissions/detail/1035629181/`                 |
 |                                     `1035629181`                                     |
 
+#### Find your Leetcode submission URL
+
+Once you solve a Leetcode daily challenge, you can find the URL to your accepted
+solution in the `Submissions` tab of the problem page. Click the buttons as
+shown in the image below to copy the URL to your clipboard.
+
+![Leetcode solution URL copy button](https://github.com/acmcsufoss/lc-dailies/assets/31261035/7c6b2425-d0fd-46b6-9484-7c34a013c175)
+
 ---
 
 Developed with 💖 by [**@acmcsufoss**](https://oss.acmcsuf.com/)
