@@ -71,17 +71,11 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
       throw new Error("Failed to update season");
     }
 
-    // Update the season ID.
-    const updateSeasonIDOp = this.kv.atomic();
-    if (prevSeasonResult) {
-      updateSeasonIDOp.check(prevSeasonResult);
-    }
-
     // Update the current season ID.
-    const updateSeasonIDResult = await updateSeasonIDOp.set(
+    const updateSeasonIDResult = await this.kv.set(
       [LeaderboardKvPrefix.SEASON_ID],
       season.id,
-    ).commit();
+    );
     if (!updateSeasonIDResult.ok) {
       throw new Error("Failed to update season ID");
     }
