@@ -1,3 +1,6 @@
+import { makeQuestionURL } from "./urls.ts";
+import { gql } from "./gql.ts";
+
 /**
  * DailyQuestion is the representation of Leetcode's daily question.
  *
@@ -181,38 +184,3 @@ export class LCClient {
       );
   }
 }
-
-function makeQuestionURL(titleSlug: string): string {
-  return `https://leetcode.com/problems/${titleSlug}/`;
-}
-
-/**
- * gql executes a query to Leetcode's GraphQL API.
- */
-async function gql(body: string): Promise<Response> {
-  return await fetch("https://leetcode.com/graphql/", {
-    method: "POST",
-    headers: {
-      accept: "*/*",
-      "accept-language": "en-US,en;q=0.9",
-      authorization: "",
-      "content-type": "application/json",
-    },
-    body,
-  });
-}
-
-/**
- * parseSubmissionID parses the submission ID from the submission URL.
- */
-export function parseSubmissionID(submissionURLOrID: string): string {
-  if (LEETCODE_SUBMISSIONS_URL_PATTERN.test(submissionURLOrID)) {
-    return submissionURLOrID.replace(LEETCODE_SUBMISSIONS_URL_PATTERN, "")
-      .replace(/\/$/, "");
-  }
-
-  return submissionURLOrID;
-}
-
-const LEETCODE_SUBMISSIONS_URL_PATTERN =
-  /^https:\/\/leetcode\.com\/(problems\/.*\/submissions\/|submissions\/detail\/)/;
