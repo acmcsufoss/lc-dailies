@@ -47,5 +47,7 @@ function formatLCDailyQuestion(question: lc.DailyQuestion): string {
     `**Difficulty**: ${question.difficulty}`,
     `**Link**: <${question.url}>`,
     `**Snack**: Here is a snack to get your brain working: ${snacks.pickRandom()}`,
+    "",
+    "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below! ([more info](https://acmcsuf.com/lc-dailies-handbook))",
   ].join("\n");
 }
