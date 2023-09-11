@@ -38,5 +38,7 @@ export async function push() {
   return await daily(
     "push",
     DENOFLARE_SCRIPT_NAME,
+    "--secret-binding",
+    `WEBHOOK_URL:${WEBHOOK_URL}`,
   );
 }
