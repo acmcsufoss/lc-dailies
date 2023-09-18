@@ -121,3 +121,5 @@ export interface LeaderboardClient {
    */
   listSeasons(): Promise<Season[]>;
 }
+
+// TODO: Calculate the top scorers of a given season to eventually be formatted in a leaderboard table.

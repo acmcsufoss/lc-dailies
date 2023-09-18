@@ -34,6 +34,7 @@ export function makeAPIRouter(
       new URLPattern({ pathname: "/webhook/:token" }),
       makeDailyWebhookPostHandler(
         lcClient,
+        leaderboardClient,
         webhookURL,
         webhookToken,
       ),
