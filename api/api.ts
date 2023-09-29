@@ -3,7 +3,10 @@ import * as lc from "lc-dailies/lib/lc/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as discord_app from "./discord_app/mod.ts";
-import { makeDailyWebhookPostHandler } from "./dailies.ts";
+import {
+  makeDailyWebhookPostHandler,
+  makeManualDailyWebhookPostHandler,
+} from "./dailies.ts";
 import { makeSeasonGetHandler, makeSeasonsGetHandler } from "./seasons.ts";
 
 /**
@@ -28,6 +31,13 @@ export function makeAPIRouter(
           discordPublicKey,
           discordChannelID,
         ),
+      ),
+    )
+    .post(
+      new URLPattern({ pathname: "/webhook" }),
+      makeManualDailyWebhookPostHandler(
+        lcClient,
+        leaderboardClient,
       ),
     )
     .post(
@@ -86,11 +96,11 @@ export function makeOnListen(
     );
     console.log(
       "- Invite LC-Dailies to your server:",
-      `http://127.0.0.1:${port}/invite/`,
+      `http://127.0.0.1:${port}/invite`,
     );
     console.log(
       "- Latest season:",
-      `http://127.0.0.1:${port}/seasons/latest/`,
+      `http://127.0.0.1:${port}/seasons/latest`,
     );
   };
 }
@@ -98,3 +108,10 @@ export function makeOnListen(
 function makeInviteURL(applicationID: string) {
   return `https://discord.com/api/oauth2/authorize?client_id=${applicationID}&scope=applications.commands`;
 }
+
+fetch(
+  "http://127.0.0.1:8080/webhook?season_id=01H8T4MM00BQHHK7VTTEJE1WAS&webhook_url=https://discord.com/api/webhooks/1128189891847667712/jUq5uK9dzM4V99fsj8Y6b8tBiZx_idMB5DAMKAPJQ4rTbEiqoy7ah2qUpORWyfaHGl4l",
+  {
+    method: "POST",
+  },
+).then((res) => res.json()).then(console.log).catch(console.error);

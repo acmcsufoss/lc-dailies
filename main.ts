@@ -9,7 +9,7 @@ if (import.meta.main) {
 }
 
 async function main() {
-  const kv = await Deno.openKv();
+  const kv = await Deno.openKv(env.KV_URL);
   const lcClient = new lc.LCClient();
   const leaderboardClient = new DenoKvLeaderboardClient(
     kv,

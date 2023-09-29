@@ -17,7 +17,7 @@ export interface DailyQuestion {
   name: string;
 
   /**
-   * date is the date the daily question was posted.
+   * date is the date the daily question was posted in the format of YYYY-MM-DD.
    */
   date: string;
 

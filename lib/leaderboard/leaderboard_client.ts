@@ -1,3 +1,4 @@
+import { DAY } from "lc-dailies/deps.ts";
 import type * as lc from "lc-dailies/lib/lc/mod.ts";
 
 /**
@@ -156,7 +157,8 @@ export function calculateSubmissionScore(
   question: lc.DailyQuestion,
   options: CalculateScoresOptions,
 ): number {
-  const questionDate = new Date(question.date);
+  const [qYear, qMonth, qDay] = question.date.split("-").map(Number);
+  const questionDate = new Date(qYear, qMonth - 1, qDay);
   const submissionDate = new Date(submission.date);
   const msElapsed = submissionDate.getTime() - questionDate.getTime();
   const ratio = Math.min(Math.max(msElapsed / options.duration, 0), 1);
@@ -223,6 +225,6 @@ export function makeDefaultCalculateScoresOptions(
     season,
     possibleHighestScore: 100,
     possibleLowestScore: 50,
-    duration: 1e3 * 60 * 60 * 24 * 7,
+    duration: DAY,
   };
 }
