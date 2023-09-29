@@ -200,6 +200,8 @@ export function calculatePlayerScore(
 
 /**
  * calculateSeasonScores calculates the scores of all players in a season.
+ *
+ * Returns a map of player ID to score.
  */
 export function calculateSeasonScores(
   options: CalculateScoresOptions,
@@ -209,4 +211,18 @@ export function calculateSeasonScores(
       scores[playerID] = calculatePlayerScore(playerID, options);
       return scores;
     }, {} as Record<string, number>);
+}
+
+/**
+ * makeDefaultCalculateScoresOptions creates a default CalculateScoresOptions.
+ */
+export function makeDefaultCalculateScoresOptions(
+  season: Season,
+): CalculateScoresOptions {
+  return {
+    season,
+    possibleHighestScore: 100,
+    possibleLowestScore: 50,
+    duration: 1e3 * 60 * 60 * 24 * 7,
+  };
 }

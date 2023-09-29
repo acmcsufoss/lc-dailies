@@ -1,3 +1,4 @@
+import type { APIEmbed } from "lc-dailies/deps.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as lc from "lc-dailies/lib/lc/mod.ts";
@@ -26,7 +27,7 @@ export function makeDailyWebhookPostHandler(
     }
 
     // Get the season ID if applicable.
-    const seasonID = request.url.searchParams.get("season_id") || undefined;
+    const seasonID = request.url.searchParams.get("season_id");
 
     // Execute the webhook.
     return await executeDailyWebhook(
@@ -42,7 +43,7 @@ async function executeDailyWebhook(
   lcClient: lc.LCClient,
   leaderboardClient: leaderboard.LeaderboardClient,
   webhookURL: string,
-  seasonID?: string,
+  seasonID: string | null,
 ): Promise<Response> {
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
@@ -55,13 +56,13 @@ async function executeDailyWebhook(
     ? await leaderboardClient.getCurrentSeason()
     : null;
 
-  // Format the webhook content.
-  const content = formatDailyWebhook({ question, season });
+  // Format the webhook embed.
+  const embeds = makeDailyWebhookEmbeds({ question, season });
 
   // Execute the webhook.
   await discord.executeWebhook({
     url: webhookURL,
-    data: { content },
+    data: { embeds },
   });
 
   // Acknowledge the request.
@@ -69,9 +70,9 @@ async function executeDailyWebhook(
 }
 
 /**
- * FormatDailyWebhookOptions are the options for formatDailyWebhook.
+ * DailyWebhookOptions are the options for makeDailyWebhookEmbeds.
  */
-export interface FormatDailyWebhookOptions {
+export interface DailyWebhookOptions {
   /**
    * question is the daily question.
    */
@@ -84,25 +85,61 @@ export interface FormatDailyWebhookOptions {
 }
 
 /**
- * formatDailyWebhook formats a daily webhook.
+ * makeDailyWebhookEmbeds formats a daily webhook.
  */
-export function formatDailyWebhook(
-  options: FormatDailyWebhookOptions,
-): string {
-  const content = [
-    `## Daily Leetcode Question for ${options.question.date}`,
-    `**Question**: ${options.question.title}`,
-    `**Difficulty**: ${options.question.difficulty}`,
-    `**Link**: <${options.question.url}>`,
-    `**Snack**: Here is a snack to get your brain working: ${snacks.pickRandom()}`,
-    "",
-    "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below! ([more info](https://acmcsuf.com/lc-dailies-handbook))",
-  ].join("\n");
+export function makeDailyWebhookEmbeds(
+  options: DailyWebhookOptions,
+): APIEmbed[] {
+  const questionEmbed: APIEmbed = {
+    title: `Daily Leetcode Question for ${options.question.date}`,
+    description: options.question.title,
+    url: options.question.url,
+    fields: [
+      {
+        name: "Difficulty",
+        value: options.question.difficulty,
+        inline: true,
+      },
+      {
+        name: "Snack",
+        value: snacks.pickRandom(),
+        inline: true,
+      },
+      {
+        name: "Submit",
+        value:
+          "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below! [More Info](https://acmcsuf.com/lc-dailies-handbook)",
+      },
+    ],
+  };
 
   if (!options.season) {
-    return content;
+    return [questionEmbed];
   }
 
-  // TODO: Render the leaderboard.
-  return content;
+  const scores = leaderboard.calculateSeasonScores(
+    leaderboard.makeDefaultCalculateScoresOptions(options.season),
+  );
+  const leaderboardContent = [
+    "```",
+    "Rank | Name | Score",
+    "--- | --- | ---",
+    ...Object.entries(scores).map(([playerID, score], i) => {
+      const player = options.season!.players[playerID];
+      return `${i + 1} | ${player.lc_username} | ${score}`;
+    }),
+    "```",
+  ].join("\n");
+
+  const leaderboardEmbed: APIEmbed = {
+    title: `Leaderboard for ${options.season.start_date}`,
+    fields: [
+      {
+        name: "Leaderboard",
+        value: leaderboardContent,
+      },
+    ],
+  };
+
+  return [questionEmbed, leaderboardEmbed];
 }

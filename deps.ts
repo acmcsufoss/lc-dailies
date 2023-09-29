@@ -9,6 +9,7 @@ export { ulid } from "https://deno.land/x/ulid@v0.3.0/mod.ts";
 export type {
   APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
+  APIEmbed,
   APIInteraction,
   APIInteractionResponse,
   APIInteractionResponseChannelMessageWithSource,
