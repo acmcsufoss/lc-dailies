@@ -20,9 +20,15 @@ export function makeDailyWebhookPostHandler(
   return async function handlePostDailyWebhook(
     request: router.RouterRequest,
   ): Promise<Response> {
+    // Override the webhook URL if applicable.
+    const overrideWebhookURL = request.url.searchParams.get("webhook_url");
+    if (overrideWebhookURL) {
+      webhookURL = overrideWebhookURL;
+    }
+
     // Check the webhook token.
     const token = request.params["token"];
-    if (webhookToken && token !== webhookToken) {
+    if (!overrideWebhookURL && webhookToken && token !== webhookToken) {
       return new Response("Invalid token", { status: 401 });
     }
 
