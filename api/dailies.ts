@@ -148,31 +148,31 @@ export function makeDailyWebhookEmbeds(
     return [questionEmbed];
   }
 
-  const scores = leaderboard.calculateSeasonScores(
-    leaderboard.makeDefaultCalculateScoresOptions(options.season),
-  );
-  const formattedLeaderboardTitle =
-    `Leaderboard for week of ${options.season.start_date}`;
-  const formattedLeaderboard = [
-    "```",
-    ...Object.entries(scores)
-      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-      .map(([playerID, score], i) => {
-        const player = options.season!.players[playerID];
-        const formattedScore = String(score).padStart(3, " ");
-        const formattedRank = formatRank(i + 1);
-        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
-      }),
-    "```",
-  ].join("\n");
   const leaderboardEmbed: APIEmbed = {
     fields: [{
-      name: formattedLeaderboardTitle,
-      value: formattedLeaderboard,
+      name: `Leaderboard for week of ${options.season.start_date}`,
+      value: formatScores(options.season),
     }],
   };
 
   return [questionEmbed, leaderboardEmbed];
+}
+
+/**
+ * formatScores formats the scores of all players in a season.
+ */
+export function formatScores(season: leaderboard.Season): string {
+  const scores = leaderboard.calculateSeasonScores(
+    leaderboard.makeDefaultCalculateScoresOptions(season),
+  );
+  return Object.entries(scores)
+    .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
+    .map(([playerID, score], i) => {
+      const formattedScore = String(score).padStart(3, " ");
+      const formattedRank = formatRank(i + 1);
+      return `${formattedScore} ${playerID} (${formattedRank})`;
+    })
+    .join("\n");
 }
 
 /**
