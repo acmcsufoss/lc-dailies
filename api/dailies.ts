@@ -122,10 +122,10 @@ export interface DailyWebhookOptions {
 export function makeDailyWebhookEmbeds(
   options: DailyWebhookOptions,
 ): APIEmbed[] {
-  const questionEmbed: APIEmbed = {
+  const embed: APIEmbed = {
     title: options.question.title,
     url: options.question.url,
-    description: `Daily Leetcode Question for ${options.question.date}.`,
+    description: `Daily Leetcode question for ${options.question.date}.`,
     fields: [
       {
         name: "Difficulty",
@@ -133,29 +133,26 @@ export function makeDailyWebhookEmbeds(
         inline: true,
       },
       {
-        name: "Snack",
+        name: "Here is a snack to get your brain working!",
         value: snacks.pickRandom(),
         inline: true,
       },
+      {
+        name:
+          "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below!",
+        value: "[More info](https://acmcsuf.com/lc-dailies-handbook)",
+      },
     ],
-    footer: {
-      text:
-        "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below! [More Info](https://acmcsuf.com/lc-dailies-handbook)",
-    },
   };
 
-  if (!options.season) {
-    return [questionEmbed];
-  }
-
-  const leaderboardEmbed: APIEmbed = {
-    fields: [{
+  if (options.season) {
+    embed.fields?.push({
       name: `Leaderboard for week of ${options.season.start_date}`,
       value: formatScores(options.season),
-    }],
-  };
+    });
+  }
 
-  return [questionEmbed, leaderboardEmbed];
+  return [embed];
 }
 
 /**
@@ -165,13 +162,18 @@ export function formatScores(season: leaderboard.Season): string {
   const scores = leaderboard.calculateSeasonScores(
     leaderboard.makeDefaultCalculateScoresOptions(season),
   );
-  return Object.entries(scores)
-    .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-    .map(([playerID, score], i) => {
-      const formattedScore = String(score).padStart(3, " ");
-      const formattedRank = formatRank(i + 1);
-      return `${formattedScore} ${playerID} (${formattedRank})`;
-    })
+  return [
+    "```",
+    ...Object.entries(scores)
+      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
+      .map(([playerID, score], i) => {
+        const player = season.players[playerID];
+        const formattedScore = String(score).padStart(3, " ");
+        const formattedRank = formatRank(i + 1);
+        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
+      }),
+    "```",
+  ]
     .join("\n");
 }
 
