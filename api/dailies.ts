@@ -140,7 +140,7 @@ export function makeDailyWebhookEmbeds(
       {
         name:
           "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below!",
-        value: "[More info](https://acmcsuf.com/lc-dailies-handbook)",
+        value: "[See more…](https://acmcsuf.com/lc-dailies-handbook)",
       },
     ],
   };
@@ -173,8 +173,7 @@ export function formatScores(season: leaderboard.Season): string {
         return `${formattedScore} ${player.lc_username} (${formattedRank})`;
       }),
     "```",
-  ]
-    .join("\n");
+  ].join("\n");
 }
 
 /**
