@@ -157,8 +157,7 @@ export function calculateSubmissionScore(
   question: lc.DailyQuestion,
   options: CalculateScoresOptions,
 ): number {
-  const [qYear, qMonth, qDay] = question.date.split("-").map(Number);
-  const questionDate = new Date(qYear, qMonth - 1, qDay);
+  const questionDate = new Date(`${question.date} GMT`);
   const submissionDate = new Date(submission.date);
   const msElapsed = submissionDate.getTime() - questionDate.getTime();
   const ratio = Math.min(Math.max(msElapsed / options.duration, 0), 1);

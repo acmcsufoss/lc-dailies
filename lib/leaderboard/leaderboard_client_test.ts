@@ -71,7 +71,7 @@ Deno.test("calculatePlayerScore calculates the score of a player", () => {
         possibleLowestScore: FAKE_POSSIBLE_LOWEST_SCORE,
       },
     ),
-    150,
+    159,
   );
 });
 
@@ -85,10 +85,10 @@ Deno.test("calculateSeasonScores calculates the scores of a season", () => {
 
   assertEquals(
     seasonScores["redacted_discord_id_00"],
-    150,
+    159,
   );
   assertEquals(
     seasonScores["redacted_discord_id_01"],
-    122,
+    145,
   );
 });
