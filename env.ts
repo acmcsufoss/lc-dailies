@@ -38,3 +38,8 @@ export const DISCORD_WEBHOOK_URL = Deno.env.get("DISCORD_WEBHOOK_URL")!;
  * DISCORD_CHANNEL_ID is the channel ID specified for the application.
  */
 export const DISCORD_CHANNEL_ID = Deno.env.get("DISCORD_CHANNEL_ID")!;
+
+/**
+ * KV_URL is the URL of the KV store.
+ */
+export const KV_URL = Deno.env.get("KV_URL");

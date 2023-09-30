@@ -38,7 +38,8 @@ export default {
       return new Response("Unexpected cron expression", { status: 400 });
     }
 
-    return await execute(env.WEBHOOK_URL);
+    const seasonID = url.searchParams.get("season_id");
+    return await execute(env.WEBHOOK_URL, seasonID);
   },
 
   /**
@@ -56,7 +57,12 @@ export default {
   },
 };
 
-function execute(webhookURL: string) {
+function execute(webhookURL: string | URL, seasonID?: string | null) {
+  if (seasonID) {
+    webhookURL = new URL(webhookURL);
+    webhookURL.searchParams.set("season_id", seasonID);
+  }
+
   return fetch(webhookURL, { method: "POST" });
 }
 
