@@ -80,11 +80,12 @@ async function executeDailyWebhook(
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
 
-  // Get the season data if a season ID is provided or if it is Sunday.
-  const isSunday = new Date(question.date).getDay() === 0;
+  // Get the season data if a season ID is provided or if it is the beginning
+  // of a new season.
+  const isNewSeason = new Date(`${question.date} GMT`).getDay() === 1;
   const season = seasonID
     ? await leaderboardClient.getSeason(seasonID)
-    : isSunday
+    : isNewSeason
     ? await leaderboardClient.getCurrentSeason()
     : null;
 
