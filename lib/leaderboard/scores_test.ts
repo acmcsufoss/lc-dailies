@@ -1,12 +1,10 @@
-import { assertEquals, DAY } from "lc-dailies/deps.ts";
+import { assertEquals } from "lc-dailies/deps.ts";
 import {
   calculatePlayerScore,
   calculateSeasonScores,
-} from "./leaderboard_client.ts";
+  makeDefaultCalculateScoresOptions,
+} from "./scores.ts";
 
-const FAKE_DURATION = DAY;
-const FAKE_POSSIBLE_HIGHEST_SCORE = 100;
-const FAKE_POSSIBLE_LOWEST_SCORE = 50;
 const FAKE_SEASON = {
   "id": "01H8T4MM00BQHHK7VTTEJE1WAS",
   "start_date": "Sun, 27 Aug 2023 00:00:00 GMT",
@@ -64,24 +62,16 @@ Deno.test("calculatePlayerScore calculates the score of a player", () => {
   assertEquals(
     calculatePlayerScore(
       "redacted_discord_id_00",
-      {
-        season: FAKE_SEASON,
-        duration: FAKE_DURATION,
-        possibleHighestScore: FAKE_POSSIBLE_HIGHEST_SCORE,
-        possibleLowestScore: FAKE_POSSIBLE_LOWEST_SCORE,
-      },
+      makeDefaultCalculateScoresOptions(FAKE_SEASON),
     ),
     159,
   );
 });
 
 Deno.test("calculateSeasonScores calculates the scores of a season", () => {
-  const seasonScores = calculateSeasonScores({
-    season: FAKE_SEASON,
-    duration: FAKE_DURATION,
-    possibleHighestScore: FAKE_POSSIBLE_HIGHEST_SCORE,
-    possibleLowestScore: FAKE_POSSIBLE_LOWEST_SCORE,
-  });
+  const seasonScores = calculateSeasonScores(
+    makeDefaultCalculateScoresOptions(FAKE_SEASON),
+  );
 
   assertEquals(
     seasonScores["redacted_discord_id_00"],
