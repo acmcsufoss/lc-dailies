@@ -7,7 +7,7 @@ import {
   ApplicationCommandOptionType,
   InteractionResponseType,
 } from "lc-dailies/deps.ts";
-import type * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
+import type * as api from "lc-dailies/api/mod.ts";
 
 export const REGISTER = "register";
 export const REGISTER_DESCRIPTION = "Register your Leetcode account";
@@ -68,7 +68,7 @@ export function parseRegisterOptions(
  * makeRegisterInteractionResponse makes the interaction response for the register subcommand.
  */
 export function makeRegisterInteractionResponse(
-  r: leaderboard.RegisterResponse,
+  r: api.RegisterResponse,
 ): APIInteractionResponse {
   return {
     type: InteractionResponseType.ChannelMessageWithSource,

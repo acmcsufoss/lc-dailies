@@ -1,14 +1,24 @@
 import { DAY } from "lc-dailies/deps.ts";
-import type { LCQuestion, Season, Submission } from "./leaderboard_client.ts";
+import type * as api from "lc-dailies/api/mod.ts";
 
 /**
  * CalculateScoresOptions is the options for calculateScores.
  */
 export interface CalculateScoresOptions {
   /**
-   * season is the season to calculate the score for.
+   * submissions are the submissions in the season.
    */
-  season: Season;
+  submissions: api.Season["submissions"];
+
+  /**
+   * questions are the questions in the season.
+   */
+  questions: api.Season["questions"];
+
+  /**
+   * players are the players in the season.
+   */
+  players: api.Season["players"];
 
   /**
    * possibleHighestScore is the highest possible score.
@@ -31,8 +41,8 @@ export interface CalculateScoresOptions {
  * calculateSubmissionScore calculates the score of a submission.
  */
 export function calculateSubmissionScore(
-  submission: Submission,
-  question: LCQuestion,
+  submission: api.LCSubmission,
+  question: api.LCQuestion,
   options: CalculateScoresOptions,
 ): number {
   const questionDate = new Date(`${question.date} GMT`);
@@ -55,14 +65,14 @@ export function calculatePlayerScore(
   playerID: string,
   options: CalculateScoresOptions,
 ): number {
-  const submissions = options.season.submissions[playerID];
+  const submissions = options.submissions[playerID];
   if (!submissions) {
     return 0;
   }
 
   const scoreSum = Object.entries(submissions)
     .reduce((score, [questionID, submission]) => {
-      const question = options.season.questions[questionID];
+      const question = options.questions[questionID];
       if (!question) {
         return score;
       }
@@ -85,7 +95,7 @@ export function calculatePlayerScore(
 export function calculateSeasonScores(
   options: CalculateScoresOptions,
 ): Record<string, number> {
-  return Object.keys(options.season.players)
+  return Object.keys(options.players)
     .reduce((scores, playerID) => {
       scores[playerID] = calculatePlayerScore(playerID, options);
       return scores;
@@ -96,10 +106,14 @@ export function calculateSeasonScores(
  * makeDefaultCalculateScoresOptions creates a default CalculateScoresOptions.
  */
 export function makeDefaultCalculateScoresOptions(
-  season: Season,
+  players: api.Season["players"],
+  questions: api.Season["questions"],
+  submissions: api.Season["submissions"],
 ): CalculateScoresOptions {
   return {
-    season,
+    players,
+    questions,
+    submissions,
     possibleHighestScore: 100,
     possibleLowestScore: 50,
     duration: DAY,

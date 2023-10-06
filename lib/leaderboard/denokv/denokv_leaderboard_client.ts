@@ -1,11 +1,16 @@
 import { DAY, ulid, WEEK } from "lc-dailies/deps.ts";
-import type * as lc from "lc-dailies/lib/lc/mod.ts";
-import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
+import type * as api from "lc-dailies/api/mod.ts";
+import type { LeaderboardClient } from "lc-dailies/lib/leaderboard/mod.ts";
+import {
+  calculateSeasonScores,
+  makeDefaultCalculateScoresOptions,
+} from "lc-dailies/lib/leaderboard/mod.ts";
+import type { LCClient } from "lc-dailies/lib/lc/mod.ts";
 
 /**
  * DenoKvLeaderboardClient is the client for the leaderboard.
  */
-export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
+export class DenoKvLeaderboardClient implements LeaderboardClient {
   public constructor(
     /**
      * kv is the key-value store for the leaderboard.
@@ -14,7 +19,7 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     /**
      * lc is the Leetcode client.
      */
-    private readonly lc: lc.LCClient,
+    private readonly lc: LCClient,
     /**
      * restartMS is the milliseconds to restart the leaderboard.
      *
@@ -25,22 +30,22 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
   ) {}
 
   /**
-   * getCurrentSeasonFromKv reads the current season from Deno KV.
+   * getLatestSeasonFromKv reads the latest season from Deno KV.
    */
-  private async getCurrentSeasonFromKv(): Promise<
-    Deno.KvEntryMaybe<leaderboard.Season> | null
+  private async getLatestSeasonFromKv(): Promise<
+    Deno.KvEntryMaybe<api.Season> | null
   > {
-    // Get the current season ID.
-    const currentSeasonIDResult = await this.kv
+    // Get the latest season ID.
+    const latestSeasonIDResult = await this.kv
       .get<string>([LeaderboardKvPrefix.SEASON_ID]);
-    if (!currentSeasonIDResult.value) {
+    if (!latestSeasonIDResult.value) {
       return null;
     }
 
     // Get the current season.
-    const seasonResult = await this.kv.get<leaderboard.Season>([
+    const seasonResult = await this.kv.get<api.Season>([
       LeaderboardKvPrefix.SEASONS,
-      currentSeasonIDResult.value,
+      latestSeasonIDResult.value,
     ]);
     if (!seasonResult.value) {
       throw new Error("Season not found");
@@ -50,11 +55,11 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
   }
 
   /**
-   * updateCurrentSeason updates the current season in Deno KV.
+   * updateLatestSeason updates the latest season in Deno KV.
    */
-  private async updateCurrentSeason(
-    season: leaderboard.Season,
-    prevSeasonResult: Deno.KvEntryMaybe<leaderboard.Season> | null,
+  private async updateLatestSeason(
+    season: api.Season,
+    prevSeasonResult: Deno.KvEntryMaybe<api.Season> | null,
   ): Promise<void> {
     // Update the season.
     const updateSeasonOp = this.kv.atomic();
@@ -86,9 +91,9 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
   public async register(
     discord_user_id: string,
     lc_username: string,
-  ): Promise<leaderboard.RegisterResponse> {
+  ): Promise<api.RegisterResponse> {
     const key: Deno.KvKey = [LeaderboardKvPrefix.PLAYERS, discord_user_id];
-    const playerResult = await this.kv.get<leaderboard.Player>(key);
+    const playerResult = await this.kv.get<api.LCPlayer>(key);
     if (playerResult.value) {
       throw new Error("Player already registered");
     }
@@ -100,7 +105,7 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     }
 
     // Register the player.
-    const player: leaderboard.Player = { discord_user_id, lc_username };
+    const player: api.LCPlayer = { discord_user_id, lc_username };
     const registerResult = await this.kv
       .atomic()
       .check(playerResult)
@@ -117,10 +122,10 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     discord_user_id: string,
     lc_submission_id: string,
     currentDate = new Date(),
-  ): Promise<leaderboard.SubmitResponse> {
+  ): Promise<api.SubmitResponse> {
     // Check if the player is registered in our leaderboard.
     const maybePlayerResult = await this.kv
-      .get<leaderboard.Player>([LeaderboardKvPrefix.PLAYERS, discord_user_id]);
+      .get<api.LCPlayer>([LeaderboardKvPrefix.PLAYERS, discord_user_id]);
     if (!maybePlayerResult.value) {
       throw new Error("Player not registered");
     }
@@ -134,14 +139,14 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
       throw new Error("Submission not found");
     }
 
-    // The current season. Default to empty season when not found or not current.
-    // If current date is no longer in the "current season, create a new season.
-    const maybeSeasonResult = await this.getCurrentSeasonFromKv();
-    const isCurrentSeason = !!(maybeSeasonResult?.value) && checkDateInWeek(
+    // The latest season. Default to empty season when not found or not latest.
+    // If current date is no longer in the "latest" season, create a new season.
+    const maybeSeasonResult = await this.getLatestSeasonFromKv();
+    const isLatestSeason = !!(maybeSeasonResult?.value) && checkDateInWeek(
       new Date(maybeSeasonResult.value.start_date).getTime(),
       currentDate.getTime(),
     );
-    const season = isCurrentSeason
+    const season = isLatestSeason
       ? maybeSeasonResult?.value
       : makeEmptySeason(getStartOfWeek(this.restartMs, currentDate));
 
@@ -202,13 +207,20 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
     // Add the question to the season if not already in the season.
     season.questions[recentDailyQuestion.name] ??= recentDailyQuestion;
 
+    // Add the calculated scores to the season.
+    season.scores = calculateSeasonScores(makeDefaultCalculateScoresOptions(
+      season.players,
+      season.questions,
+      season.submissions,
+    ));
+
     // Update the season in Deno KV.
-    await this.updateCurrentSeason(season, maybeSeasonResult);
+    await this.updateLatestSeason(season, maybeSeasonResult);
     return { ok: true };
   }
 
-  public async getCurrentSeason(): Promise<leaderboard.Season | null> {
-    const seasonResult = await this.getCurrentSeasonFromKv();
+  public async getLatestSeason(): Promise<api.Season | null> {
+    const seasonResult = await this.getLatestSeasonFromKv();
     if (!seasonResult?.value) {
       return null;
     }
@@ -218,18 +230,18 @@ export class DenoKvLeaderboardClient implements leaderboard.LeaderboardClient {
 
   public async getSeason(
     season_id: string,
-  ): Promise<leaderboard.Season | null> {
-    const seasonResult = await this.kv.get<leaderboard.Season>([
+  ): Promise<api.Season | null> {
+    const seasonResult = await this.kv.get<api.Season>([
       LeaderboardKvPrefix.SEASONS,
       season_id,
     ]);
     return seasonResult.value;
   }
 
-  public async listSeasons(): Promise<leaderboard.Season[]> {
-    const seasons: leaderboard.Season[] = [];
+  public async listSeasons(): Promise<api.Season[]> {
+    const seasons: api.Season[] = [];
     const entries = this.kv
-      .list<leaderboard.Season>({ prefix: [LeaderboardKvPrefix.SEASONS] });
+      .list<api.Season>({ prefix: [LeaderboardKvPrefix.SEASONS] });
     for await (const entry of entries) {
       seasons.push(entry.value);
     }
@@ -265,10 +277,11 @@ function getStartOfWeek(restartMs = 0, date = new Date()): number {
   return startOfWeek;
 }
 
-function makeEmptySeason(startOfWeek: number): leaderboard.Season {
+function makeEmptySeason(startOfWeek: number): api.Season {
   return {
     id: ulid(startOfWeek),
     start_date: new Date(startOfWeek).toUTCString(),
+    scores: {},
     players: {},
     questions: {},
     submissions: {},

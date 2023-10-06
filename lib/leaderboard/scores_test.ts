@@ -62,7 +62,11 @@ Deno.test("calculatePlayerScore calculates the score of a player", () => {
   assertEquals(
     calculatePlayerScore(
       "redacted_discord_id_00",
-      makeDefaultCalculateScoresOptions(FAKE_SEASON),
+      makeDefaultCalculateScoresOptions(
+        FAKE_SEASON.players,
+        FAKE_SEASON.questions,
+        FAKE_SEASON.submissions,
+      ),
     ),
     159,
   );
@@ -70,7 +74,11 @@ Deno.test("calculatePlayerScore calculates the score of a player", () => {
 
 Deno.test("calculateSeasonScores calculates the scores of a season", () => {
   const seasonScores = calculateSeasonScores(
-    makeDefaultCalculateScoresOptions(FAKE_SEASON),
+    makeDefaultCalculateScoresOptions(
+      FAKE_SEASON.players,
+      FAKE_SEASON.questions,
+      FAKE_SEASON.submissions,
+    ),
   );
 
   assertEquals(

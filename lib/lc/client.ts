@@ -1,46 +1,13 @@
+import type { LCQuestion } from "lc-dailies/api/mod.ts";
 import { makeQuestionURL } from "./urls.ts";
 import { gql } from "./gql.ts";
 
-/**
- * DailyQuestion is the representation of Leetcode's daily question.
- *
- * Sample:
- * Daily Leetcode Question for 2021-10-20 (date)
- * Question: Find Eventual Safe States (question.title)
- * Difficulty: Medium (question.difficulty)
- * Link: https://leetcode.com/problems/find-eventual-safe-states/ (link)
- */
-export interface DailyQuestion {
-  /**
-   * name is the name of the daily question.
-   */
-  name: string;
-
-  /**
-   * date is the date the daily question was posted in the format of YYYY-MM-DD.
-   */
-  date: string;
-
-  /**
-   * title is the title of the daily question.
-   */
-  title: string;
-
-  /**
-   * difficulty is the difficulty of the daily question.
-   */
-  difficulty: string;
-
-  /**
-   * url is the link of the daily question.
-   */
-  url: string;
-}
+export type { LCQuestion };
 
 /**
- * RecentSubmission is the representation of Leetcode's recent submission per user.
+ * LCSubmission is the representation of Leetcode's recent submission per user.
  */
-export interface RecentSubmission {
+export interface LCSubmission {
   /**
    * id is the id details of the submission.
    */
@@ -77,7 +44,7 @@ export class LCClient {
   /**
    * getDailyQuestion gets the daily question from Leetcode.
    */
-  public async getDailyQuestion(): Promise<DailyQuestion> {
+  public async getDailyQuestion(): Promise<LCQuestion> {
     const date = new Date();
     const [question] = await this.listDailyQuestions(
       1,
@@ -98,8 +65,8 @@ export class LCClient {
     limit: number,
     asOfYear: number,
     asOfMonth: number,
-  ): Promise<DailyQuestion[]> {
-    const dailies: DailyQuestion[] = [];
+  ): Promise<LCQuestion[]> {
+    const dailies: LCQuestion[] = [];
     let currentYear = asOfYear;
     let currentMonth = asOfMonth;
 
@@ -153,7 +120,7 @@ export class LCClient {
   public async getRecentAcceptedSubmissions(
     username: string,
     limit: number,
-  ): Promise<RecentSubmission[]> {
+  ): Promise<LCSubmission[]> {
     return await gql(
       JSON.stringify({
         operationName: "recentAcSubmissions",
@@ -175,7 +142,7 @@ export class LCClient {
               timestamp: string;
               titleSlug: string;
             },
-          ): RecentSubmission => ({
+          ): LCSubmission => ({
             id: acSubmission.id,
             name: acSubmission.titleSlug,
             title: acSubmission.title,

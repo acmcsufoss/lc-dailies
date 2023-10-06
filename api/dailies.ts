@@ -1,4 +1,5 @@
 import { type APIEmbed } from "lc-dailies/deps.ts";
+import * as api from "lc-dailies/api/mod.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as lc from "lc-dailies/lib/lc/mod.ts";
@@ -85,7 +86,7 @@ async function executeDailyWebhook(
   const season = seasonID
     ? await leaderboardClient.getSeason(seasonID)
     : isSunday
-    ? await leaderboardClient.getCurrentSeason()
+    ? await leaderboardClient.getLatestSeason()
     : null;
 
   // Format the webhook embed.
@@ -108,12 +109,12 @@ export interface DailyWebhookOptions {
   /**
    * question is the daily question.
    */
-  question: lc.DailyQuestion;
+  question: api.LCQuestion;
 
   /**
    * season is the season to recap.
    */
-  season: leaderboard.Season | null;
+  season: api.Season | null;
 }
 
 /**
@@ -158,13 +159,10 @@ export function makeDailyWebhookEmbeds(
 /**
  * formatScores formats the scores of all players in a season.
  */
-export function formatScores(season: leaderboard.Season): string {
-  const scores = leaderboard.calculateSeasonScores(
-    leaderboard.makeDefaultCalculateScoresOptions(season),
-  );
+export function formatScores(season: api.Season): string {
   return [
     "```",
-    ...Object.entries(scores)
+    ...Object.entries(season.scores)
       .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
       .map(([playerID, score], i) => {
         const player = season.players[playerID];

@@ -1,116 +1,4 @@
-/**
- * Player is a registered player in the leaderboard.
- */
-export interface Player {
-  /**
-   * discord_user_id is the Discord user ID of the player.
-   */
-  discord_user_id: string;
-
-  /**
-   * lc_username is the Leetcode username of the player.
-   */
-  lc_username: string;
-}
-
-/**
- * Submission is a submission in the leaderboard.
- */
-export interface Submission {
-  /**
-   * id is the ID of the submission.
-   */
-  id: string;
-
-  /**
-   * date is the date of the submission.
-   */
-  date: string;
-}
-
-/**
- * LCQuestion is a Leetcode question.
- */
-export interface LCQuestion {
-  /**
-   * name is the name of the daily question.
-   */
-  name: string;
-
-  /**
-   * date is the date the daily question was posted in the format of YYYY-MM-DD.
-   */
-  date: string;
-
-  /**
-   * title is the title of the daily question.
-   */
-  title: string;
-
-  /**
-   * difficulty is the difficulty of the daily question.
-   */
-  difficulty: string;
-
-  /**
-   * url is the link of the daily question.
-   */
-  url: string;
-}
-
-/**
- * Season is a season of the leaderboard.
- */
-export interface Season {
-  /**
-   * id is the ID of the season.
-   */
-  id: string;
-
-  /**
-   * start_date is the start date of the season.
-   */
-  start_date: string;
-
-  /**
-   * players is the map of players in the season.
-   */
-  players: { [discord_user_id: string]: Player };
-
-  /**
-   * questions is the map of questions in the season.
-   */
-  questions: { [lc_question_name: string]: LCQuestion };
-
-  /**
-   * submissions is the map of submissions in the season.
-   */
-  submissions: {
-    [discord_user_id: string]: {
-      [lc_question_name: string]: Submission;
-    };
-  };
-}
-
-/**
- * RegisterResponse is the response for the register subcommand.
- */
-export interface RegisterResponse {
-  /**
-   * ok is whether the registration was successful.
-   */
-  ok: boolean;
-}
-
-/**
- * SubmitResponse is the response for the submit subcommand.
- */
-export interface SubmitResponse {
-  /**
-   * ok is whether the submission was successful.
-   */
-  ok: boolean;
-}
+import type * as api from "lc-dailies/api/mod.ts";
 
 /**
  * LeaderboardClient is the client interface for the leaderboard.
@@ -122,7 +10,7 @@ export interface LeaderboardClient {
   register(
     discord_user_id: string,
     lc_username: string,
-  ): Promise<RegisterResponse>;
+  ): Promise<api.RegisterResponse>;
 
   /**
    * submit registers a new submission to the leaderboard.
@@ -132,20 +20,20 @@ export interface LeaderboardClient {
   submit(
     discord_user_id: string,
     lc_submission_id: string,
-  ): Promise<SubmitResponse>;
+  ): Promise<api.SubmitResponse>;
 
   /**
-   * getCurrentSeason gets the current season of the leaderboard.
+   * getLatestSeason gets the latest season.
    */
-  getCurrentSeason(): Promise<Season | null>;
+  getLatestSeason(): Promise<api.Season | null>;
 
   /**
    * getSeason gets a season of the leaderboard by ID.
    */
-  getSeason(season_id: string): Promise<Season | null>;
+  getSeason(season_id: string): Promise<api.Season | null>;
 
   /**
    * listSeasons gets a list of season IDs of the leaderboard.
    */
-  listSeasons(): Promise<Season[]>;
+  listSeasons(): Promise<api.Season[]>;
 }
