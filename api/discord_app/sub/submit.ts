@@ -7,7 +7,7 @@ import {
   ApplicationCommandOptionType,
   InteractionResponseType,
 } from "lc-dailies/deps.ts";
-import type * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
+import * as api from "lc-dailies/api/mod.ts";
 
 export const SUBMIT = "submit";
 export const SUBMIT_DESCRIPTION =
@@ -69,7 +69,7 @@ export function parseSubmitOptions(
  * makeSubmitInteractionResponse makes the interaction response for the register subcommand.
  */
 export function makeSubmitInteractionResponse(
-  r: leaderboard.SubmitResponse,
+  r: api.SubmitResponse,
 ): APIInteractionResponse {
   return {
     type: InteractionResponseType.ChannelMessageWithSource,

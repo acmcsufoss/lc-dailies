@@ -35,7 +35,7 @@ export function makeSeasonGetHandler(
 
     const season =
       await (seasonID === "latest"
-        ? leaderboardClient.getCurrentSeason()
+        ? leaderboardClient.getLatestSeason()
         : leaderboardClient.getSeason(seasonID));
     return new Response(JSON.stringify(season));
   };

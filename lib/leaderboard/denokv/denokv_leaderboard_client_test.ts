@@ -1,6 +1,6 @@
 import { assertEquals, assertRejects } from "lc-dailies/deps.ts";
 import * as fake_lc from "lc-dailies/lib/lc/fake_client.ts";
-import type { Season } from "lc-dailies/lib/leaderboard/mod.ts";
+import type { Season } from "lc-dailies/api/mod.ts";
 import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
 
 const FAKE_DISCORD_USER_ID = "fake_discord_user_id";
@@ -13,6 +13,9 @@ const FAKE_SEASON: Season = {
       discord_user_id: FAKE_DISCORD_USER_ID,
       lc_username: fake_lc.FAKE_LC_USERNAME,
     },
+  },
+  scores: {
+    [FAKE_DISCORD_USER_ID]: 50,
   },
   questions: {
     [fake_lc.FAKE_LC_QUESTION_NAME]: fake_lc.FAKE_LC_QUESTION,
@@ -61,8 +64,8 @@ Deno.test("DenoKvLeaderboardClient", async (t) => {
   });
 
   let seasonID: string | undefined;
-  await t.step("getCurrentSeason", async () => {
-    const season = await client.getCurrentSeason();
+  await t.step("getLatestSeason", async () => {
+    const season = await client.getLatestSeason();
     seasonID = season?.id;
     assertSeasonsEqual(season, FAKE_SEASON);
   });
@@ -87,6 +90,7 @@ function assertSeasonsEqual(
   expectedSeason: Season,
 ): void {
   assertEquals(actualSeason?.start_date, expectedSeason.start_date);
+  assertEquals(actualSeason?.scores, expectedSeason.scores);
   assertEquals(actualSeason?.players, expectedSeason.players);
   assertEquals(actualSeason?.questions, expectedSeason.questions);
   assertEquals(actualSeason?.submissions, expectedSeason.submissions);
