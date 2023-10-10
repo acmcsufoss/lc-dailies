@@ -1,7 +1,7 @@
 import { assertEquals } from "lc-dailies/deps.ts";
 import {
   calculatePlayerScore,
-  calculateSeasonScores,
+  calculateScores,
   makeDefaultCalculateScoresOptions,
 } from "./scores.ts";
 
@@ -73,7 +73,7 @@ Deno.test("calculatePlayerScore calculates the score of a player", () => {
 });
 
 Deno.test("calculateSeasonScores calculates the scores of a season", () => {
-  const seasonScores = calculateSeasonScores(
+  const seasonScores = calculateScores(
     makeDefaultCalculateScoresOptions(
       FAKE_SEASON.players,
       FAKE_SEASON.questions,

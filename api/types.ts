@@ -1,7 +1,7 @@
 /**
- * LCPlayer is a registered player from Leetcode.
+ * Player is a registered player from Leetcode.
  */
-export interface LCPlayer {
+export interface Player {
   /**
    * discord_user_id is the Discord user ID of the player.
    */
@@ -14,9 +14,16 @@ export interface LCPlayer {
 }
 
 /**
- * LCSubmission is a Leetcode submission.
+ * Players is a map of Players by Discord user ID.
  */
-export interface LCSubmission {
+export interface Players {
+  [discord_user_id: string]: Player;
+}
+
+/**
+ * Submission is a Leetcode submission.
+ */
+export interface Submission {
   /**
    * id is the ID of the submission.
    */
@@ -29,9 +36,19 @@ export interface LCSubmission {
 }
 
 /**
- * LCQuestion is a Leetcode question.
+ * Submissions is a map of submissions by question name
+ * by Discord user ID.
  */
-export interface LCQuestion {
+export interface Submissions {
+  [discord_user_id: string]: {
+    [question_name: string]: Submission;
+  };
+}
+
+/**
+ * Question is a Leetcode question.
+ */
+export interface Question {
   /**
    * name is the name of the daily question.
    */
@@ -59,6 +76,20 @@ export interface LCQuestion {
 }
 
 /**
+ * Questions is a map of questions by question name.
+ */
+export interface Questions {
+  [question_name: string]: Question;
+}
+
+/**
+ * Scores is a map of scores by Discord user ID.
+ */
+export interface Scores {
+  [discord_user_id: string]: number;
+}
+
+/**
  * Season is a season of the leaderboard.
  */
 export interface Season {
@@ -75,26 +106,22 @@ export interface Season {
   /**
    * scores is the map of scores in the season.
    */
-  scores: { [discord_user_id: string]: number };
+  scores: Scores;
 
   /**
    * players is the map of players in the season.
    */
-  players: { [discord_user_id: string]: LCPlayer };
+  players: Players;
 
   /**
    * questions is the map of questions in the season.
    */
-  questions: { [lc_question_name: string]: LCQuestion };
+  questions: Questions;
 
   /**
    * submissions is the map of submissions in the season.
    */
-  submissions: {
-    [discord_user_id: string]: {
-      [lc_question_name: string]: LCSubmission;
-    };
-  };
+  submissions: Submissions;
 }
 
 /**
@@ -108,11 +135,11 @@ export interface RegisterResponse {
 }
 
 /**
- * SubmitResponse is the response for the submit subcommand.
+ * SyncResponse is the response for the sync subcommand.
  */
-export interface SubmitResponse {
+export interface SyncResponse {
   /**
-   * ok is whether the submission was successful.
+   * season is the season that was synced.
    */
-  ok: boolean;
+  season: Season;
 }
