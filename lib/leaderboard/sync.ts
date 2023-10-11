@@ -1,35 +1,122 @@
-import { SECOND, ulid } from "lc-dailies/deps.ts";
+import { SECOND, WEEK } from "lc-dailies/deps.ts";
 import type * as api from "lc-dailies/api/mod.ts";
 import type { LCClient } from "lc-dailies/lib/lc/mod.ts";
+import {
+  calculateScores,
+  makeDefaultCalculateScoresOptions,
+} from "lc-dailies/lib/leaderboard/mod.ts";
+
+/**
+ * SyncOptions are the required options for the sync operation.
+ */
+export interface SyncOptions {
+  /**
+   * season is the season to sync.
+   */
+  season: api.Season;
+
+  /**
+   * players are the registered players.
+   */
+  players: api.Players;
+
+  /**
+   * lcClient is the Leetcode client.
+   */
+  lcClient: LCClient;
+}
 
 /**
  * sync creates a season given a list of players, an LCCient, and a
  * date range.
  */
-export async function sync(
-  lcClient: LCClient,
-  players: api.Players,
-  startDate: Date,
-  endDate: Date,
-): Promise<api.Season> {
-  // Get the submissions of the players in the date range.
-  // Calculate the scores of the players.
-  // Create a season with the scores, submissions, and questions.
-  return makeEmptySeason(startDate.getTime());
-}
+export async function sync(options: SyncOptions): Promise<api.Season> {
+  // Fetch the submissions of the players.
+  for (const playerID in options.players) {
+    // Get the submissions of the player.
+    const player = options.players[playerID];
+    const lcSubmissions = await options.lcClient
+      .getRecentAcceptedSubmissions(player.lc_username);
 
-/**
- * makeEmptySeason creates an empty season.
- */
-export function makeEmptySeason(startOfWeek: number): api.Season {
-  return {
-    id: ulid(startOfWeek),
-    start_date: new Date(startOfWeek).toUTCString(),
-    scores: {},
-    players: {},
-    questions: {},
-    submissions: {},
-  };
+    // Store the submissions in the season.
+    for (const lcSubmission of lcSubmissions) {
+      const questionName = lcSubmission.name;
+
+      // Skip if the submission is not the earliest submission.
+      const submissionDate = fromLCTimestamp(lcSubmission.timestamp);
+      const storedSubmission: api.Submission | undefined = options.season
+        .submissions[playerID]?.[questionName];
+      if (
+        storedSubmission && new Date(storedSubmission.date) < submissionDate
+      ) {
+        continue;
+      }
+
+      // Skip if the submission is not in the season.
+      const seasonStartDate = new Date(options.season.start_date);
+      const seasonEndDate = new Date(seasonStartDate.getTime() + WEEK);
+      const isSubmissionInSeason = checkDateInWeek(
+        seasonStartDate.getTime(),
+        submissionDate.getTime(),
+      );
+      if (!isSubmissionInSeason) {
+        continue;
+      }
+
+      // Fetch the question if it is not in the season.
+      const storedQuestion: api.Question | undefined =
+        options.season.questions[questionName];
+      if (!storedQuestion) {
+        const seasonYear = seasonEndDate.getUTCFullYear();
+        const seasonMonth = seasonEndDate.getUTCMonth() + 1;
+        const recentDailyQuestions = await options.lcClient
+          .listDailyQuestions(10, seasonYear, seasonMonth);
+
+        // Skip if the question is not found.
+        const recentDailyQuestion = recentDailyQuestions
+          .find((q) => q.name === questionName);
+        if (!recentDailyQuestion) {
+          continue;
+        }
+
+        // Skip if the question is not in the season.
+        const questionDate = new Date(recentDailyQuestion.date);
+        const isQuestionInSeason = checkDateInWeek(
+          seasonStartDate.getTime(),
+          questionDate.getTime(),
+        );
+        if (!isQuestionInSeason) {
+          continue;
+        }
+
+        // Store the question in the season.
+        options.season.questions[questionName] ??= recentDailyQuestion;
+
+        // Store the earliest submission of the player.
+        options.season.submissions[playerID] ??= {};
+        options.season.submissions[playerID][questionName] = {
+          id: lcSubmission.id,
+          date: submissionDate.toUTCString(),
+        };
+      }
+
+      // Calculate the scores of the players.
+      options.season.scores = calculateScores(
+        makeDefaultCalculateScoresOptions(
+          options.season.players,
+          options.season.questions,
+          options.season.submissions,
+        ),
+      );
+
+      // // Get the submissions of the players in the date range.
+      // // Calculate the scores of the players.
+      // // Create a season with the scores, submissions, and questions.
+      // return makeEmptySeason(startDate.getTime());
+    }
+  }
+
+  return options.season;
 }
 
 /**
@@ -38,4 +125,8 @@ export function makeEmptySeason(startOfWeek: number): api.Season {
 export function fromLCTimestamp(timestamp: string): Date {
   const utcSeconds = parseInt(timestamp);
   return new Date(utcSeconds * SECOND);
+}
+
+function checkDateInWeek(startOfWeek: number, date: number): boolean {
+  return date >= startOfWeek && date < startOfWeek + WEEK;
 }

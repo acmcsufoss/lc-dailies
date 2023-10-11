@@ -14,7 +14,7 @@ export interface Player {
 }
 
 /**
- * Players is a map of Players by Discord user ID.
+ * Players is a map of players by Discord user ID.
  */
 export interface Players {
   [discord_user_id: string]: Player;
