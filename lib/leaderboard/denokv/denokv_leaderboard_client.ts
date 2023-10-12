@@ -163,9 +163,17 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     const players = await this.listPlayers();
     season = await sync({ lcClient: this.lc, players, season });
 
+    // Store the synced season.
+    await this.kv.set(
+      [LeaderboardKvPrefix.SEASONS, season.id],
+      season,
+    );
+
     // Update the season if it is the latest season.
+    const startOfWeekDate = new Date(startOfWeekUTC);
+    const seasonStartDate = new Date(season.start_date);
     const isLatestSeason =
-      new Date(startOfWeekUTC) === new Date(season.start_date);
+      startOfWeekDate.getTime() === seasonStartDate.getTime();
     if (isLatestSeason) {
       await this.updateLatestSeason(season, seasonResult);
     }
