@@ -81,16 +81,29 @@ async function executeDailyWebhook(
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
 
-  // Get the season data if a season ID is provided or if it is Sunday.
-  const isSunday = new Date(question.date).getDay() === 0;
-  const season = seasonID
+  // Get the selected season.
+  let season = seasonID
     ? await leaderboardClient.getSeason(seasonID)
-    : isSunday
-    ? await leaderboardClient.getLatestSeason()
-    : null;
+    : await leaderboardClient.getLatestSeason();
+
+  // If the season is ongoing, then sync it.
+  if (
+    season && leaderboard.checkDateInWeek(
+      new Date(season.start_date).getTime(),
+      new Date(`${question.date} GMT`).getTime(),
+    )
+  ) {
+    season = await leaderboardClient
+      .sync(season.id)
+      .then((response) => response.season);
+  }
 
   // Format the webhook embed.
-  const embeds = makeDailyWebhookEmbeds({ question, season });
+  const isSunday = new Date(question.date).getDay() === 0;
+  const embeds = makeDailyWebhookEmbeds({
+    question,
+    season: isSunday ? season : null,
+  });
 
   // Execute the webhook.
   await discord.executeWebhook({

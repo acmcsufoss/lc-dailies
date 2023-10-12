@@ -24,6 +24,13 @@ export interface SyncOptions {
    * lcClient is the Leetcode client.
    */
   lcClient: LCClient;
+
+  /**
+   * questionsFetchAmount is the amount of questions to fetch from Leetcode.
+   *
+   * If not specified, it will be set to 10.
+   */
+  questionsFetchAmount?: number;
 }
 
 /**
@@ -31,6 +38,15 @@ export interface SyncOptions {
  * date range.
  */
 export async function sync(options: SyncOptions): Promise<api.Season> {
+  // Fetch the daily questions of the season.
+  const seasonStartDate = new Date(options.season.start_date);
+  const seasonEndDate = new Date(seasonStartDate.getTime() + WEEK);
+  const recentDailyQuestions = await options.lcClient.listDailyQuestions(
+    options.questionsFetchAmount ?? 10,
+    seasonEndDate.getUTCFullYear(),
+    seasonEndDate.getUTCMonth() + 1,
+  );
+
   // Fetch the submissions of the players.
   for (const playerID in options.players) {
     // Get the submissions of the player.
@@ -53,8 +69,6 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
       }
 
       // Skip if the submission is not in the season.
-      const seasonStartDate = new Date(options.season.start_date);
-      const seasonEndDate = new Date(seasonStartDate.getTime() + WEEK);
       const isSubmissionInSeason = checkDateInWeek(
         seasonStartDate.getTime(),
         submissionDate.getTime(),
@@ -67,11 +81,6 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
       const storedQuestion: api.Question | undefined =
         options.season.questions[questionName];
       if (!storedQuestion) {
-        const seasonYear = seasonEndDate.getUTCFullYear();
-        const seasonMonth = seasonEndDate.getUTCMonth() + 1;
-        const recentDailyQuestions = await options.lcClient
-          .listDailyQuestions(10, seasonYear, seasonMonth);
-
         // Skip if the question is not found.
         const recentDailyQuestion = recentDailyQuestions
           .find((q) => q.name === questionName);
@@ -125,6 +134,9 @@ export function fromLCTimestamp(timestamp: string): Date {
   return new Date(utcSeconds * SECOND);
 }
 
-function checkDateInWeek(startOfWeek: number, date: number): boolean {
+/**
+ * checkDateInWeek checks if a date is in a week.
+ */
+export function checkDateInWeek(startOfWeek: number, date: number): boolean {
   return date >= startOfWeek && date < startOfWeek + WEEK;
 }

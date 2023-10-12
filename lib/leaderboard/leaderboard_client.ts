@@ -14,6 +14,10 @@ export interface LeaderboardClient {
 
   /**
    * sync syncs the leaderboard with Leetcode.
+   *
+   * Throws an error if the season is unable to be synced.
+   *
+   * Returns the synced season.
    */
   sync(season_id?: string, reference_date?: Date): Promise<api.SyncResponse>;
 
