@@ -8,6 +8,7 @@ import {
   InteractionResponseType,
 } from "lc-dailies/deps.ts";
 import * as api from "lc-dailies/api/mod.ts";
+import { formatScores } from "lc-dailies/lib/leaderboard/mod.ts";
 
 export const SYNC = "sync";
 export const SYNC_DESCRIPTION =
@@ -73,9 +74,7 @@ export function makeSyncInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      content: `Season \`${r.season.id}\` synced.\n\n\`\`\`json${
-        JSON.stringify(r.season, null, 2)
-      }\n\`\`\``,
+      content: `Season \`${r.season.id}\` synced.\n\n${formatScores(r.season)}`,
     },
   };
 }

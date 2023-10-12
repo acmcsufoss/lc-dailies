@@ -81,28 +81,30 @@ async function executeDailyWebhook(
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
 
-  // Get the selected season.
-  let season = seasonID
+  // Get the stored season.
+  const storedSeason = seasonID
     ? await leaderboardClient.getSeason(seasonID)
     : await leaderboardClient.getLatestSeason();
 
   // If the season is ongoing, then sync it.
-  if (
-    season && leaderboard.checkDateInWeek(
-      new Date(season.start_date).getTime(),
-      new Date(`${question.date} GMT`).getTime(),
+  const referenceDate = new Date(`${question.date} GMT`);
+  const syncedSeason = (
+      storedSeason &&
+      leaderboard.checkDateInWeek(
+        new Date(storedSeason.start_date).getTime(),
+        referenceDate.getTime(),
+      )
     )
-  ) {
-    season = await leaderboardClient
-      .sync(season.id)
-      .then((response) => response.season);
-  }
+    ? await leaderboardClient
+      .sync(storedSeason.id)
+      .then((response) => response.season)
+    : null;
 
   // Format the webhook embed.
   const isSunday = new Date(question.date).getDay() === 0;
   const embeds = makeDailyWebhookEmbeds({
     question,
-    season: isSunday ? season : null,
+    season: isSunday ? (syncedSeason ?? storedSeason) : null,
   });
 
   // Execute the webhook.
@@ -110,6 +112,11 @@ async function executeDailyWebhook(
     url: webhookURL,
     data: { embeds },
   });
+
+  // If the season is not synced, then sync it to set up the next season.
+  if (!syncedSeason) {
+    await leaderboardClient.sync(undefined, referenceDate);
+  }
 
   // Acknowledge the request.
   return new Response("OK");
@@ -162,71 +169,9 @@ export function makeDailyWebhookEmbeds(
   if (options.season) {
     embed.fields?.push({
       name: `Leaderboard for week of ${options.season.start_date}`,
-      value: formatScores(options.season),
+      value: leaderboard.formatScores(options.season),
     });
   }
 
   return [embed];
-}
-
-/**
- * formatScores formats the scores of all players in a season.
- */
-export function formatScores(season: api.Season): string {
-  return [
-    "```",
-    ...Object.entries(season.scores)
-      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-      .map(([playerID, score], i) => {
-        const player = season.players[playerID];
-        const formattedScore = String(score).padStart(3, " ");
-        const formattedRank = formatRank(i + 1);
-        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
-      }),
-    "```",
-  ].join("\n");
-}
-
-/**
- * formatRank formats the rank of a player in a season.
- */
-export function formatRank(rank: number): string {
-  switch (rank) {
-    case 1: {
-      return "🥇";
-    }
-
-    case 2: {
-      return "🥈";
-    }
-
-    case 3: {
-      return "🥉";
-    }
-
-    case 11:
-    case 12:
-    case 13: {
-      return `${rank}th`;
-    }
-  }
-
-  const lastDigit = rank % 10;
-  switch (lastDigit) {
-    case 1: {
-      return `${rank}st`;
-    }
-
-    case 2: {
-      return `${rank}nd`;
-    }
-
-    case 3: {
-      return `${rank}rd`;
-    }
-
-    default: {
-      return `${rank}th`;
-    }
-  }
 }

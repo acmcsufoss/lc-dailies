@@ -139,3 +139,65 @@ export function makeDefaultCalculateScoresOptions(
 export function defaultModifyScore(score: number): number {
   return Math.ceil(score);
 }
+
+/**
+ * formatScores formats the scores of all players in a season.
+ */
+export function formatScores(season: api.Season): string {
+  return [
+    "```",
+    ...Object.entries(season.scores)
+      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
+      .map(([playerID, score], i) => {
+        const player = season.players[playerID];
+        const formattedScore = String(score).padStart(3, " ");
+        const formattedRank = formatRank(i + 1);
+        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
+      }),
+    "```",
+  ].join("\n");
+}
+
+/**
+ * formatRank formats the rank of a player in a season.
+ */
+export function formatRank(rank: number): string {
+  switch (rank) {
+    case 1: {
+      return "🥇";
+    }
+
+    case 2: {
+      return "🥈";
+    }
+
+    case 3: {
+      return "🥉";
+    }
+
+    case 11:
+    case 12:
+    case 13: {
+      return `${rank}th`;
+    }
+  }
+
+  const lastDigit = rank % 10;
+  switch (lastDigit) {
+    case 1: {
+      return `${rank}st`;
+    }
+
+    case 2: {
+      return `${rank}nd`;
+    }
+
+    case 3: {
+      return `${rank}rd`;
+    }
+
+    default: {
+      return `${rank}th`;
+    }
+  }
+}
