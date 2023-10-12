@@ -54,13 +54,12 @@ Deno.test("DenoKvLeaderboardClient", async (t) => {
     });
   });
 
-  await t.step("submit", async () => {
-    const result = await client.submit(
-      FAKE_DISCORD_USER_ID,
-      fake_lc.FAKE_RECENT_SUBMISSION_ID,
-      new Date(fake_lc.FAKE_LC_QUESTION_DATE),
+  await t.step("sync", async () => {
+    const syncResponse = await client.sync(
+      undefined,
+      FAKE_SEASON_START_DATE,
     );
-    assertEquals(result.ok, true);
+    assertSeasonsEqual(syncResponse.season, FAKE_SEASON);
   });
 
   let seasonID: string | undefined;

@@ -15,7 +15,7 @@ export interface LeaderboardClient {
   /**
    * sync syncs the leaderboard with Leetcode.
    */
-  sync(season_id?: string): Promise<api.SyncResponse>;
+  sync(season_id?: string, reference_date?: Date): Promise<api.SyncResponse>;
 
   /**
    * getLatestSeason gets the latest season.

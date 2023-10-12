@@ -109,7 +109,7 @@ export interface DailyWebhookOptions {
   /**
    * question is the daily question.
    */
-  question: api.LCQuestion;
+  question: api.Question;
 
   /**
    * season is the season to recap.

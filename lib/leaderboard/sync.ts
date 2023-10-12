@@ -91,30 +91,28 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
 
         // Store the question in the season.
         options.season.questions[questionName] ??= recentDailyQuestion;
-
-        // Store the earliest submission of the player.
-        options.season.submissions[playerID] ??= {};
-        options.season.submissions[playerID][questionName] = {
-          id: lcSubmission.id,
-          date: submissionDate.toUTCString(),
-        };
       }
 
-      // Calculate the scores of the players.
-      options.season.scores = calculateScores(
-        makeDefaultCalculateScoresOptions(
-          options.season.players,
-          options.season.questions,
-          options.season.submissions,
-        ),
-      );
+      // Store the earliest submission of the player.
+      options.season.submissions[playerID] ??= {};
+      options.season.submissions[playerID][questionName] = {
+        id: lcSubmission.id,
+        date: submissionDate.toUTCString(),
+      };
 
-      // // Get the submissions of the players in the date range.
-      // // Calculate the scores of the players.
-      // // Create a season with the scores, submissions, and questions.
-      // return makeEmptySeason(startDate.getTime());
+      // Store the player in the season if it is not in the season.
+      options.season.players[playerID] ??= player;
     }
   }
+
+  // Calculate the scores of the players.
+  options.season.scores = calculateScores(
+    makeDefaultCalculateScoresOptions(
+      options.season.players,
+      options.season.questions,
+      options.season.submissions,
+    ),
+  );
 
   return options.season;
 }
