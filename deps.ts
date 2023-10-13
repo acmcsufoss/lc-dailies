@@ -1,10 +1,10 @@
 export {
   assertEquals,
   assertRejects,
-} from "https://deno.land/std@0.203.0/assert/mod.ts";
+} from "https://deno.land/std@0.204.0/assert/mod.ts";
 
-export { load } from "https://deno.land/std@0.203.0/dotenv/mod.ts";
-export * from "https://deno.land/std@0.203.0/datetime/constants.ts";
+export { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
+export * from "https://deno.land/std@0.204.0/datetime/constants.ts";
 export { ulid } from "https://deno.land/x/ulid@v0.3.0/mod.ts";
 export type {
   APIApplicationCommandInteractionDataOption,
