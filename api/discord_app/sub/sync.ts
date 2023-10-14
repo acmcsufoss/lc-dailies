@@ -16,7 +16,7 @@ export const SEASON_ID = "season_id";
 export const SEASON_ID_DESCRIPTION = "The season ID to sync";
 
 /**
- * SUB_SYN is the subcommand for the LC-Dailies command for syncing a season.
+ * SUB_SYNC is the subcommand for the LC-Dailies command for syncing a season.
  */
 export const SUB_SYNC: APIApplicationCommandOption = {
   name: SYNC,
