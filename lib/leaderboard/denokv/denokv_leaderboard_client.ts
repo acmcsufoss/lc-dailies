@@ -85,7 +85,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
       season,
     ).commit();
     if (!updateSeasonResult.ok) {
-      throw new Error("Failed to update season");
+      throw updateSeasonResult;
     }
 
     // Update the current season ID.
@@ -94,7 +94,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
       season.id,
     );
     if (!updateSeasonIDResult.ok) {
-      throw new Error("Failed to update season ID");
+      throw updateSeasonIDResult;
     }
 
     return;
