@@ -11,8 +11,7 @@ import * as api from "lc-dailies/api/mod.ts";
 import { formatScores } from "lc-dailies/lib/leaderboard/mod.ts";
 
 export const SYNC = "sync";
-export const SYNC_DESCRIPTION =
-  "Sync and display a season given data from Leetcode";
+export const SYNC_DESCRIPTION = "Sync and display your season scores";
 export const SEASON_ID = "season_id";
 export const SEASON_ID_DESCRIPTION = "The season ID to sync";
 
@@ -37,9 +36,7 @@ export const SUB_SYNC: APIApplicationCommandOption = {
  */
 export function parseSyncOptions(
   options: APIApplicationCommandInteractionDataOption[],
-): {
-  [SEASON_ID]: string;
-} {
+) {
   const syncOption = options.find((option) => option.name === SYNC);
   if (!syncOption) {
     throw new Error("No options provided");
@@ -56,13 +53,14 @@ export function parseSyncOptions(
   const seasonIDOption = syncOption.options.find((option) =>
     option.name === SEASON_ID
   );
-  if (seasonIDOption?.type !== ApplicationCommandOptionType.String) {
+  if (
+    seasonIDOption &&
+    seasonIDOption.type !== ApplicationCommandOptionType.String
+  ) {
     throw new Error("Expected a string for the season ID option.");
   }
 
-  return {
-    [SEASON_ID]: seasonIDOption.value,
-  };
+  return { [SEASON_ID]: seasonIDOption?.value };
 }
 
 /**
