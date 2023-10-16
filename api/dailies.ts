@@ -160,7 +160,7 @@ export function makeDailyWebhookEmbeds(
       },
       {
         name:
-          "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below!",
+          "Register to play by typing `/lc register YOUR_LC_USERNAME` below!",
         value: "[See more…](https://acmcsuf.com/lc-dailies-handbook)",
       },
     ],
