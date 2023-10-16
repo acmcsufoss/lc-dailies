@@ -6,6 +6,7 @@ import type {
 import {
   ApplicationCommandOptionType,
   InteractionResponseType,
+  SECOND,
 } from "lc-dailies/deps.ts";
 import * as api from "lc-dailies/api/mod.ts";
 import { formatScores } from "lc-dailies/lib/leaderboard/mod.ts";
@@ -72,7 +73,25 @@ export function makeSyncInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      content: `Season \`${r.season.id}\` synced.\n\n${formatScores(r.season)}`,
+      embeds: [
+        {
+          title: `Season \`${r.season.id}\` synced ${
+            toDiscordTimestamp(new Date(r.season.synced_at))
+          }`,
+          description: formatScores(r.season),
+        },
+      ],
     },
   };
+}
+
+/**
+ * toDiscordTimestamp converts a date to a Discord timestamp.
+ *
+ * Reference:
+ * - https://gist.github.com/LeviSnoot/d9147767abeef2f770e9ddcd91eb85aa
+ * - https://github.com/acmcsufoss/shorter/blob/dbaac9a020a621be0c349a8b9a870b936b988265/main.ts#L235
+ */
+function toDiscordTimestamp(date: Date) {
+  return `<t:${~~(date.getTime() / SECOND)}:R>`;
 }
