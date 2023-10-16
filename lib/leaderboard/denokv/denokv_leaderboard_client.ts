@@ -69,15 +69,9 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
   /**
    * updateLatestSeason updates the latest season in Deno KV.
    */
-  private async updateLatestSeason(
-    season: api.Season,
-    prevSeasonResult: Deno.KvEntryMaybe<api.Season> | null,
-  ): Promise<void> {
+  private async updateLatestSeason(season: api.Season): Promise<void> {
     // Update the season.
     const updateSeasonOp = this.kv.atomic();
-    if (prevSeasonResult) {
-      updateSeasonOp.check(prevSeasonResult);
-    }
 
     // Update the season.
     const updateSeasonResult = await updateSeasonOp.set(
@@ -183,7 +177,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     // Update the season if it is the latest season.
     startOfWeekDate.getTime() === seasonStartDate.getTime();
     if (isLatestSeason) {
-      await this.updateLatestSeason(season, seasonResult);
+      await this.updateLatestSeason(season);
     }
 
     // Return a sync response.
