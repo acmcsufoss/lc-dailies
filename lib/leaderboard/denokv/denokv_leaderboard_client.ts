@@ -138,10 +138,13 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
   ): Promise<api.SyncResponse> {
     // startOfWeekUTC is the start of the season in UTC.
     const startOfWeekUTC = getStartOfWeek(this.restartMs, referenceDate);
+    const startOfWeekDate = new Date(startOfWeekUTC);
 
     // Get the season.
     let season: api.Season;
-    let seasonResult: Deno.KvEntryMaybe<api.Season> | null = null;
+    let seasonStartDate: Date;
+    let isLatestSeason: boolean;
+    let seasonResult: Deno.KvEntryMaybe<api.Season> | null;
     if (seasonID) {
       seasonResult = await this.kv.get<api.Season>([
         LeaderboardKvPrefix.SEASONS,
@@ -152,11 +155,18 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
       }
 
       season = seasonResult.value;
+      seasonStartDate = new Date(season.start_date);
+      isLatestSeason = startOfWeekDate.getTime() === seasonStartDate.getTime();
     } else {
       seasonResult = await this.getLatestSeasonFromKv();
-      season = seasonResult?.value
-        ? seasonResult.value
-        : makeEmptySeason(startOfWeekUTC);
+      const isPresentAndLatest = seasonResult?.value &&
+        new Date(seasonResult.value.start_date).getTime() ===
+          startOfWeekDate.getTime();
+      season = isPresentAndLatest
+        ? seasonResult?.value!
+        : makeEmptySeason(startOfWeekDate);
+      seasonStartDate = new Date(season.start_date);
+      isLatestSeason = true;
     }
 
     // Sync the season.
@@ -171,10 +181,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     );
 
     // Update the season if it is the latest season.
-    const startOfWeekDate = new Date(startOfWeekUTC);
-    const seasonStartDate = new Date(season.start_date);
-    const isLatestSeason =
-      startOfWeekDate.getTime() === seasonStartDate.getTime();
+    startOfWeekDate.getTime() === seasonStartDate.getTime();
     if (isLatestSeason) {
       await this.updateLatestSeason(season, seasonResult);
     }
@@ -225,10 +232,10 @@ export enum LeaderboardKvPrefix {
 /**
  * makeEmptySeason creates an empty season.
  */
-export function makeEmptySeason(startOfWeek: number): api.Season {
+export function makeEmptySeason(startOfWeek: Date): api.Season {
   return {
-    id: ulid(startOfWeek),
-    start_date: new Date(startOfWeek).toUTCString(),
+    id: ulid(startOfWeek.getTime()),
+    start_date: startOfWeek.toUTCString(),
     scores: {},
     players: {},
     questions: {},
