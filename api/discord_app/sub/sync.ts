@@ -76,7 +76,7 @@ export function makeSyncInteractionResponse(
       embeds: [
         {
           title: `Season \`${r.season.id}\` synced ${
-            toDiscordTimestamp(new Date(r.season.synced_at))
+            toDiscordTimestamp(new Date(r.season.synced_at!))
           }`,
           description: formatScores(r.season),
         },

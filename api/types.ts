@@ -122,6 +122,13 @@ export interface Season {
    * submissions is the map of submissions in the season.
    */
   submissions: Submissions;
+
+  /**
+   * synced_at is the date the season was synced.
+   *
+   * The field is undefined if the season has not been synced.
+   */
+  synced_at?: string;
 }
 
 /**

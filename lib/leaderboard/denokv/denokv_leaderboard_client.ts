@@ -162,6 +162,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     // Sync the season.
     const players = await this.listPlayers();
     season = await sync({ lcClient: this.lc, players, season });
+    season.synced_at = referenceDate.toUTCString();
 
     // Store the synced season.
     await this.kv.set(
