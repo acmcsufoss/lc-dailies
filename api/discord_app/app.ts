@@ -14,7 +14,6 @@ import {
 } from "lc-dailies/deps.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
-import * as lc from "lc-dailies/lib/lc/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import {
   makeRegisterInteractionResponse,
@@ -23,11 +22,11 @@ import {
   SUB_REGISTER,
 } from "./sub/register.ts";
 import {
-  makeSubmitInteractionResponse,
-  parseSubmitOptions,
-  SUB_SUBMIT,
-  SUBMIT,
-} from "./sub/submit.ts";
+  makeSyncInteractionResponse,
+  parseSyncOptions,
+  SUB_SYNC,
+  SYNC,
+} from "./sub/sync.ts";
 
 export const LC = "lc";
 export const LC_DESCRIPTION =
@@ -39,7 +38,7 @@ export const LC_DESCRIPTION =
 export const APP_LC: RESTPostAPIApplicationCommandsJSONBody = {
   name: LC,
   description: LC_DESCRIPTION,
-  options: [SUB_REGISTER, SUB_SUBMIT],
+  options: [SUB_REGISTER, SUB_SYNC],
 };
 
 /**
@@ -108,39 +107,34 @@ export function makeDiscordAppHandler(
         // Handle the subcommand.
         switch (name) {
           case REGISTER: {
-            const handleRegisterSubcommand = makeRegisterSubcommandHandler(
+            const registerResponse = await handleRegisterSubcommand(
               leaderboardClient,
+              interaction.member.user,
+              parseRegisterOptions(interaction.data.options),
             );
-            return Response.json(
-              await handleRegisterSubcommand(
-                interaction.member.user,
-                parseRegisterOptions(interaction.data.options),
-              ),
-            );
+
+            return Response.json(registerResponse);
           }
 
-          case SUBMIT: {
-            const handleSubmitSubcommand = makeSubmitSubcommandHandler(
+          case SYNC: {
+            const syncResponse = await handleSyncSubcommand(
               leaderboardClient,
+              parseSyncOptions(interaction.data.options),
             );
+
+            return Response.json(syncResponse);
+          }
+
+          default: {
+            // Acknowledge the interaction.
             return Response.json(
-              await handleSubmitSubcommand(
-                interaction.member.user,
-                parseSubmitOptions(interaction.data.options),
-              ),
+              {
+                type: InteractionResponseType.DeferredChannelMessageWithSource,
+                data: { flags: MessageFlags.Ephemeral },
+              } satisfies APIInteractionResponseDeferredChannelMessageWithSource,
             );
           }
         }
-
-        // Acknowledge the interaction.
-        return Response.json(
-          {
-            type: InteractionResponseType.DeferredChannelMessageWithSource,
-            data: {
-              flags: MessageFlags.Ephemeral,
-            },
-          } satisfies APIInteractionResponseDeferredChannelMessageWithSource,
-        );
       }
 
       default: {
@@ -150,42 +144,34 @@ export function makeDiscordAppHandler(
   };
 }
 
-function makeRegisterSubcommandHandler(
+/**
+ * handleRegisterSubcommand handles the register subcommand.
+ */
+async function handleRegisterSubcommand(
   leaderboardClient: leaderboard.LeaderboardClient,
-) {
-  /**
-   * handleRegisterSubcommand handles the register subcommand.
-   */
-  return async function handleRegisterSubcommand(
-    user: APIUser,
-    options: ReturnType<typeof parseRegisterOptions>,
-  ): Promise<APIInteractionResponse> {
-    const registerResponse = await leaderboardClient.register(
-      user.id,
-      options.lc_username,
-    );
+  user: APIUser,
+  options: ReturnType<typeof parseRegisterOptions>,
+): Promise<APIInteractionResponse> {
+  const registerResponse = await leaderboardClient.register(
+    user.id,
+    options.lc_username,
+  );
 
-    return makeRegisterInteractionResponse(registerResponse);
-  };
+  return makeRegisterInteractionResponse(registerResponse);
 }
 
-function makeSubmitSubcommandHandler(
+/**
+ * handleSyncSubcommand handles the sync subcommand.
+ */
+async function handleSyncSubcommand(
   leaderboardClient: leaderboard.LeaderboardClient,
-) {
-  /**
-   * handleSubmitSubcommand handles the submit subcommand.
-   */
-  return async function handleSubmitSubcommand(
-    user: APIUser,
-    options: ReturnType<typeof parseSubmitOptions>,
-  ): Promise<APIInteractionResponse> {
-    const submitResponse = await leaderboardClient.submit(
-      user.id,
-      lc.parseSubmissionID(options.submission_url),
-    );
+  options: ReturnType<typeof parseSyncOptions>,
+): Promise<APIInteractionResponse> {
+  const syncResponse = await leaderboardClient.sync(
+    options.season_id,
+  );
 
-    return makeSubmitInteractionResponse(submitResponse);
-  };
+  return makeSyncInteractionResponse(syncResponse);
 }
 
 /**

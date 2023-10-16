@@ -80,23 +80,42 @@ async function executeDailyWebhook(
 ): Promise<Response> {
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
+  const questionDate = new Date(`${question.date} GMT`);
+  const isSunday = questionDate.getDay() === 0;
 
-  // Get the season data if a season ID is provided or if it is Sunday.
-  const isSunday = new Date(question.date).getDay() === 0;
-  const season = seasonID
+  // Get the stored season.
+  const storedSeason = seasonID
     ? await leaderboardClient.getSeason(seasonID)
-    : isSunday
-    ? await leaderboardClient.getLatestSeason()
+    : await leaderboardClient.getLatestSeason();
+
+  // If the season is ongoing, then sync it.
+  const referenceDate = new Date();
+  const isLatestSeason = storedSeason && leaderboard.checkDateInWeek(
+    new Date(storedSeason.start_date).getTime(),
+    referenceDate.getTime(),
+  );
+  const syncedSeason = isLatestSeason
+    ? await leaderboardClient
+      .sync(storedSeason.id)
+      .then((response) => response.season)
     : null;
 
   // Format the webhook embed.
-  const embeds = makeDailyWebhookEmbeds({ question, season });
+  const embeds = makeDailyWebhookEmbeds({
+    question,
+    season: isSunday ? (syncedSeason ?? storedSeason) : null,
+  });
 
   // Execute the webhook.
   await discord.executeWebhook({
     url: webhookURL,
     data: { embeds },
   });
+
+  // If the season is not synced, then sync it to set up the next season.
+  if (!syncedSeason) {
+    await leaderboardClient.sync(undefined, referenceDate);
+  }
 
   // Acknowledge the request.
   return new Response("OK");
@@ -109,7 +128,7 @@ export interface DailyWebhookOptions {
   /**
    * question is the daily question.
    */
-  question: api.LCQuestion;
+  question: api.Question;
 
   /**
    * season is the season to recap.
@@ -140,7 +159,7 @@ export function makeDailyWebhookEmbeds(
       },
       {
         name:
-          "Submit your solution by typing `/lc submit YOUR_SUBMISSION_URL` below!",
+          "Register to play by typing `/lc register YOUR_LC_USERNAME` below!",
         value: "[See more…](https://acmcsuf.com/lc-dailies-handbook)",
       },
     ],
@@ -149,71 +168,9 @@ export function makeDailyWebhookEmbeds(
   if (options.season) {
     embed.fields?.push({
       name: `Leaderboard for week of ${options.season.start_date}`,
-      value: formatScores(options.season),
+      value: leaderboard.formatScores(options.season),
     });
   }
 
   return [embed];
-}
-
-/**
- * formatScores formats the scores of all players in a season.
- */
-export function formatScores(season: api.Season): string {
-  return [
-    "```",
-    ...Object.entries(season.scores)
-      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-      .map(([playerID, score], i) => {
-        const player = season.players[playerID];
-        const formattedScore = String(score).padStart(3, " ");
-        const formattedRank = formatRank(i + 1);
-        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
-      }),
-    "```",
-  ].join("\n");
-}
-
-/**
- * formatRank formats the rank of a player in a season.
- */
-export function formatRank(rank: number): string {
-  switch (rank) {
-    case 1: {
-      return "🥇";
-    }
-
-    case 2: {
-      return "🥈";
-    }
-
-    case 3: {
-      return "🥉";
-    }
-
-    case 11:
-    case 12:
-    case 13: {
-      return `${rank}th`;
-    }
-  }
-
-  const lastDigit = rank % 10;
-  switch (lastDigit) {
-    case 1: {
-      return `${rank}st`;
-    }
-
-    case 2: {
-      return `${rank}nd`;
-    }
-
-    case 3: {
-      return `${rank}rd`;
-    }
-
-    default: {
-      return `${rank}th`;
-    }
-  }
 }

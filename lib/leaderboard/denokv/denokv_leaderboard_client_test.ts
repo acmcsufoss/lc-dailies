@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "lc-dailies/deps.ts";
+import { assertEquals, assertRejects, DAY } from "lc-dailies/deps.ts";
 import * as fake_lc from "lc-dailies/lib/lc/fake_client.ts";
 import type { Season } from "lc-dailies/api/mod.ts";
 import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
@@ -54,13 +54,13 @@ Deno.test("DenoKvLeaderboardClient", async (t) => {
     });
   });
 
-  await t.step("submit", async () => {
-    const result = await client.submit(
-      FAKE_DISCORD_USER_ID,
-      fake_lc.FAKE_RECENT_SUBMISSION_ID,
-      new Date(fake_lc.FAKE_LC_QUESTION_DATE),
+  await t.step("sync", async () => {
+    const twoDaysAfterFakeSeasonStartDate = new Date(
+      FAKE_SEASON_START_DATE.getTime() + 2 * DAY,
     );
-    assertEquals(result.ok, true);
+    const syncResponse = await client
+      .sync(undefined, twoDaysAfterFakeSeasonStartDate);
+    assertSeasonsEqual(syncResponse.season, FAKE_SEASON);
   });
 
   let seasonID: string | undefined;

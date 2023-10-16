@@ -36,9 +36,7 @@ export const SUB_REGISTER: APIApplicationCommandOption = {
  */
 export function parseRegisterOptions(
   options: APIApplicationCommandInteractionDataOption[],
-): {
-  [REGISTER_LC_USERNAME]: string;
-} {
+) {
   const registerOption = options.find((option) => option.name === REGISTER);
   if (!registerOption) {
     throw new Error("No options provided");
@@ -59,9 +57,7 @@ export function parseRegisterOptions(
     throw new Error("Expected a string for the username option.");
   }
 
-  return {
-    [REGISTER_LC_USERNAME]: usernameOption.value,
-  };
+  return { [REGISTER_LC_USERNAME]: usernameOption.value };
 }
 
 /**

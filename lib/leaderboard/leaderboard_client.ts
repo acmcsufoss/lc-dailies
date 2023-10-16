@@ -13,14 +13,13 @@ export interface LeaderboardClient {
   ): Promise<api.RegisterResponse>;
 
   /**
-   * submit registers a new submission to the leaderboard.
+   * sync syncs the leaderboard with Leetcode.
    *
-   * Returns the season of the submission.
+   * Throws an error if the season is unable to be synced.
+   *
+   * Returns the synced season.
    */
-  submit(
-    discord_user_id: string,
-    lc_submission_id: string,
-  ): Promise<api.SubmitResponse>;
+  sync(season_id?: string, reference_date?: Date): Promise<api.SyncResponse>;
 
   /**
    * getLatestSeason gets the latest season.

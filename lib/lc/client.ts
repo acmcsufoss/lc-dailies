@@ -1,8 +1,11 @@
-import type { LCQuestion } from "lc-dailies/api/mod.ts";
+import type { Question } from "lc-dailies/api/mod.ts";
 import { makeQuestionURL } from "./urls.ts";
 import { gql } from "./gql.ts";
 
-export type { LCQuestion };
+/**
+ * LCQuestion is an alias interface for a Leetcode question.
+ */
+export type LCQuestion = Question;
 
 /**
  * LCSubmission is the representation of Leetcode's recent submission per user.
@@ -119,8 +122,12 @@ export class LCClient {
    */
   public async getRecentAcceptedSubmissions(
     username: string,
-    limit: number,
+    limit = MAX_SUBMISSIONS_LIMIT,
   ): Promise<LCSubmission[]> {
+    if (limit > MAX_SUBMISSIONS_LIMIT) {
+      limit = MAX_SUBMISSIONS_LIMIT;
+    }
+
     return await gql(
       JSON.stringify({
         operationName: "recentAcSubmissions",
@@ -151,3 +158,8 @@ export class LCClient {
       );
   }
 }
+
+/**
+ * MAX_SUBMISSIONS_LIMIT is the maximum amount of submissions to fetch from Leetcode.
+ */
+export const MAX_SUBMISSIONS_LIMIT = 20;

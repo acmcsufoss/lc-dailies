@@ -62,29 +62,15 @@ weekly competitions.
 Once you have registered your Leetcode username, you are ready to participate in
 our weekly competitions.
 
-- Type `/lc submit` in the `📚algo-chat` text channel to use the slash command.
-- Populate the required field `submission_url` with the URL to your accepted
-  Leetcode solution of a daily challenge from the current season e.g. all
-  Leetcode dailies announced since the previous Sunday at midnight UTC.
-- Press <kbd>Enter</kbd> to submit the solution.
-- Wait for the response from the slash command to confirm the submission. This
-  may take a second.
-- If the submission was successful, your submission will be added to
-  [the leaderboard](https://lc-dailies.deno.dev/seasons/latest).
+No further action is needed on your part to submit your Leetcode solutions. A
+daily background process automatically syncs our stored leaderboard data with
+the latest submissions data on Leetcode.
 
-|                            Valid `submission_url` values                             |
-| :----------------------------------------------------------------------------------: |
-| `https://leetcode.com/problems/implement-stack-using-queues/submissions/1035629181/` |
-|                `https://leetcode.com/submissions/detail/1035629181/`                 |
-|                                     `1035629181`                                     |
-
-#### Find your Leetcode submission URL
-
-Once you solve a Leetcode daily challenge, you can find the URL to your accepted
-solution in the `Submissions` tab of the problem page. Click the buttons as
-shown in the image below to copy the URL to your clipboard.
-
-![Leetcode solution URL copy button](https://github.com/acmcsufoss/lc-dailies/assets/31261035/7c6b2425-d0fd-46b6-9484-7c34a013c175)
+> **NOTE**
+>
+> Soon, our leaderboard will be visible on the ACM CSUF website at
+> <https://acmcsuf.com/lc-dailies>. Follow issue
+> [#36](https://github.com/acmcsufoss/lc-dailies/issues/36) for updates.
 
 ---
 
