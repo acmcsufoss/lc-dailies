@@ -1,3 +1,6 @@
+import type { ResponseResolvable } from "./responses.ts";
+import { resolveResponse, RESPONSE_404 } from "./responses.ts";
+
 /**
  * RouterHandler is a function which can be registered to a specific route in the
  * router. The router will call the handler with the request object and any
@@ -50,9 +53,7 @@ export type RouterHandlerMap = Map<URLPattern, RouterHandler>;
 export class Router {
   constructor(
     public handlerMap: RouterHandlerMap = new Map(),
-    public readonly response404: Response = new Response("Not found", {
-      status: 404,
-    }),
+    public readonly response404: ResponseResolvable = RESPONSE_404,
   ) {}
 
   /**
@@ -123,16 +124,14 @@ export class Router {
           if (value) acc[key] = value;
           return acc;
         }, {} as { [key: string]: string });
-      const response = await handler.handle({
+      return await handler.handle({
         request,
         url,
         params,
       });
-
-      return response;
     }
 
-    return this.response404;
+    return await resolveResponse(this.response404, request);
   }
 
   /**
