@@ -73,7 +73,6 @@ export function makeSyncInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      content: "",
       embeds: [
         {
           title:
