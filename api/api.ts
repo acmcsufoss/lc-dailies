@@ -108,10 +108,3 @@ export function makeOnListen(
 function makeInviteURL(applicationID: string) {
   return `https://discord.com/api/oauth2/authorize?client_id=${applicationID}&scope=applications.commands`;
 }
-
-fetch(
-  "http://127.0.0.1:8080/webhook?season_id=01H8T4MM00BQHHK7VTTEJE1WAS&webhook_url=https://discord.com/api/webhooks/1128189891847667712/jUq5uK9dzM4V99fsj8Y6b8tBiZx_idMB5DAMKAPJQ4rTbEiqoy7ah2qUpORWyfaHGl4l",
-  {
-    method: "POST",
-  },
-).then((res) => res.json()).then(console.log).catch(console.error);
