@@ -54,6 +54,7 @@ export class Router {
   constructor(
     public handlerMap: RouterHandlerMap = new Map(),
     public readonly response404: ResponseResolvable = RESPONSE_404,
+    public readonly resonse5xx: ResponseResolvable | undefined = undefined,
   ) {}
 
   /**
@@ -118,17 +119,19 @@ export class Router {
         continue;
       }
 
-      const url = new URL(request.url);
       const params = Object.entries(match.pathname.groups)
         .reduce((acc, [key, value]) => {
           if (value) acc[key] = value;
           return acc;
         }, {} as { [key: string]: string });
-      return await handler.handle({
-        request,
-        url,
-        params,
-      });
+      return await resolveRouterHandler(handler, request, params)
+        .catch((error) => {
+          if (!(error instanceof Error) || !this.resonse5xx) {
+            throw error;
+          }
+
+          return resolveResponse(this.resonse5xx, request);
+        });
     }
 
     return await resolveResponse(this.response404, request);
@@ -147,4 +150,20 @@ export class Router {
       router.execute.bind(router),
     );
   }
+}
+
+/**
+ * resolveRouterHandler resolves a RouterHandler to a Response.
+ */
+async function resolveRouterHandler(
+  handler: RouterHandler,
+  request: Request,
+  params: Record<string, string>,
+): Promise<Response> {
+  const url = new URL(request.url);
+  return await handler.handle({
+    request,
+    url,
+    params,
+  });
 }
