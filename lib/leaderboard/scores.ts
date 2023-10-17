@@ -144,18 +144,15 @@ export function defaultModifyScore(score: number): number {
  * formatScores formats the scores of all players in a season.
  */
 export function formatScores(season: api.Season): string {
-  return [
-    "```",
-    ...Object.entries(season.scores)
-      .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-      .map(([playerID, score], i) => {
-        const player = season.players[playerID];
-        const formattedScore = String(score).padStart(3, " ");
-        const formattedRank = formatRank(i + 1);
-        return `${formattedScore} ${player.lc_username} (${formattedRank})`;
-      }),
-    "```",
-  ].join("\n");
+  return Object.entries(season.scores)
+    .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
+    .map(([playerID, score], i) => {
+      const player = season.players[playerID];
+      const formattedScore = String(score).padStart(3, " ");
+      const formattedRank = formatRank(i + 1);
+      return `${formattedScore} ${player.lc_username} (${formattedRank})`;
+    })
+    .join("\n");
 }
 
 /**

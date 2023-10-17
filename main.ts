@@ -24,29 +24,45 @@ async function main() {
     kv,
     lcClient,
   );
-  const r = api.makeAPIRouter(
-    DISCORD_APPLICATION_ID,
-    DISCORD_PUBLIC_KEY,
-    DISCORD_CHANNEL_ID,
-    DISCORD_WEBHOOK_URL,
-    WEBHOOK_TOKEN,
-    lcClient,
-    leaderboardClient,
-  );
+  try {
+    const r = api.makeAPIRouter(
+      DISCORD_APPLICATION_ID,
+      DISCORD_PUBLIC_KEY,
+      DISCORD_CHANNEL_ID,
+      DISCORD_WEBHOOK_URL,
+      WEBHOOK_TOKEN,
+      lcClient,
+      leaderboardClient,
+    );
 
-  await Router.serve(
-    {
-      port: PORT,
-      onListen: api.makeOnListen(
-        PORT,
-        DISCORD_APPLICATION_ID,
-        DISCORD_TOKEN,
-      ),
-    },
-    r,
-  )
-    .finished
-    .finally(() => {
-      kv.close();
-    });
+    await Router.serve(
+      {
+        port: PORT,
+        onListen: api.makeOnListen(
+          PORT,
+          DISCORD_APPLICATION_ID,
+          DISCORD_TOKEN,
+        ),
+      },
+      r,
+    )
+      .finished
+      .finally(() => {
+        kv.close();
+      });
+  } catch (error) {
+    // TODO: Resolve this error.
+    //
+    // Task start deno run -A --unstable main.ts
+    // - Discord application information: https://discord.com/developers/applications/1130004756153253960/
+    // - Interaction endpoint: http://127.0.0.1:8080/
+    // - Invite LC-Dailies to your server: http://127.0.0.1:8080/invite
+    // - Latest season: http://127.0.0.1:8080/seasons/latest
+    // SyntaxError: Unexpected token 'O', "OK" is not valid JSON
+    //     at parse (<anonymous>)
+    //     at packageData (ext:deno_fetch/22_body.js:369:14)
+    //     at consumeBody (ext:deno_fetch/22_body.js:246:12)
+    //     at eventLoopTick (ext:core/01_core.js:183:11)
+    console.log(error);
+  }
 }

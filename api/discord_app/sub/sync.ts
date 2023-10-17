@@ -73,12 +73,14 @@ export function makeSyncInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
+      content: "",
       embeds: [
         {
-          title: `Season \`${r.season.id}\` synced ${
-            toDiscordTimestamp(new Date(r.season.synced_at!))
-          }`,
-          description: formatScores(r.season),
+          title:
+            `Leaderboard \`${r.season.id}\` for week of ${r.season.start_date} synced ${
+              toDiscordTimestamp(new Date(r.season.synced_at!))
+            }`,
+          description: ["```", formatScores(r.season), "```"].join("\n"),
         },
       ],
     },

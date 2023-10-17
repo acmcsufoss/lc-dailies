@@ -168,7 +168,11 @@ export function makeDailyWebhookEmbeds(
   if (options.season) {
     embed.fields?.push({
       name: `Leaderboard for week of ${options.season.start_date}`,
-      value: leaderboard.formatScores(options.season),
+      value: [
+        "```",
+        leaderboard.formatScores(options.season),
+        "```",
+      ].join("\n"),
     });
   }
 
