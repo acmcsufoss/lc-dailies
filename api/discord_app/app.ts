@@ -166,7 +166,8 @@ async function handleSyncSubcommand(
     );
 
     const interactionResponse = makeSyncInteractionResponse(syncResponse);
-    console.log({ interactionResponse, syncResponse });
+    console.log(syncResponse);
+    console.log(interactionResponse);
     return interactionResponse;
   } catch (error) {
     console.error(error);
