@@ -149,10 +149,46 @@ export function formatScores(season: api.Season): string {
     .map(([playerID, score], i) => {
       const player = season.players[playerID];
       const formattedScore = String(score).padStart(3, " ");
+      const formattedSubmissions = formatSubmissions(season, playerID);
       const formattedRank = formatRank(i + 1);
-      return `${formattedScore} ${player.lc_username} (${formattedRank})`;
+      return `${formattedScore} ${formattedSubmissions} ${player.lc_username} (${formattedRank})`;
     })
     .join("\n");
+}
+
+/**
+ * formatSubmissions formats the submissions of a player in a season.
+ */
+export function formatSubmissions(
+  season: api.Season,
+  playerID: string,
+): string {
+  const daysToQuestionIDsMap = Object.entries(season.questions)
+    .reduce((questions, [questionID, question]) => {
+      const date = new Date(question.date + " GMT");
+      questions[date.getUTCDay()] = questionID;
+      return questions;
+    }, {} as Record<number, string>);
+
+  let result = "";
+  for (let i = 0; i < 7; i++) {
+    const questionID = daysToQuestionIDsMap[i];
+    if (!questionID) {
+      result += formatDifficulty();
+      continue;
+    }
+
+    const submission = season.submissions[playerID]?.[questionID];
+    if (!submission) {
+      result += formatDifficulty();
+      continue;
+    }
+
+    const question = season.questions[questionID];
+    result += formatDifficulty(question.difficulty);
+  }
+
+  return result;
 }
 
 /**
@@ -195,6 +231,29 @@ export function formatRank(rank: number): string {
 
     default: {
       return `${rank}th`;
+    }
+  }
+}
+
+/**
+ * formatDifficulty formats the difficulty of a question.
+ */
+export function formatDifficulty(difficulty?: string): string {
+  switch (difficulty) {
+    case "Easy": {
+      return "🟢";
+    }
+
+    case "Medium": {
+      return "🟠";
+    }
+
+    case "Hard": {
+      return "🔴";
+    }
+
+    default: {
+      return "·";
     }
   }
 }
