@@ -1,7 +1,6 @@
 import type {
   APIInteraction,
   APIInteractionResponse,
-  APIInteractionResponseDeferredChannelMessageWithSource,
   APIUser,
   RESTPostAPIApplicationCommandsJSONBody,
 } from "lc-dailies/deps.ts";
@@ -161,11 +160,18 @@ async function handleSyncSubcommand(
   leaderboardClient: leaderboard.LeaderboardClient,
   options: ReturnType<typeof parseSyncOptions>,
 ): Promise<APIInteractionResponse> {
-  const syncResponse = await leaderboardClient.sync(
-    options.season_id,
-  );
+  try {
+    const syncResponse = await leaderboardClient.sync(
+      options.season_id,
+    );
 
-  return makeSyncInteractionResponse(syncResponse);
+    const interactionResponse = makeSyncInteractionResponse(syncResponse);
+    console.log({ interactionResponse, syncResponse });
+    return interactionResponse;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 /**
