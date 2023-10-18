@@ -73,15 +73,14 @@ export function makeSyncInteractionResponse(
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
-      embeds: [
-        {
-          title:
-            `Leaderboard \`${r.season.id}\` for week of ${r.season.start_date} synced ${
-              toDiscordTimestamp(new Date(r.season.synced_at!))
-            }`,
-          description: ["```", formatScores(r.season), "```"].join("\n"),
-        },
-      ],
+      content: [
+        `# Synced leaderboard [\`${r.season.id}\`](https://lc-dailies.deno.dev/seasons/${r.season.id}) for week of ${r.season.start_date} synced ${
+          toDiscordTimestamp(new Date(r.season.synced_at!))
+        }`,
+        "```",
+        formatScores(r.season),
+        "```",
+      ].join("\n"),
     },
   };
 }
