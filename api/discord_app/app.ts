@@ -126,13 +126,7 @@ export function makeDiscordAppHandler(
           }
 
           default: {
-            // Acknowledge the interaction.
-            return Response.json(
-              {
-                type: InteractionResponseType.DeferredChannelMessageWithSource,
-                data: { flags: MessageFlags.Ephemeral },
-              } satisfies APIInteractionResponseDeferredChannelMessageWithSource,
-            );
+            throw new Error("Invalid subcommand");
           }
         }
       }
