@@ -8,6 +8,7 @@ await emptyDir("./npm");
 await build({
   entryPoints: [
     "./api/types.ts",
+    "./lib/leaderboard/mod.ts",
   ],
   outDir: "./npm",
   test: false,
