@@ -8,7 +8,7 @@ import {
   InteractionResponseType,
   SECOND,
 } from "lc-dailies/deps.ts";
-import * as api from "lc-dailies/api/mod.ts";
+import * as api from "../../mod.ts";
 import { formatScores } from "lc-dailies/lib/leaderboard/mod.ts";
 
 export const SYNC = "sync";

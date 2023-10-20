@@ -1,5 +1,5 @@
 import { SECOND, WEEK } from "lc-dailies/deps.ts";
-import type * as api from "lc-dailies/api/mod.ts";
+import type * as api from "../api/mod.ts";
 import type { LCClient } from "lc-dailies/lib/lc/mod.ts";
 import {
   calculateScores,

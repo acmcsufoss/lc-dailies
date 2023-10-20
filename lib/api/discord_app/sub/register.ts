@@ -7,7 +7,7 @@ import {
   ApplicationCommandOptionType,
   InteractionResponseType,
 } from "lc-dailies/deps.ts";
-import type * as api from "lc-dailies/api/mod.ts";
+import type * as api from "../../mod.ts";
 
 export const REGISTER = "register";
 export const REGISTER_DESCRIPTION = "Register your Leetcode account";

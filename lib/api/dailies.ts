@@ -1,5 +1,5 @@
 import { type APIEmbed } from "lc-dailies/deps.ts";
-import * as api from "lc-dailies/api/mod.ts";
+import * as api from "./mod.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as lc from "lc-dailies/lib/lc/mod.ts";

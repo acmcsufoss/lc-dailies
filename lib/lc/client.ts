@@ -1,4 +1,4 @@
-import type { Question } from "lc-dailies/api/mod.ts";
+import type { Question } from "../api/mod.ts";
 import { makeQuestionURL } from "./urls.ts";
 import { gql } from "./gql.ts";
 

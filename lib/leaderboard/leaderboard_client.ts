@@ -1,4 +1,4 @@
-import type * as api from "lc-dailies/api/mod.ts";
+import type * as api from "../api/mod.ts";
 
 /**
  * LeaderboardClient is the client interface for the leaderboard.
