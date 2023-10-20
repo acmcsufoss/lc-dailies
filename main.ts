@@ -1,7 +1,7 @@
 import { DenoKvLeaderboardClient } from "lc-dailies/lib/leaderboard/denokv/mod.ts";
 import { Router } from "lc-dailies/lib/router/mod.ts";
 import * as lc from "lc-dailies/lib/lc/mod.ts";
-import * as api from "./lib/api/mod.ts";
+import * as api from "lc-dailies/lib/api/mod.ts";
 import {
   DISCORD_APPLICATION_ID,
   DISCORD_CHANNEL_ID,

@@ -11,6 +11,12 @@
     "cf:serve": "deno run -A tasks/cf/dailies/serve/main.ts",
     "dnt": "deno run -A tasks/dnt/main.ts"
   },
+  "fmt": {
+    "exclude": ["./npm"]
+  },
+  "lint": {
+    "exclude": ["./npm"]
+  },
   "imports": {
     "lc-dailies/": "./"
   }

@@ -1,5 +1,5 @@
 import { DAY } from "lc-dailies/deps.ts";
-import type * as api from "../api/mod.ts";
+import type * as api from "lc-dailies/lib/api/mod.ts";
 
 /**
  * CalculateScoresOptions is the options for calculateScores.
