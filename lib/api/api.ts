@@ -65,11 +65,11 @@ export function makeAPIRouter(
     )
     .get(
       new URLPattern({ pathname: "/seasons" }),
-      makeSeasonsGetHandler(leaderboardClient),
+      withCORS(makeSeasonsGetHandler(leaderboardClient)),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
-      makeSeasonGetHandler(leaderboardClient),
+      withCORS(makeSeasonGetHandler(leaderboardClient)),
     );
 }
 
@@ -114,4 +114,22 @@ export function makeOnListen(
 
 function makeInviteURL(applicationID: string) {
   return `https://discord.com/api/oauth2/authorize?client_id=${applicationID}&scope=applications.commands`;
+}
+
+/**
+ * withCORS wraps a handler with common CORS headers.
+ */
+function withCORS(
+  handle: router.RouterHandler["handle"],
+): router.RouterHandler["handle"] {
+  return async function (request: router.RouterRequest) {
+    const response = await handle(request);
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST");
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
+    return response;
+  };
 }
