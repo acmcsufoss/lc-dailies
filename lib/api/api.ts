@@ -50,19 +50,26 @@ export function makeAPIRouter(
       ),
     )
     .get(
+      new URLPattern({ pathname: "/invite" }),
+      () =>
+        Promise.resolve(
+          Response.redirect(makeInviteURL(discordApplicationID)),
+        ),
+    )
+    .get(
+      new URLPattern({ pathname: "/source" }),
+      () =>
+        Promise.resolve(
+          Response.redirect("https://github.com/acmcsufoss/lc-dailies"),
+        ),
+    )
+    .get(
       new URLPattern({ pathname: "/seasons" }),
       makeSeasonsGetHandler(leaderboardClient),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
       makeSeasonGetHandler(leaderboardClient),
-    )
-    .get(
-      new URLPattern({ pathname: "/invite" }),
-      () =>
-        Promise.resolve(
-          Response.redirect(makeInviteURL(discordApplicationID)),
-        ),
     );
 }
 
