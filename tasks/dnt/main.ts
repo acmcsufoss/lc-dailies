@@ -13,6 +13,8 @@ await build({
   outDir: "./npm",
   test: false,
   typeCheck: false,
+  filterDiagnostic: () => false,
+  importMap: "./import_map.json",
   // see JS docs for overview and more options
   shims: { deno: true },
   package: {
