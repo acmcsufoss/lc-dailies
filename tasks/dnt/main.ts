@@ -6,15 +6,10 @@ import { build, emptyDir } from "https://deno.land/x/dnt@0.38.1/mod.ts";
 await emptyDir("./npm");
 
 await build({
-  entryPoints: [
-    "./lib/api/types.ts",
-    "./lib/leaderboard/mod.ts",
-  ],
+  entryPoints: ["./lib/api/types.ts"],
   outDir: "./npm",
+  importMap: "./deno.jsonc",
   test: false,
-  typeCheck: false,
-  filterDiagnostic: () => false,
-  importMap: "./import_map.json",
   // see JS docs for overview and more options
   shims: { deno: true },
   package: {
@@ -31,8 +26,9 @@ await build({
       url: "https://github.com/acmcsufoss/lc-dailies/issues",
     },
   },
+  postBuild() {
+    // post build steps
+    Deno.copyFileSync("LICENSE", "npm/LICENSE");
+    Deno.copyFileSync("README.md", "npm/README.md");
+  },
 });
-
-// post build steps
-Deno.copyFileSync("LICENSE", "npm/LICENSE");
-Deno.copyFileSync("README.md", "npm/README.md");

@@ -1,6 +1,5 @@
 {
   "lock": "./deno.lock",
-  "importMap": "./import_map.json",
   "tasks": {
     "udd": "deno run -r --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd/main.ts deps.ts && deno task lock",
     "lock": "deno cache --lock-write deps.ts",
@@ -11,6 +10,9 @@
     "cf:push": "deno run -A tasks/cf/dailies/push/main.ts",
     "cf:serve": "deno run -A tasks/cf/dailies/serve/main.ts",
     "dnt": "deno run -A tasks/dnt/main.ts"
+  },
+  "imports": {
+    "lc-dailies/": "./"
   },
   "fmt": {
     "exclude": ["./npm"]

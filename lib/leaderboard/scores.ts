@@ -1,5 +1,4 @@
-import { DAY } from "lc-dailies/deps.ts";
-import type * as api from "lc-dailies/lib/api/mod.ts";
+import type * as api from "lc-dailies/lib/api/types.ts";
 
 /**
  * CalculateScoresOptions is the options for calculateScores.
@@ -128,7 +127,7 @@ export function makeDefaultCalculateScoresOptions(
     submissions,
     possibleHighestScore: 100,
     possibleLowestScore: 50,
-    duration: DAY,
+    duration: 1_000 * 60 * 60 * 24, // 1 day.
     modifyScore: defaultModifyScore,
   };
 }
