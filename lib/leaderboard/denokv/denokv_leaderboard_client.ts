@@ -2,7 +2,7 @@ import { DAY, ulid, WEEK } from "lc-dailies/deps.ts";
 import type * as api from "lc-dailies/lib/api/mod.ts";
 import type { LeaderboardClient } from "lc-dailies/lib/leaderboard/mod.ts";
 import { sync } from "lc-dailies/lib/leaderboard/mod.ts";
-import { LCClient } from "lc-dailies/lib/lc/mod.ts";
+import type { LCClientInterface } from "lc-dailies/lib/lc/mod.ts";
 
 /**
  * DenoKvLeaderboardClient is the client for the leaderboard.
@@ -16,7 +16,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     /**
      * lc is the Leetcode client.
      */
-    private readonly lc: LCClient,
+    private readonly lc: LCClientInterface,
     /**
      * restartMS is the milliseconds to restart the leaderboard.
      *

@@ -1,6 +1,6 @@
 import { SECOND, WEEK } from "lc-dailies/deps.ts";
 import type * as api from "lc-dailies/lib/api/mod.ts";
-import type { LCClient } from "lc-dailies/lib/lc/mod.ts";
+import type { LCClientInterface } from "lc-dailies/lib/lc/mod.ts";
 import {
   calculateScores,
   makeDefaultCalculateScoresOptions,
@@ -23,7 +23,7 @@ export interface SyncOptions {
   /**
    * lcClient is the Leetcode client.
    */
-  lcClient: LCClient;
+  lcClient: LCClientInterface;
 
   /**
    * questionsFetchAmount is the amount of questions to fetch from Leetcode.
