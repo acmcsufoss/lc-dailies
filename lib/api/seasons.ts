@@ -40,3 +40,36 @@ export function makeSeasonGetHandler(
     return new Response(JSON.stringify(season));
   };
 }
+
+/**
+ * makeSeasonTxtGetHandler makes a handler that returns a plaintext
+ * representation of a season.
+ */
+export function makeSeasonTxtGetHandler(
+  leaderboardClient: leaderboard.LeaderboardClient,
+) {
+  /**
+   * handleGetSeasonTxt handles GET requests to the season.txt endpoint.
+   */
+  return async function handleGetSeasonTxt(
+    request: router.RouterRequest,
+  ): Promise<Response> {
+    const seasonID = request.params["season_id"];
+    if (!seasonID) {
+      return new Response("Missing season ID", { status: 400 });
+    }
+
+    const season =
+      await (seasonID === "latest"
+        ? leaderboardClient.getLatestSeason()
+        : leaderboardClient.getSeason(seasonID));
+    if (!season) {
+      return new Response("Season not found", { status: 404 });
+    }
+
+    const text = leaderboard.formatScores(season);
+    return new Response(text, {
+      headers: { "Content-Type": "text/plain" },
+    });
+  };
+}
