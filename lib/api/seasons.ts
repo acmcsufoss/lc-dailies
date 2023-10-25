@@ -1,3 +1,4 @@
+import * as api from "lc-dailies/lib/api/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 
@@ -33,10 +34,57 @@ export function makeSeasonGetHandler(
       return new Response("Missing season ID", { status: 400 });
     }
 
-    const season =
-      await (seasonID === "latest"
-        ? leaderboardClient.getLatestSeason()
-        : leaderboardClient.getSeason(seasonID));
+    const season = await getSeasonByIDOrLatest(leaderboardClient, seasonID);
     return new Response(JSON.stringify(season));
   };
+}
+
+/**
+ * makeSeasonTxtGetHandler makes a handler that returns a plaintext
+ * representation of a season.
+ */
+export function makeSeasonTxtGetHandler(
+  leaderboardClient: leaderboard.LeaderboardClient,
+) {
+  /**
+   * handleGetSeasonTxt handles GET requests to the season.txt endpoint.
+   */
+  return async function handleGetSeasonTxt(
+    request: router.RouterRequest,
+  ): Promise<Response> {
+    const seasonID = request.params["season_id"];
+    if (!seasonID) {
+      return new Response("Missing season ID", { status: 400 });
+    }
+
+    const season = await getSeasonByIDOrLatest(leaderboardClient, seasonID);
+    if (!season) {
+      return new Response("Season not found", { status: 404 });
+    }
+
+    const text = leaderboard.formatScores(season);
+    return new Response(text, {
+      headers: { "Content-Type": "text/plain" },
+    });
+  };
+}
+
+async function getSeasonByIDOrLatest(
+  leaderboardClient: leaderboard.LeaderboardClient,
+  seasonID: string | undefined,
+): Promise<api.Season | null> {
+  const season = !seasonID || seasonID === "latest"
+    ? await leaderboardClient.getLatestSeason()
+    : await leaderboardClient.getSeason(seasonID);
+  if (season && !season.scores) {
+    season.scores = await leaderboard.calculateScores(
+      leaderboard.makeDefaultCalculateScoresOptions(
+        season.players,
+        season.questions,
+        season.submissions,
+      ),
+    );
+  }
+
+  return season;
 }

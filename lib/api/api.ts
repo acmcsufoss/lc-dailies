@@ -7,7 +7,11 @@ import {
   makeDailyWebhookPostHandler,
   makeManualDailyWebhookPostHandler,
 } from "./dailies.ts";
-import { makeSeasonGetHandler, makeSeasonsGetHandler } from "./seasons.ts";
+import {
+  makeSeasonGetHandler,
+  makeSeasonsGetHandler,
+  makeSeasonTxtGetHandler,
+} from "./seasons.ts";
 
 /**
  * makeAPIRouter creates a router which handles requests on the
@@ -66,6 +70,10 @@ export function makeAPIRouter(
     .get(
       new URLPattern({ pathname: "/seasons" }),
       withCORS(makeSeasonsGetHandler(leaderboardClient)),
+    )
+    .get(
+      new URLPattern({ pathname: "/seasons/:season_id.txt" }),
+      withCORS(makeSeasonTxtGetHandler(leaderboardClient)),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
