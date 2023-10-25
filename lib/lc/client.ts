@@ -1,46 +1,24 @@
-import type { Question } from "lc-dailies/lib/api/mod.ts";
+import type {
+  LCClientInterface,
+  LCQuestion,
+  LCSubmission,
+} from "./client_interface.ts";
 import { makeQuestionURL } from "./urls.ts";
 import { gql } from "./gql.ts";
 
 /**
- * LCQuestion is an alias interface for a Leetcode question.
- */
-export type LCQuestion = Question;
-
-/**
- * LCSubmission is the representation of Leetcode's recent submission per user.
- */
-export interface LCSubmission {
-  /**
-   * id is the id details of the submission.
-   */
-  id: string;
-
-  /**
-   * name is the name of the question of the submission.
-   */
-  name: string;
-
-  /**
-   * title is the title of the question of the submission.
-   */
-  title: string;
-
-  /**
-   * timestamp is the time the submission was submitted.
-   */
-  timestamp: string;
-}
-
-/**
  * LCClient is the client for Leetcode.
  */
-export class LCClient {
+export class LCClient implements LCClientInterface {
+  constructor(
+    private readonly fetch: typeof window.fetch = window.fetch.bind(window),
+  ) {}
+
   /**
    * verifyUser verifies the user by username.
    */
   public async verifyUser(username: string): Promise<boolean> {
-    const response = await fetch(`https://leetcode.com/${username}/`);
+    const response = await this.fetch(`https://leetcode.com/${username}/`);
     return response.status === 200;
   }
 
@@ -142,7 +120,7 @@ export class LCClient {
        */
       .then((json) =>
         json.data.recentAcSubmissionList
-          .map((
+          ?.map((
             acSubmission: {
               id: string;
               title: string;
@@ -154,7 +132,7 @@ export class LCClient {
             name: acSubmission.titleSlug,
             title: acSubmission.title,
             timestamp: acSubmission.timestamp,
-          }))
+          })) ?? []
       );
   }
 }

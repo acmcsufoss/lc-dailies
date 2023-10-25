@@ -1,4 +1,8 @@
-import type { LCClient, LCQuestion, LCSubmission } from "./client.ts";
+import type {
+  LCClientInterface,
+  LCQuestion,
+  LCSubmission,
+} from "./client_interface.ts";
 
 export const FAKE_LC_USERNAME = "fake_lc_username";
 export const FAKE_LC_QUESTION_NAME = "fake_lc_question_name";
@@ -29,7 +33,7 @@ export const FAKE_RECENT_SUBMISSIONS: LCSubmission[] = [
 /**
  * FakeLCClient is a fake implementation of LCClient.
  */
-export class FakeLCClient implements LCClient {
+export class FakeLCClient implements LCClientInterface {
   public verifyUser(username: string): Promise<boolean> {
     return Promise.resolve(username === FAKE_LC_USERNAME);
   }
