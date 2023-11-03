@@ -146,6 +146,7 @@ export function makeDailyWebhookEmbeds(
     title: options.question.title,
     url: options.question.url,
     description: `Daily Leetcode question for ${options.question.date}.`,
+    color: getColorByDifficulty(options.question.difficulty),
     fields: [
       {
         name: "Difficulty",
@@ -177,4 +178,23 @@ export function makeDailyWebhookEmbeds(
   }
 
   return [embed];
+}
+
+/**
+ * getColorByDifficulty returns a color for a difficulty.
+ */
+export function getColorByDifficulty(difficulty: string): number | undefined {
+  switch (difficulty) {
+    case "Easy": {
+      return 0x339933;
+    }
+
+    case "Medium": {
+      return 0xff6600;
+    }
+
+    case "Hard": {
+      return 0xe91e63;
+    }
+  }
 }
