@@ -103,6 +103,7 @@ async function executeDailyWebhook(
   // Format the webhook embed.
   const embeds = makeDailyWebhookEmbeds({
     question,
+    questionDate,
     season: isSunday ? (syncedSeason ?? storedSeason) : null,
   });
 
@@ -131,6 +132,11 @@ export interface DailyWebhookOptions {
   question: api.Question;
 
   /**
+   * questionDate is the date of the question.
+   */
+  questionDate: Date;
+
+  /**
    * season is the season to recap.
    */
   season: api.Season | null;
@@ -155,7 +161,7 @@ export function makeDailyWebhookEmbeds(
       },
       {
         name: "Here is a snack to get your brain working!",
-        value: snacks.pickRandom(),
+        value: snacks.pickRandom(options.questionDate),
         inline: true,
       },
       {
