@@ -66,11 +66,7 @@ No further action is needed on your part to submit your Leetcode solutions. A
 daily background process automatically syncs our stored leaderboard data with
 the latest submissions data on Leetcode.
 
-> **NOTE**
->
-> Soon, our leaderboard will be visible on the ACM CSUF website at
-> <https://acmcsuf.com/lc-dailies>. Follow issue
-> [#36](https://github.com/acmcsufoss/lc-dailies/issues/36) for updates.
+Our leaderboards are visible on the ACM at CSUF website at <https://acmcsuf.com/lc-dailies>.
 
 ---
 
