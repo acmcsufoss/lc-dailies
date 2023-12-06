@@ -139,6 +139,7 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     let seasonStartDate: Date;
     let isLatestSeason: boolean;
     let seasonResult: Deno.KvEntryMaybe<api.Season> | null;
+    const players = await this.listPlayers();
     if (seasonID) {
       seasonResult = await this.kv.get<api.Season>([
         LeaderboardKvPrefix.SEASONS,
@@ -159,7 +160,6 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
 
       if (!isPresentAndLatest && seasonResult?.value) {
         // Sync old season.
-        const players = await this.listPlayers();
         const oldSeason = await sync({
           lcClient: this.lc,
           players,
@@ -182,7 +182,6 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     }
 
     // Sync the season.
-    const players = await this.listPlayers();
     season = await sync({ lcClient: this.lc, players, season });
     season.synced_at = referenceDate.toUTCString();
 
