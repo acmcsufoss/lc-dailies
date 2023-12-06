@@ -28,9 +28,9 @@ export class LCClient implements LCClientInterface {
   public async getDailyQuestion(): Promise<LCQuestion> {
     const date = new Date();
     const [question] = await this.listDailyQuestions(
-      1,
       date.getFullYear(),
       date.getMonth() + 1,
+      1,
     );
     if (!question) {
       throw new Error("No daily question found");
@@ -43,9 +43,9 @@ export class LCClient implements LCClientInterface {
    * listDailyQuestions gets the last `amount` of daily questions from Leetcode since `asOfYear` and `asOfMonth`.
    */
   public async listDailyQuestions(
-    limit: number,
     asOfYear: number,
     asOfMonth: number,
+    limit = 10,
   ): Promise<LCQuestion[]> {
     const dailies: LCQuestion[] = [];
     let currentYear = asOfYear;
