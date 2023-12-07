@@ -1,4 +1,4 @@
-import { type APIEmbed } from "lc-dailies/deps.ts";
+import { type APIEmbed, WEEK } from "lc-dailies/deps.ts";
 import * as api from "./mod.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
@@ -90,11 +90,20 @@ async function executeDailyWebhook(
 
   // If the season is ongoing, then sync it.
   const referenceDate = new Date();
-  const isLatestSeason = storedSeason && leaderboard.checkDateInWeek(
-    new Date(storedSeason.start_date).getTime(),
-    referenceDate.getTime(),
-  );
-  const syncedSeason = isLatestSeason
+
+  let isLatestSeason = false;
+  if (storedSeason) {
+    const seasonStartDate = new Date(storedSeason.start_date).getTime();
+    const seasonEndDate = seasonStartDate + WEEK;
+    isLatestSeason = leaderboard.checkDateBetween(
+      seasonStartDate,
+      seasonEndDate,
+      referenceDate.getTime(),
+    );
+  }
+
+  // Sync the season if it is ongoing and not synced.
+  const syncedSeason = isLatestSeason && storedSeason
     ? await leaderboardClient
       .sync(storedSeason.id)
       .then((response) => response.season)
