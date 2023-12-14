@@ -1,3 +1,6 @@
+import type { ResponseResolvable } from "./responses.ts";
+import { resolveResponse, RESPONSE_404 } from "./responses.ts";
+
 /**
  * RouterHandler is a function which can be registered to a specific route in the
  * router. The router will call the handler with the request object and any
@@ -50,9 +53,8 @@ export type RouterHandlerMap = Map<URLPattern, RouterHandler>;
 export class Router {
   constructor(
     public handlerMap: RouterHandlerMap = new Map(),
-    public readonly response404: Response = new Response("Not found", {
-      status: 404,
-    }),
+    public readonly response404: ResponseResolvable = RESPONSE_404,
+    public readonly resonse5xx: ResponseResolvable | undefined = undefined,
   ) {}
 
   /**
@@ -117,22 +119,22 @@ export class Router {
         continue;
       }
 
-      const url = new URL(request.url);
       const params = Object.entries(match.pathname.groups)
         .reduce((acc, [key, value]) => {
           if (value) acc[key] = value;
           return acc;
         }, {} as { [key: string]: string });
-      const response = await handler.handle({
-        request,
-        url,
-        params,
-      });
+      return await resolveRouterHandler(handler, request, params)
+        .catch((error) => {
+          if (!(error instanceof Error) || !this.resonse5xx) {
+            throw error;
+          }
 
-      return response;
+          return resolveResponse(this.resonse5xx, request);
+        });
     }
 
-    return this.response404;
+    return await resolveResponse(this.response404, request);
   }
 
   /**
@@ -148,4 +150,20 @@ export class Router {
       router.execute.bind(router),
     );
   }
+}
+
+/**
+ * resolveRouterHandler resolves a RouterHandler to a Response.
+ */
+async function resolveRouterHandler(
+  handler: RouterHandler,
+  request: Request,
+  params: Record<string, string>,
+): Promise<Response> {
+  const url = new URL(request.url);
+  return await handler.handle({
+    request,
+    url,
+    params,
+  });
 }
