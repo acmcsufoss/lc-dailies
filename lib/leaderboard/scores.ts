@@ -52,7 +52,7 @@ export function calculateSubmissionScore(
   const questionDate = new Date(`${question.date} GMT`);
   const submissionDate = new Date(submission.date);
   const msElapsed = submissionDate.getTime() - questionDate.getTime();
-  const ratio = Math.min(Math.max(msElapsed / options.duration, 0), 1);
+  const ratio = 1 - Math.min(Math.max(msElapsed / options.duration, 0), 1);
   const score = ((options.possibleHighestScore - options.possibleLowestScore) *
     ratio) + options.possibleLowestScore;
   if (!options.modifyScore) {
