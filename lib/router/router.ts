@@ -142,7 +142,7 @@ export class Router {
   public static serve(
     serveOptions: Deno.ServeOptions,
     router: Router,
-  ): Deno.Server {
+  ): Deno.HttpServer {
     return Deno.serve(
       serveOptions,
       router.execute.bind(router),

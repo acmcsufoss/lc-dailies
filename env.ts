@@ -8,13 +8,6 @@ await load({ export: true });
 export const PORT = parseInt(Deno.env.get("PORT") || "8080");
 
 /**
- * WEBHOOK_TOKEN is used to authenticate requests to execute our webhook.
- *
- * Usage: POST /daily/:token
- */
-export const WEBHOOK_TOKEN = Deno.env.get("WEBHOOK_TOKEN")!;
-
-/**
  * DISCORD_APPLICATION_ID is the application ID of the Discord application.
  */
 export const DISCORD_APPLICATION_ID = Deno.env.get("DISCORD_APPLICATION_ID")!;

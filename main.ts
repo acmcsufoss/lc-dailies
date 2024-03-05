@@ -7,10 +7,8 @@ import {
   DISCORD_CHANNEL_ID,
   DISCORD_PUBLIC_KEY,
   DISCORD_TOKEN,
-  DISCORD_WEBHOOK_URL,
   KV_URL,
   PORT,
-  WEBHOOK_TOKEN,
 } from "lc-dailies/env.ts";
 
 if (import.meta.main) {
@@ -24,17 +22,14 @@ async function main() {
     kv,
     lcClient,
   );
-  const r = api.makeAPIRouter(
-    DISCORD_APPLICATION_ID,
-    DISCORD_PUBLIC_KEY,
-    DISCORD_CHANNEL_ID,
-    DISCORD_WEBHOOK_URL,
-    WEBHOOK_TOKEN,
-    lcClient,
+  const router = api.makeAPIRouter({
+    discordApplicationID: DISCORD_APPLICATION_ID,
+    discordPublicKey: DISCORD_PUBLIC_KEY,
+    discordChannelID: DISCORD_CHANNEL_ID,
     leaderboardClient,
-  );
+  });
 
-  await Router.serve(
+  Router.serve(
     {
       port: PORT,
       onListen: api.makeOnListen(
@@ -43,10 +38,8 @@ async function main() {
         DISCORD_TOKEN,
       ),
     },
-    r,
+    router,
   )
     .finished
-    .finally(() => {
-      kv.close();
-    });
+    .finally(() => kv.close());
 }

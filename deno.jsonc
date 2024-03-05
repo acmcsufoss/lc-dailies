@@ -7,8 +7,6 @@
     "test": "deno test --unstable",
     "start": "deno run -A --unstable main.ts",
     "ngrok": "ngrok http 8080",
-    "cf:push": "deno run -A tasks/cf/dailies/push/main.ts",
-    "cf:serve": "deno run -A tasks/cf/dailies/serve/main.ts",
     "dnt": "deno run -A tasks/dnt/main.ts"
   },
   "imports": {

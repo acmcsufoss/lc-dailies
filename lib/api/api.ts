@@ -1,63 +1,41 @@
 import * as discord from "lc-dailies/lib/discord/mod.ts";
-import * as lc from "lc-dailies/lib/lc/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import * as router from "lc-dailies/lib/router/mod.ts";
 import * as discord_app from "./discord_app/mod.ts";
-import {
-  makeDailyWebhookPostHandler,
-  makeManualDailyWebhookPostHandler,
-} from "./dailies.ts";
 import {
   makeSeasonGetHandler,
   makeSeasonsGetHandler,
   makeSeasonTxtGetHandler,
 } from "./seasons.ts";
 
+export interface APIRouterOptions {
+  discordApplicationID: string;
+  discordPublicKey: string;
+  discordChannelID: string;
+  leaderboardClient: leaderboard.LeaderboardClient;
+}
+
 /**
  * makeAPIRouter creates a router which handles requests on the
  * LC-Dailies API.
  */
-export function makeAPIRouter(
-  discordApplicationID: string,
-  discordPublicKey: string,
-  discordChannelID: string,
-  webhookURL: string,
-  webhookToken: string,
-  lcClient: lc.LCClient,
-  leaderboardClient: leaderboard.LeaderboardClient,
-) {
+export function makeAPIRouter(options: APIRouterOptions) {
   return new router.Router()
     .post(
       new URLPattern({ pathname: "/" }),
       discord_app.withErrorResponse(
         discord_app.makeDiscordAppHandler(
-          leaderboardClient,
-          discordPublicKey,
-          discordChannelID,
+          options.leaderboardClient,
+          options.discordPublicKey,
+          options.discordChannelID,
         ),
-      ),
-    )
-    .post(
-      new URLPattern({ pathname: "/webhook" }),
-      makeManualDailyWebhookPostHandler(
-        lcClient,
-        leaderboardClient,
-      ),
-    )
-    .post(
-      new URLPattern({ pathname: "/webhook/:token" }),
-      makeDailyWebhookPostHandler(
-        lcClient,
-        leaderboardClient,
-        webhookURL,
-        webhookToken,
       ),
     )
     .get(
       new URLPattern({ pathname: "/invite" }),
       () =>
         Promise.resolve(
-          Response.redirect(makeInviteURL(discordApplicationID)),
+          Response.redirect(makeInviteURL(options.discordApplicationID)),
         ),
     )
     .get(
@@ -69,15 +47,15 @@ export function makeAPIRouter(
     )
     .get(
       new URLPattern({ pathname: "/seasons" }),
-      withCORS(makeSeasonsGetHandler(leaderboardClient)),
+      withCORS(makeSeasonsGetHandler(options.leaderboardClient)),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id.txt" }),
-      withCORS(makeSeasonTxtGetHandler(leaderboardClient)),
+      withCORS(makeSeasonTxtGetHandler(options.leaderboardClient)),
     )
     .get(
       new URLPattern({ pathname: "/seasons/:season_id" }),
-      withCORS(makeSeasonGetHandler(leaderboardClient)),
+      withCORS(makeSeasonGetHandler(options.leaderboardClient)),
     );
 }
 
