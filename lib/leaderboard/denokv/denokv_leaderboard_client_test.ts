@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects, DAY } from "lc-dailies/deps.ts";
+import { assertEquals, assertRejects, DAY, WEEK } from "lc-dailies/deps.ts";
 import * as fake_lc from "lc-dailies/lib/lc/fake_client.ts";
 import type { Season } from "lc-dailies/lib/api/mod.ts";
 import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
@@ -60,32 +60,47 @@ Deno.test("DenoKvLeaderboardClient", async (t) => {
     );
     const syncResponse = await client
       .sync(undefined, twoDaysAfterFakeSeasonStartDate);
-    assertSeasonsEqual(syncResponse.season, FAKE_SEASON);
+    assertSeasonsEquals(syncResponse.season, FAKE_SEASON);
   });
 
   let seasonID: string | undefined;
   await t.step("getLatestSeason", async () => {
     const season = await client.getLatestSeason();
     seasonID = season?.id;
-    assertSeasonsEqual(season, FAKE_SEASON);
+    assertSeasonsEquals(season, FAKE_SEASON);
+  });
+
+  await t.step("sync again", async () => {
+    const weekAfterFakeSeasonStartDate = new Date(
+      FAKE_SEASON_START_DATE.getTime() + WEEK,
+    );
+    const syncResponse = await client
+      .sync(undefined, weekAfterFakeSeasonStartDate);
+    assertEquals(
+      syncResponse.season.start_date,
+      "Sun, 06 Aug 2023 00:00:00 GMT",
+    );
+    assertEquals(syncResponse.season.submissions, {});
   });
 
   await t.step("listSeasons", async () => {
     const seasons = await client.listSeasons();
+    assertEquals(seasons.length, 2);
+
     const season = seasons[0];
-    assertSeasonsEqual(season, FAKE_SEASON);
+    assertSeasonsEquals(season, FAKE_SEASON);
   });
 
   await t.step("getSeason", async () => {
     const season = await client.getSeason(seasonID!);
-    assertSeasonsEqual(season, FAKE_SEASON);
+    assertSeasonsEquals(season, FAKE_SEASON);
   });
 
   // Dispose of the resource.
   kv.close();
 });
 
-function assertSeasonsEqual(
+function assertSeasonsEquals(
   actualSeason: Season | null,
   expectedSeason: Season,
 ): void {

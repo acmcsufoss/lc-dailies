@@ -48,9 +48,9 @@ export interface LCClientInterface {
    * listDailyQuestions gets the last `amount` of daily questions from Leetcode since `asOfYear` and `asOfMonth`.
    */
   listDailyQuestions(
-    limit: number,
     asOfYear: number,
     asOfMonth: number,
+    limit?: number,
   ): Promise<LCQuestion[]>;
 
   /**

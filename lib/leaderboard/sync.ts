@@ -42,9 +42,9 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
   const seasonStartDate = new Date(options.season.start_date);
   const seasonEndDate = new Date(seasonStartDate.getTime() + WEEK);
   const recentDailyQuestions = await options.lcClient.listDailyQuestions(
-    options.questionsFetchAmount ?? 10,
     seasonEndDate.getUTCFullYear(),
     seasonEndDate.getUTCMonth() + 1,
+    options.questionsFetchAmount,
   );
 
   // Fetch the submissions of the players.
@@ -69,8 +69,9 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
       }
 
       // Skip if the submission is not in the season.
-      const isSubmissionInSeason = checkDateInWeek(
+      const isSubmissionInSeason = checkDateBetween(
         seasonStartDate.getTime(),
+        seasonEndDate.getTime(),
         submissionDate.getTime(),
       );
       if (!isSubmissionInSeason) {
@@ -90,8 +91,9 @@ export async function sync(options: SyncOptions): Promise<api.Season> {
 
         // Skip if the question is not in the season.
         const questionDate = new Date(recentDailyQuestion.date);
-        const isQuestionInSeason = checkDateInWeek(
+        const isQuestionInSeason = checkDateBetween(
           seasonStartDate.getTime(),
+          seasonEndDate.getTime(),
           questionDate.getTime(),
         );
         if (!isQuestionInSeason) {
@@ -135,8 +137,12 @@ export function fromLCTimestamp(timestamp: string): Date {
 }
 
 /**
- * checkDateInWeek checks if a date is in a week.
+ * checkDateBetween checks if a date is in a given duration.
  */
-export function checkDateInWeek(startOfWeek: number, date: number): boolean {
-  return date >= startOfWeek && date < startOfWeek + WEEK;
+export function checkDateBetween(
+  start: number,
+  end: number,
+  date: number,
+): boolean {
+  return date >= start && date < end;
 }
