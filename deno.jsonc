@@ -4,8 +4,8 @@
     "udd": "deno run -r --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd/main.ts deps.ts && deno task lock",
     "lock": "deno cache --lock-write deps.ts",
     "all": "deno task udd && deno lint && deno fmt",
-    "test": "deno test --unstable",
-    "start": "deno run -A --unstable main.ts",
+    "test": "deno test --unstable-kv",
+    "start": "deno run -A --unstable-kv main.ts",
     "ngrok": "ngrok http 8080",
     "dnt": "deno run -A tasks/dnt/main.ts"
   },
