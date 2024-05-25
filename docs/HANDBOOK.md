@@ -1,24 +1,32 @@
 # Handbook
 
 This brief handbook contains comprehensive knowledge needed to operate the `/lc`
-slash command on the ACM CSUF Discord server.
-
-## Table of contents
-
-- [Seasons](#seasons)
-- [`/lc` slash command](#lc-slash-command)
+slash command on the ACM CSUF Discord server. Join the server at <https://acmcsuf.com/discord>!
 
 ## Seasons
 
-Seasons are week-long competitions that reset every Sunday at midnight UTC. The
+Seasons are week-long competitions on LC-Dailies which reset every Sunday at midnight UTC. The
 goal of each season is for each player to submit an accepted solution to as many
 of Leetcode's daily challenges as fast as possible.
 
-- The JSON API for our live season results is available at
+- The live season results JSON API is available at
   <https://lc-dailies.deno.dev/seasons/latest>.
 - All seasons are available at <https://lc-dailies.deno.dev/seasons>.
 
-## `/lc` slash command
+## Submissions
+
+Submissions are the accepted solutions to Leetcode's daily challenges that are
+submitted by players during a season.
+
+Submissions are automatically synced with Leetcode's API every 15 minutes.
+
+## Slash command
+
+Slash commands are a way to integrate custom logic into Discord servers. In our case, the `/lc` slash command is used to register your Leetcode username and submit your solutions to Leetcode's daily challenges.
+
+<!-- TODO: Resolve https://github.com/acmcsufoss/lc-dailies/pull/52#discussion_r1443636725 -->
+
+### `/lc` slash command
 
 The `/lc` slash command is a Discord application command that allows members of
 the ACM CSUF Discord server to participate in weekly Leetcode competitions that
@@ -33,17 +41,6 @@ automatically reset every Sunday at midnight UTC.
 This tool takes advantage of Discord's permissions system to elevate the
 security of `/lc`, allowing only verified members of the ACM CSUF Discord server
 to play in our automated weekly competitions.
-
-### Operate with confidence
-
-The software is a
-[Discord slash command](https://discord.com/developers/docs/interactions/application-commands).
-All that is required to use the tool is a Discord account with the `Verified`
-role on the [ACM CSUF Discord server](https://acmcsuf.com/discord).
-
-- This slash command is only available to members with the `Verified` role.
-- This slash command is available in the `📚algo-chat` text channel of the
-  [ACM CSUF Discord server](https://acmcsuf.com/discord).
 
 ### Register your Leetcode username
 
