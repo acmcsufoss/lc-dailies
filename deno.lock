@@ -2,11 +2,31 @@
   "version": "3",
   "packages": {
     "specifiers": {
-      "jsr:@fartlabs/rt@^0.0.3": "jsr:@fartlabs/rt@0.0.3"
+      "jsr:@discord-applications/app@^0.0.4": "jsr:@discord-applications/app@0.0.4",
+      "jsr:@fartlabs/rt@^0.0.3": "jsr:@fartlabs/rt@0.0.3",
+      "npm:discord-api-types@0.37.79": "npm:discord-api-types@0.37.79",
+      "npm:tweetnacl@^1.0.3": "npm:tweetnacl@1.0.3"
     },
     "jsr": {
+      "@discord-applications/app@0.0.4": {
+        "integrity": "fa95279d13d2ad07636799d12dd637d930a6443a0d4223e9f65493a58cb47dd5",
+        "dependencies": [
+          "npm:discord-api-types@0.37.79",
+          "npm:tweetnacl@^1.0.3"
+        ]
+      },
       "@fartlabs/rt@0.0.3": {
         "integrity": "a94851f8a185f64b884120bb1d53fb203b62e8f98a27879ffa615560ef6ba806"
+      }
+    },
+    "npm": {
+      "discord-api-types@0.37.79": {
+        "integrity": "sha512-jblKMZL5f9t/pfUyhHNey8Lb9yVCcBVIPxz/JTY0raAmfj7CuFXdl9m5o/+iiB7E0vv1Kz9V7Ao5HtLRc2gH1Q==",
+        "dependencies": {}
+      },
+      "tweetnacl@1.0.3": {
+        "integrity": "sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==",
+        "dependencies": {}
       }
     }
   },
@@ -127,7 +147,11 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@fartlabs/rt@^0.0.3"
+      "jsr:@discord-applications/app@^0.0.4",
+      "jsr:@fartlabs/rt@^0.0.3",
+      "jsr:@std/assert@^0.225.3",
+      "jsr:@std/datetime@^0.224.0",
+      "jsr:@std/ulid@^0.224.0"
     ]
   }
 }

@@ -1,35 +1,35 @@
 import { createRouter } from "@fartlabs/rt";
-import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
-import * as discord_app from "./discord_app/mod.ts";
+import * as discord_app from "./discord/mod.ts";
 import type { Season } from "./types.ts";
 
 /**
  * APIRouterOptions are the options for the API router.
  */
 export interface APIRouterOptions {
+  leaderboardClient: leaderboard.LeaderboardClient;
+  discordChannelID: string;
   discordApplicationID: string;
   discordPublicKey: string;
-  discordChannelID: string;
-  leaderboardClient: leaderboard.LeaderboardClient;
+  discordToken: string;
 }
 
 /**
  * makeAPIRouter creates a router which handles requests on the
  * LC-Dailies API.
  */
-export function makeAPIRouter(options: APIRouterOptions) {
+export async function makeAPIRouter(options: APIRouterOptions) {
+  const app = await discord_app.makeDiscordAppHandler(
+    options.leaderboardClient,
+    options.discordApplicationID,
+    options.discordChannelID,
+    options.discordPublicKey,
+    options.discordToken,
+  );
   return createRouter()
     .post(
       "/",
-      (ctx) =>
-        discord_app.withErrorResponse(
-          discord_app.makeDiscordAppHandler(
-            options.leaderboardClient,
-            options.discordPublicKey,
-            options.discordChannelID,
-          ),
-        )(ctx.request),
+      (ctx) => discord_app.withErrorResponse(app)(ctx.request),
     )
     .get(
       "/invite",
@@ -92,19 +92,11 @@ export function makeAPIRouter(options: APIRouterOptions) {
 export function makeOnListen(
   port: number,
   discordApplicationID: string,
-  discordToken: string,
 ) {
   /**
    * onLoad is callback which is called when the server starts listening.
    */
-  return async function onLoad() {
-    // Overwrite the Discord Application Command.
-    await discord.registerCommand({
-      app: discord_app.APP_LC,
-      applicationID: discordApplicationID,
-      botToken: discordToken,
-    });
-
+  return function onLoad() {
     console.log(
       "- Discord application information:",
       `https://discord.com/developers/applications/${discordApplicationID}/`,
