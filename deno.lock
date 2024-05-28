@@ -4,6 +4,10 @@
     "specifiers": {
       "jsr:@discord-applications/app@^0.0.4": "jsr:@discord-applications/app@0.0.4",
       "jsr:@fartlabs/rt@^0.0.3": "jsr:@fartlabs/rt@0.0.3",
+      "jsr:@std/assert@^0.225.3": "jsr:@std/assert@0.225.3",
+      "jsr:@std/datetime@^0.224.0": "jsr:@std/datetime@0.224.0",
+      "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
+      "jsr:@std/ulid@^0.224.0": "jsr:@std/ulid@0.224.0",
       "npm:discord-api-types@0.37.79": "npm:discord-api-types@0.37.79",
       "npm:tweetnacl@^1.0.3": "npm:tweetnacl@1.0.3"
     },
@@ -17,6 +21,21 @@
       },
       "@fartlabs/rt@0.0.3": {
         "integrity": "a94851f8a185f64b884120bb1d53fb203b62e8f98a27879ffa615560ef6ba806"
+      },
+      "@std/assert@0.225.3": {
+        "integrity": "b3c2847aecf6955b50644cdb9cf072004ea3d1998dd7579fc0acb99dbb23bd4f",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.0"
+        ]
+      },
+      "@std/datetime@0.224.0": {
+        "integrity": "7b2e41f44a241a2205a113d2931c536fa384e79d58298bd133ae003ef06637bb"
+      },
+      "@std/internal@1.0.0": {
+        "integrity": "ac6a6dfebf838582c4b4f61a6907374e27e05bedb6ce276e0f1608fe84e7cd9a"
+      },
+      "@std/ulid@0.224.0": {
+        "integrity": "1b5622ac78ccdbca72dd8da40b2b3b29e6062e1eb3267973f2e60e871e6683de"
       }
     },
     "npm": {

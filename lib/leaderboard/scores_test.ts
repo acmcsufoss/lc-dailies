@@ -1,4 +1,4 @@
-import { assertEquals } from "lc-dailies/deps.ts";
+import { assertEquals } from "@std/assert";
 import {
   calculatePlayerScore,
   calculateScores,
