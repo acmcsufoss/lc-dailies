@@ -11,7 +11,6 @@ import {
   MessageFlags,
   Utils,
 } from "lc-dailies/deps.ts";
-import * as router from "lc-dailies/lib/router/mod.ts";
 import * as discord from "lc-dailies/lib/discord/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import {
@@ -49,11 +48,11 @@ export function makeDiscordAppHandler(
   discordChannelID: string,
 ) {
   return async function handleDiscordApp(
-    request: router.RouterRequest,
+    request: Request,
   ): Promise<Response> {
     // Verify the request is coming from Discord.
     const { error, body } = await discord.verify(
-      request.request,
+      request,
       discordPublicKey,
     );
     if (error !== null) {
@@ -180,11 +179,9 @@ async function handleSyncSubcommand(
  * and return a response using the error message.
  */
 export function withErrorResponse(
-  oldHandle: router.RouterHandler["handle"],
-): router.RouterHandler["handle"] {
-  return async function handle(
-    request: router.RouterRequest,
-  ): Promise<Response> {
+  oldHandle: (request: Request) => Promise<Response>,
+): (request: Request) => Promise<Response> {
+  return async function handle(request: Request): Promise<Response> {
     return await oldHandle(request)
       .catch((error) => {
         if (!(error instanceof Error)) {

@@ -9,9 +9,7 @@
     "ngrok": "ngrok http 8080",
     "dnt": "deno run -A tasks/dnt/main.ts"
   },
-  "imports": {
-    "lc-dailies/": "./"
-  },
+  "imports": { "@fartlabs/rt": "jsr:@fartlabs/rt@^0.0.3", "lc-dailies/": "./" },
   "fmt": {
     "exclude": ["./npm"]
   },

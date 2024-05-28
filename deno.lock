@@ -1,5 +1,15 @@
 {
   "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@fartlabs/rt@^0.0.3": "jsr:@fartlabs/rt@0.0.3"
+    },
+    "jsr": {
+      "@fartlabs/rt@0.0.3": {
+        "integrity": "a94851f8a185f64b884120bb1d53fb203b62e8f98a27879ffa615560ef6ba806"
+      }
+    }
+  },
   "remote": {
     "https://cdn.skypack.dev/-/tweetnacl@v1.0.3-G4yM3nQ8lnXXlGGQADqJ/dist=es2019,mode=imports/optimized/tweetnacl.js": "d26554516df57e5cb58954e90c633c8871b4e66016b9fe4e07a36db5430bc8c7",
     "https://cdn.skypack.dev/tweetnacl@1.0.3": "6610aad2ac175c2d575995fc7de8ed552c2e5e05aef80ed8588cf3c6e2db61d7",
@@ -114,5 +124,10 @@
     "https://deno.land/x/discord_api_types@0.37.71/utils/v10.ts": "056bd036f8c65365ff28eb63ec6897811d51921cca6d068392dd1ca5b397ae62",
     "https://deno.land/x/discord_api_types@0.37.71/v10.ts": "f3f23492c59e77859aba5b34431edf3668c37f722d7f70c2e1ef7ba4bcda3010",
     "https://deno.land/x/ulid@v0.3.0/mod.ts": "f7ff065b66abd485051fc68af23becef6ccc7e81f7774d7fcfd894a4b2da1984"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@fartlabs/rt@^0.0.3"
+    ]
   }
 }

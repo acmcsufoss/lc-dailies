@@ -1,5 +1,4 @@
 import { DenoKvLeaderboardClient } from "lc-dailies/lib/leaderboard/denokv/mod.ts";
-import { Router } from "lc-dailies/lib/router/mod.ts";
 import * as lc from "lc-dailies/lib/lc/mod.ts";
 import * as api from "lc-dailies/lib/api/mod.ts";
 import {
@@ -29,7 +28,7 @@ async function main() {
     leaderboardClient,
   });
 
-  Router.serve(
+  Deno.serve(
     {
       port: PORT,
       onListen: api.makeOnListen(
@@ -38,8 +37,6 @@ async function main() {
         DISCORD_TOKEN,
       ),
     },
-    router,
-  )
-    .finished
-    .finally(() => kv.close());
+    (request) => router.fetch(request),
+  );
 }
