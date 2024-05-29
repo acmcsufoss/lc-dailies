@@ -19,5 +19,6 @@ export function setupCron() {
   });
 
   // TODO: Abstract sync function from executeDailyWebhook.
+  // TODO: Sync every 15 minutes.
   Deno.cron("sync", {}, () => {});
 }
