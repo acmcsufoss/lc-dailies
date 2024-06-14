@@ -1,4 +1,5 @@
-import { assertEquals, assertRejects, DAY, WEEK } from "lc-dailies/deps.ts";
+import { assertEquals, assertRejects } from "@std/assert";
+import { DAY, WEEK } from "@std/datetime";
 import * as fake_lc from "lc-dailies/lib/lc/fake_client.ts";
 import type { Season } from "lc-dailies/lib/api/mod.ts";
 import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
