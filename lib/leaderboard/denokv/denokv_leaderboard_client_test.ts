@@ -1,7 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { DAY, WEEK } from "@std/datetime";
 import * as fake_lc from "lc-dailies/lib/lc/fake_client.ts";
-import type { Season } from "lc-dailies/lib/api/mod.ts";
+import type { Season } from "lc-dailies/lib/api/api.ts";
 import { DenoKvLeaderboardClient } from "./denokv_leaderboard_client.ts";
 
 const FAKE_DISCORD_USER_ID = "fake_discord_user_id";

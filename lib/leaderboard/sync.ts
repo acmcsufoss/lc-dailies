@@ -1,5 +1,5 @@
 import { SECOND, WEEK } from "@std/datetime";
-import type * as api from "lc-dailies/lib/api/mod.ts";
+import type * as api from "lc-dailies/lib/api/api.ts";
 import type { LCClientInterface } from "lc-dailies/lib/lc/mod.ts";
 import {
   calculateScores,

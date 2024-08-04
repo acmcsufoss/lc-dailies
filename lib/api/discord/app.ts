@@ -9,7 +9,7 @@ import {
   InteractionResponseType,
   MessageFlags,
 } from "@discord-applications/app";
-import * as api from "lc-dailies/lib/api/mod.ts";
+import * as api from "lc-dailies/lib/api/api.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 
 export const lcSchema = {

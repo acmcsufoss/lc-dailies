@@ -1,8 +1,8 @@
-import { type APIEmbed, WEEK } from "lc-dailies/deps.ts";
-import * as api from "./mod.ts";
-import * as discord from "lc-dailies/lib/discord/mod.ts";
+import type { APIEmbed } from "discord-api-types";
+import { WEEK } from "@std/datetime";
 import * as lc from "lc-dailies/lib/lc/mod.ts";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
+import * as api from "./api.ts";
 import * as snacks from "./snacks.ts";
 
 export async function executeDailyWebhook(
@@ -50,9 +50,12 @@ export async function executeDailyWebhook(
   });
 
   // Execute the webhook.
-  await discord.executeWebhook({
-    url: webhookURL,
-    data: { embeds },
+  await fetch(webhookURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ embeds }),
   });
 
   // If the season is not synced, then sync it to set up the next season.

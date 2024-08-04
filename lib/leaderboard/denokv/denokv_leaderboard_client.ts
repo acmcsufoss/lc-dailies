@@ -1,6 +1,6 @@
 import { DAY, WEEK } from "@std/datetime";
 import { ulid } from "@std/ulid";
-import type * as api from "lc-dailies/lib/api/mod.ts";
+import type * as api from "lc-dailies/lib/api/api.ts";
 import type { LeaderboardClient } from "lc-dailies/lib/leaderboard/mod.ts";
 import { sync } from "lc-dailies/lib/leaderboard/mod.ts";
 import type { LCClientInterface } from "lc-dailies/lib/lc/mod.ts";

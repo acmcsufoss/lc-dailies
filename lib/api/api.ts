@@ -3,6 +3,8 @@ import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import * as discord_app from "./discord/mod.ts";
 import type { Season } from "./types.ts";
 
+export * from "./types.ts";
+
 /**
  * APIRouterOptions are the options for the API router.
  */
