@@ -96,17 +96,28 @@ export function makeDiscordAppHandler(
           };
         }
 
-        const unregisterResponse = await leaderboardClient.unregister(
-          interaction.user!.id,
-        );
-        return {
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            content: `Your Leetcode username was ${
-              unregisterResponse.ok ? "unregistered" : "not unregistered"
-            }.`,
-          },
-        };
+        try {
+          const unregisterResponse = await leaderboardClient.unregister(
+            interaction.user!.id,
+          );
+
+          return {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `Your Leetcode username was ${
+                unregisterResponse.ok ? "unregistered" : "not unregistered"
+              }.`,
+            },
+          };
+        } catch (error) {
+          return {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `Testing in prod: ${error.message}`,
+              flags: MessageFlags.Ephemeral,
+            },
+          };
+        }
       },
       async sync(interaction) {
         const syncResponse = await leaderboardClient.sync(
