@@ -73,6 +73,11 @@ export interface Question {
    * url is the link of the daily question.
    */
   url: string;
+
+  /**
+   * number is the incremental ID of the Leetcode question.
+   */
+  number: number;
 }
 
 /**

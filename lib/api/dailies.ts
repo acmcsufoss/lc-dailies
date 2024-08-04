@@ -91,7 +91,7 @@ export function makeDailyWebhookEmbeds(
   options: DailyWebhookOptions,
 ): APIEmbed[] {
   const embed: APIEmbed = {
-    title: options.question.title,
+    title: `${options.question.number}. ${options.question.title}`,
     url: options.question.url,
     description: `Daily Leetcode question for ${options.question.date}.`,
     color: getColorByDifficulty(options.question.difficulty),

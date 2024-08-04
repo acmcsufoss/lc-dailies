@@ -59,7 +59,7 @@ export class LCClient implements LCClientInterface {
         JSON.stringify({
           operationName: "dailyCodingQuestionRecords",
           query:
-            "\n    query dailyCodingQuestionRecords($year: Int!, $month: Int!) {\n  dailyCodingChallengeV2(year: $year, month: $month) {\n    challenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n      difficulty\n      }\n    }\n    weeklyChallenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n      }\n    }\n  }\n}\n    ",
+            "\n    query dailyCodingQuestionRecords($year: Int!, $month: Int!) {\n  dailyCodingChallengeV2(year: $year, month: $month) {\n    challenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n      difficulty\n      }\n    }\n    weeklyChallenges {\n      date\n      userStatus\n      link\n      question {\n        questionFrontendId\n        title\n        titleSlug\n     difficulty\n      }\n    }\n  }\n}\n    ",
           variables: { year: currentYear, month: currentMonth },
         }),
       );
@@ -71,6 +71,7 @@ export class LCClient implements LCClientInterface {
             title: string;
             titleSlug: string;
             difficulty: string;
+            questionFrontendId: string;
           };
         }>;
       for (const challenge of challenges) {
@@ -84,6 +85,7 @@ export class LCClient implements LCClientInterface {
           title: challenge.question.title,
           difficulty: challenge.question.difficulty,
           url: makeQuestionURL(challenge.question.titleSlug),
+          number: parseInt(challenge.question.questionFrontendId),
         });
       }
 
