@@ -71,7 +71,7 @@ export async function makeAPIRouter(options: APIRouterOptions) {
       },
     )
     .get<"season_id">(
-      "/seasons",
+      "/seasons/:season_id",
       async (ctx) => {
         const seasonID = ctx.params["season_id"];
         if (!seasonID) {
