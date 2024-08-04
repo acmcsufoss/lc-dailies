@@ -78,7 +78,7 @@ export function makeDiscordAppHandler(
         }
 
         const registerResponse = await leaderboardClient.register(
-          interaction.user!.id,
+          interaction.member!.user.id,
           interaction.data.parsedOptions.lc_username,
         );
 
@@ -96,34 +96,18 @@ export function makeDiscordAppHandler(
           };
         }
 
-        try {
-          const unregisterResponse = await leaderboardClient.unregister(
-            interaction.user!.id,
-          );
+        const unregisterResponse = await leaderboardClient.unregister(
+          interaction.member!.user.id,
+        );
 
-          return {
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: {
-              content: `Your Leetcode username was ${
-                unregisterResponse.ok ? "unregistered" : "not unregistered"
-              }.`,
-            },
-          };
-        } catch (error) {
-          return {
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: {
-              content: `Testing in prod: ${error.message}\n\`\`\`json\n${
-                JSON.stringify(
-                  { user: interaction.user, member: interaction.member },
-                  null,
-                  2,
-                )
-              }\n\`\`\``.slice(0, 2000),
-              flags: MessageFlags.Ephemeral,
-            },
-          };
-        }
+        return {
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: `Your Leetcode username was ${
+              unregisterResponse.ok ? "unregistered" : "not unregistered"
+            }.`,
+          },
+        };
       },
       async sync(interaction) {
         const syncResponse = await leaderboardClient.sync(
