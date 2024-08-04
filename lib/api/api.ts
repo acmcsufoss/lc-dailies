@@ -1,83 +1,89 @@
-import * as discord from "lc-dailies/lib/discord/mod.ts";
-import * as lc from "lc-dailies/lib/lc/mod.ts";
+import { createRouter } from "@fartlabs/rt";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
-import * as router from "lc-dailies/lib/router/mod.ts";
-import * as discord_app from "./discord_app/mod.ts";
-import {
-  makeDailyWebhookPostHandler,
-  makeManualDailyWebhookPostHandler,
-} from "./dailies.ts";
-import {
-  makeSeasonGetHandler,
-  makeSeasonsGetHandler,
-  makeSeasonTxtGetHandler,
-} from "./seasons.ts";
+import * as discord_app from "./discord/mod.ts";
+import type { Season } from "./types.ts";
+
+export * from "./types.ts";
+
+/**
+ * APIRouterOptions are the options for the API router.
+ */
+export interface APIRouterOptions {
+  leaderboardClient: leaderboard.LeaderboardClient;
+  discordChannelID: string;
+  discordApplicationID: string;
+  discordPublicKey: string;
+  discordToken: string;
+}
 
 /**
  * makeAPIRouter creates a router which handles requests on the
  * LC-Dailies API.
  */
-export function makeAPIRouter(
-  discordApplicationID: string,
-  discordPublicKey: string,
-  discordChannelID: string,
-  webhookURL: string,
-  webhookToken: string,
-  lcClient: lc.LCClient,
-  leaderboardClient: leaderboard.LeaderboardClient,
-) {
-  return new router.Router()
+export async function makeAPIRouter(options: APIRouterOptions) {
+  const app = await discord_app.makeDiscordAppHandler(
+    options.leaderboardClient,
+    options.discordApplicationID,
+    options.discordChannelID,
+    options.discordPublicKey,
+    options.discordToken,
+  );
+  return createRouter()
     .post(
-      new URLPattern({ pathname: "/" }),
-      discord_app.withErrorResponse(
-        discord_app.makeDiscordAppHandler(
-          leaderboardClient,
-          discordPublicKey,
-          discordChannelID,
-        ),
-      ),
-    )
-    .post(
-      new URLPattern({ pathname: "/webhook" }),
-      makeManualDailyWebhookPostHandler(
-        lcClient,
-        leaderboardClient,
-      ),
-    )
-    .post(
-      new URLPattern({ pathname: "/webhook/:token" }),
-      makeDailyWebhookPostHandler(
-        lcClient,
-        leaderboardClient,
-        webhookURL,
-        webhookToken,
-      ),
+      "/",
+      (ctx) => discord_app.withErrorResponse(app)(ctx.request),
     )
     .get(
-      new URLPattern({ pathname: "/invite" }),
-      () =>
-        Promise.resolve(
-          Response.redirect(makeInviteURL(discordApplicationID)),
-        ),
+      "/invite",
+      () => Response.redirect(makeInviteURL(options.discordApplicationID)),
     )
     .get(
-      new URLPattern({ pathname: "/source" }),
-      () =>
-        Promise.resolve(
-          Response.redirect("https://github.com/acmcsufoss/lc-dailies"),
-        ),
+      "/source",
+      () => Response.redirect("https://github.com/acmcsufoss/lc-dailies"),
     )
     .get(
-      new URLPattern({ pathname: "/seasons" }),
-      withCORS(makeSeasonsGetHandler(leaderboardClient)),
+      "/seasons",
+      async () => {
+        const seasons = await options.leaderboardClient.listSeasons();
+        return withCORS(new Response(JSON.stringify(seasons)));
+      },
     )
-    .get(
-      new URLPattern({ pathname: "/seasons/:season_id.txt" }),
-      withCORS(makeSeasonTxtGetHandler(leaderboardClient)),
+    .get<"season_id">(
+      "/seasons/:season_id.txt",
+      async (ctx) => {
+        const seasonID = ctx.params["season_id"];
+        if (!seasonID) {
+          return new Response("Missing season ID", { status: 400 });
+        }
+
+        const season = await getSeasonByIDOrLatest(
+          options.leaderboardClient,
+          seasonID,
+        );
+        if (!season) {
+          return new Response("Season not found", { status: 404 });
+        }
+
+        const text = leaderboard.formatScores(season);
+        return withCORS(
+          new Response(text, { headers: { "Content-Type": "text/plain" } }),
+        );
+      },
     )
-    .get(
-      new URLPattern({ pathname: "/seasons/:season_id" }),
-      withCORS(makeSeasonGetHandler(leaderboardClient)),
+    .get<"season_id">(
+      "/seasons",
+      async (ctx) => {
+        const seasonID = ctx.params["season_id"];
+        if (!seasonID) {
+          return new Response("Missing season ID", { status: 400 });
+        }
+
+        const season = await getSeasonByIDOrLatest(
+          options.leaderboardClient,
+          seasonID,
+        );
+        return withCORS(new Response(JSON.stringify(season)));
+      },
     );
 }
 
@@ -88,19 +94,11 @@ export function makeAPIRouter(
 export function makeOnListen(
   port: number,
   discordApplicationID: string,
-  discordToken: string,
 ) {
   /**
    * onLoad is callback which is called when the server starts listening.
    */
-  return async function onLoad() {
-    // Overwrite the Discord Application Command.
-    await discord.registerCommand({
-      app: discord_app.APP_LC,
-      applicationID: discordApplicationID,
-      botToken: discordToken,
-    });
-
+  return function onLoad() {
     console.log(
       "- Discord application information:",
       `https://discord.com/developers/applications/${discordApplicationID}/`,
@@ -125,19 +123,38 @@ function makeInviteURL(applicationID: string) {
 }
 
 /**
- * withCORS wraps a handler with common CORS headers.
+ * withCORS wraps a Response with common CORS headers.
  */
-function withCORS(
-  handle: router.RouterHandler["handle"],
-): router.RouterHandler["handle"] {
-  return async function (request: router.RouterRequest) {
-    const response = await handle(request);
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET, POST");
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization",
+function withCORS(response: Response): Response {
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
+
+  return response;
+}
+
+/**
+ * getSeasonByIDOrLatest gets a season by ID or the latest season.
+ */
+async function getSeasonByIDOrLatest(
+  leaderboardClient: leaderboard.LeaderboardClient,
+  seasonID: string | undefined,
+): Promise<Season | null> {
+  const season = !seasonID || seasonID === "latest"
+    ? await leaderboardClient.getLatestSeason()
+    : await leaderboardClient.getSeason(seasonID);
+  if (season && !season.scores) {
+    season.scores = await leaderboard.calculateScores(
+      leaderboard.makeDefaultCalculateScoresOptions(
+        season.players,
+        season.questions,
+        season.submissions,
+      ),
     );
-    return response;
-  };
+  }
+
+  return season;
 }

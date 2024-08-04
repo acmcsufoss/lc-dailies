@@ -1,4 +1,4 @@
-import type * as api from "lc-dailies/lib/api/mod.ts";
+import type * as api from "lc-dailies/lib/api/api.ts";
 
 /**
  * LeaderboardClient is the client interface for the leaderboard.
@@ -11,6 +11,11 @@ export interface LeaderboardClient {
     discord_user_id: string,
     lc_username: string,
   ): Promise<api.RegisterResponse>;
+
+  /**
+   * unregister unregisters a player from the leaderboard.
+   */
+  unregister(discord_user_id: string): Promise<api.UnregisterResponse>;
 
   /**
    * sync syncs the leaderboard with Leetcode.

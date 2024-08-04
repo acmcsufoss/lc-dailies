@@ -1,5 +1,6 @@
-import { DAY, ulid, WEEK } from "lc-dailies/deps.ts";
-import type * as api from "lc-dailies/lib/api/mod.ts";
+import { DAY, WEEK } from "@std/datetime";
+import { ulid } from "@std/ulid";
+import type * as api from "lc-dailies/lib/api/api.ts";
 import type { LeaderboardClient } from "lc-dailies/lib/leaderboard/mod.ts";
 import { sync } from "lc-dailies/lib/leaderboard/mod.ts";
 import type { LCClientInterface } from "lc-dailies/lib/lc/mod.ts";
@@ -123,6 +124,23 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
       throw new Error("Failed to register player");
     }
 
+    return { ok: true };
+  }
+
+  public async unregister(playerID: string): Promise<api.UnregisterResponse> {
+    const playerResult = await this.kv.get<api.Player>([
+      LeaderboardKvPrefix.PLAYERS,
+      playerID,
+    ]);
+    if (!playerResult.value) {
+      throw new Error("Player not registered");
+    }
+
+    // Unregister the player.
+    await this.kv.delete([
+      LeaderboardKvPrefix.PLAYERS,
+      playerID,
+    ]);
     return { ok: true };
   }
 

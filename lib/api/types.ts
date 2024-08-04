@@ -73,6 +73,11 @@ export interface Question {
    * url is the link of the daily question.
    */
   url: string;
+
+  /**
+   * number is the incremental ID of the Leetcode question.
+   */
+  number: number;
 }
 
 /**
@@ -137,6 +142,16 @@ export interface Season {
 export interface RegisterResponse {
   /**
    * ok is whether the registration was successful.
+   */
+  ok: boolean;
+}
+
+/**
+ * UnregisterResponse is the response for the unregister subcommand.
+ */
+export interface UnregisterResponse {
+  /**
+   * ok is whether the unregistration was successful.
    */
   ok: boolean;
 }

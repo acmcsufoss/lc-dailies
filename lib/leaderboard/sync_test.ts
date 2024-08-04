@@ -1,6 +1,5 @@
-import { assertEquals } from "lc-dailies/deps.ts";
+import { assertEquals } from "@std/assert";
 import type { LCSubmission } from "lc-dailies/lib/lc/mod.ts";
-// import type { SyncOptions } from "./sync.ts";
 import { sync } from "./sync.ts";
 
 const FAKE_UNSYNCED_SEASON = {
