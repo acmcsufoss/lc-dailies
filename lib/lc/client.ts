@@ -18,7 +18,10 @@ export class LCClient implements LCClientInterface {
    * verifyUser verifies the user by username.
    */
   public async verifyUser(username: string): Promise<boolean> {
-    const response = await this.fetch(`https://leetcode.com/${username}/`);
+    const response = await this.fetch(
+      `https://leetcode.com/${username}/`,
+      { headers: { "priority": "u=0, i" } },
+    );
     return response.status === 200;
   }
 
