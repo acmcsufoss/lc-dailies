@@ -113,7 +113,13 @@ export function makeDiscordAppHandler(
           return {
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
-              content: `Testing in prod: ${error.message}`,
+              content: `Testing in prod: ${error.message}\n\`\`\`json\n${
+                JSON.stringify(
+                  interaction,
+                  null,
+                  2,
+                )
+              }\n\`\`\``,
               flags: MessageFlags.Ephemeral,
             },
           };
