@@ -115,7 +115,7 @@ export function makeDiscordAppHandler(
             data: {
               content: `Testing in prod: ${error.message}\n\`\`\`json\n${
                 JSON.stringify(
-                  interaction.user,
+                  { user: interaction.user, member: interaction.member },
                   null,
                   2,
                 )
