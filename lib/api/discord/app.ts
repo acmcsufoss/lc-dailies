@@ -27,6 +27,9 @@ export const lcSchema = {
           },
         },
       },
+      unregister: {
+        description: "Unregister your Leetcode account",
+      },
       sync: {
         description: "Sync the leaderboard with the latest submissions",
         options: {
@@ -79,6 +82,30 @@ export function makeDiscordAppHandler(
         );
 
         return makeRegisterInteractionResponse(registerResponse);
+      },
+      async unregister(interaction) {
+        if (interaction.channel.id !== channelID) {
+          return {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content:
+                "This command is only available in the LC-Dailies channel.",
+              flags: MessageFlags.Ephemeral,
+            },
+          };
+        }
+
+        const unregisterResponse = await leaderboardClient.unregister(
+          interaction.user!.id,
+        );
+        return {
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: `Your Leetcode username was ${
+              unregisterResponse.ok ? "unregistered" : "not unregistered"
+            }.`,
+          },
+        };
       },
       async sync(interaction) {
         const syncResponse = await leaderboardClient.sync(

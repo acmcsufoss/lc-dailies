@@ -127,6 +127,23 @@ export class DenoKvLeaderboardClient implements LeaderboardClient {
     return { ok: true };
   }
 
+  public async unregister(playerID: string): Promise<api.UnregisterResponse> {
+    const playerResult = await this.kv.get<api.Player>([
+      LeaderboardKvPrefix.PLAYERS,
+      playerID,
+    ]);
+    if (!playerResult.value) {
+      throw new Error("Player not registered");
+    }
+
+    // Unregister the player.
+    await this.kv.delete([
+      LeaderboardKvPrefix.PLAYERS,
+      playerID,
+    ]);
+    return { ok: true };
+  }
+
   public async sync(
     seasonID?: string,
     referenceDate = new Date(),

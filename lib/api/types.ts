@@ -142,6 +142,16 @@ export interface RegisterResponse {
 }
 
 /**
+ * UnregisterResponse is the response for the unregister subcommand.
+ */
+export interface UnregisterResponse {
+  /**
+   * ok is whether the unregistration was successful.
+   */
+  ok: boolean;
+}
+
+/**
  * SyncResponse is the response for the sync subcommand.
  */
 export interface SyncResponse {

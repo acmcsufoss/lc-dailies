@@ -13,6 +13,11 @@ export interface LeaderboardClient {
   ): Promise<api.RegisterResponse>;
 
   /**
+   * unregister unregisters a player from the leaderboard.
+   */
+  unregister(discord_user_id: string): Promise<api.UnregisterResponse>;
+
+  /**
    * sync syncs the leaderboard with Leetcode.
    *
    * Throws an error if the season is unable to be synced.
