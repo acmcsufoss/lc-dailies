@@ -29,6 +29,7 @@ export const lcSchema = {
       },
       unregister: {
         description: "Unregister your Leetcode account",
+        options: {},
       },
       sync: {
         description: "Sync the leaderboard with the latest submissions",
