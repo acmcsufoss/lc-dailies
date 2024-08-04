@@ -115,11 +115,11 @@ export function makeDiscordAppHandler(
             data: {
               content: `Testing in prod: ${error.message}\n\`\`\`json\n${
                 JSON.stringify(
-                  interaction,
+                  interaction.user,
                   null,
                   2,
                 )
-              }\n\`\`\``,
+              }\n\`\`\``.slice(0, 2000),
               flags: MessageFlags.Ephemeral,
             },
           };
