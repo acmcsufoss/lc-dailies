@@ -14,7 +14,6 @@ export async function executeDailyWebhook(
   // Get the daily question.
   const question = await lcClient.getDailyQuestion();
   const questionDate = new Date(`${question.date} GMT`);
-  const isSunday = questionDate.getDay() === 0;
 
   // Get the stored season.
   const storedSeason = seasonID
@@ -46,7 +45,7 @@ export async function executeDailyWebhook(
   const embeds = makeDailyWebhookEmbeds({
     question,
     questionDate,
-    season: isSunday ? (syncedSeason ?? storedSeason) : null,
+    season: syncedSeason ?? storedSeason,
   });
 
   // Execute the webhook.
