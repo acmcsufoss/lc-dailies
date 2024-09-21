@@ -143,14 +143,21 @@ export function defaultModifyScore(score: number): number {
  * formatScores formats the scores of all players in a season.
  */
 export function formatScores(season: api.Season): string {
-  return Object.entries(season.scores)
-    .sort(({ 1: scoreA }, { 1: scoreB }) => scoreB - scoreA)
-    .map(([playerID, score], i) => {
-      const player = season.players[playerID];
-      const formattedScore = String(score).padStart(3, " ");
-      const formattedSubmissions = formatSubmissions(season, playerID);
-      const formattedRank = formatRank(i + 1);
-      return `${formattedScore} ${formattedSubmissions} ${player.lc_username} (${formattedRank})`;
+  return Object.entries(
+    Object.groupBy(
+      Object.entries(season.scores),
+      ([, score]) => score,
+    ),
+  )
+    .toSorted((a, b) => b[1]![0][1] - a[1]![0][1])
+    .flatMap(([score, entries], i) => {
+      const formattedScore = score.padStart(3, " ");
+      return entries?.map(([playerID]) => {
+        const player = season.players[playerID];
+        const formattedSubmissions = formatSubmissions(season, playerID);
+        const formattedRank = formatRank(i + 1);
+        return `${formattedScore} ${formattedSubmissions} ${player.lc_username} (${formattedRank})`;
+      });
     })
     .join("\n");
 }
@@ -240,19 +247,19 @@ export function formatRank(rank: number): string {
 export function formatDifficulty(difficulty?: string): string {
   switch (difficulty) {
     case "Easy": {
-      return "🟢";
+      return "🟩";
     }
 
     case "Medium": {
-      return "🟠";
+      return "🟧";
     }
 
     case "Hard": {
-      return "🔴";
+      return "🟥";
     }
 
     default: {
-      return "·";
+      return "🔲";
     }
   }
 }

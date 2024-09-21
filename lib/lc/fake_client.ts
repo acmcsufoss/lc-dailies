@@ -5,12 +5,14 @@ import type {
 } from "./client_interface.ts";
 
 export const FAKE_LC_USERNAME = "fake_lc_username";
+export const FAKE_LC_QUESTION_NUMBER = 0;
 export const FAKE_LC_QUESTION_NAME = "fake_lc_question_name";
 export const FAKE_LC_QUESTION_TITLE = "fake_lc_question_title";
 export const FAKE_LC_QUESTION_URL = "fake_lc_question_url";
 export const FAKE_LC_QUESTION_DIFFICULTY = "fake_lc_question_difficulty";
 export const FAKE_LC_QUESTION_DATE = "2023-07-31";
 export const FAKE_LC_QUESTION: LCQuestion = {
+  number: FAKE_LC_QUESTION_NUMBER,
   name: FAKE_LC_QUESTION_NAME,
   title: FAKE_LC_QUESTION_TITLE,
   url: FAKE_LC_QUESTION_URL,
