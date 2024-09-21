@@ -1,13 +1,14 @@
 # Handbook
 
 This brief handbook contains comprehensive knowledge needed to operate the `/lc`
-slash command on the ACM CSUF Discord server. Join the server at <https://acmcsuf.com/discord>!
+slash command on the ACM CSUF Discord server. Join the server at
+<https://acmcsuf.com/discord>!
 
 ## Seasons
 
-Seasons are week-long competitions on LC-Dailies which reset every Sunday at midnight UTC. The
-goal of each season is for each player to submit an accepted solution to as many
-of Leetcode's daily challenges as fast as possible.
+Seasons are week-long competitions on LC-Dailies which reset every Sunday at
+midnight UTC. The goal of each season is for each player to submit an accepted
+solution to as many of Leetcode's daily challenges as fast as possible.
 
 - The live season results JSON API is available at
   <https://lc-dailies.deno.dev/seasons/latest>.
@@ -22,9 +23,9 @@ Submissions are automatically synced with Leetcode's API every 15 minutes.
 
 ## Slash command
 
-Slash commands are a way to integrate custom logic into Discord servers. In our case, the `/lc` slash command is used to register your Leetcode username and submit your solutions to Leetcode's daily challenges.
-
-<!-- TODO: Resolve https://github.com/acmcsufoss/lc-dailies/pull/52#discussion_r1443636725 -->
+Slash commands are a way to integrate custom logic into Discord servers. In our
+case, the `/lc` slash command is used to register your Leetcode username and
+submit your solutions to Leetcode's daily challenges.
 
 ### `/lc` slash command
 
@@ -50,9 +51,20 @@ weekly competitions.
 - Type `/lc register` in the `📚algo-chat` text channel to use the slash
   command.
 - Populate the required field `lc_username` with your Leetcode username.
-- Press <kbd>Enter</kbd> to submit the registration.
+- Press <kbd>Enter</kbd> to submit the registration command.
 - Wait for the response from the slash command to confirm the registration. This
   may take a second.
+
+### Unregister your Leetcode username
+
+Disassociate your Leetcode username with your Discord account to stop
+participating in our weekly competitions.
+
+- Type `/lc unregister` in the `📚algo-chat` text channel to use the slash
+  command.
+- Press <kbd>Enter</kbd> to submit the unregistration command.
+- Wait for the response from the slash command to confirm the unregistration.
+  This may take a second.
 
 ### Submit your Leetcode solution
 
