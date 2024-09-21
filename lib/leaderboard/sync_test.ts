@@ -1,9 +1,9 @@
-import { assertEquals } from "lc-dailies/deps.ts";
-import type { LCSubmission } from "lc-dailies/lib/lc/mod.ts";
-// import type { SyncOptions } from "./sync.ts";
+import { assertEquals } from "@std/assert";
+import type { LCQuestion, LCSubmission } from "lc-dailies/lib/lc/mod.ts";
 import { sync } from "./sync.ts";
+import type * as api from "lc-dailies/lib/api/types.ts";
 
-const FAKE_UNSYNCED_SEASON = {
+const FAKE_UNSYNCED_SEASON: api.Season = {
   "id": "01H8T4MM00BQHHK7VTTEJE1WAS",
   "start_date": "Sun, 27 Aug 2023 00:00:00 GMT",
   "players": {
@@ -18,6 +18,7 @@ const FAKE_UNSYNCED_SEASON = {
   },
   "questions": {
     "implement-stack-using-queues": {
+      "number": 225,
       "name": "implement-stack-using-queues",
       "date": "2023-08-28",
       "title": "Implement Stack using Queues",
@@ -25,6 +26,7 @@ const FAKE_UNSYNCED_SEASON = {
       "url": "https://leetcode.com/problems/implement-stack-using-queues/",
     },
     "counting-bits": {
+      "number": 338,
       "name": "counting-bits",
       "date": "2023-09-01",
       "title": "Counting Bits",
@@ -57,7 +59,8 @@ const FAKE_UNSYNCED_SEASON = {
   "scores": {},
 };
 
-const FAKE_QUESTION = {
+const FAKE_QUESTION: LCQuestion = {
+  number: 7,
   name: "reverse-integer",
   date: "2023-09-02",
   title: "Reverse Integer",
@@ -65,14 +68,14 @@ const FAKE_QUESTION = {
   url: "https://leetcode.com/problems/reverse-integer/",
 };
 
-const FAKE_SUBMISSION = {
+const FAKE_SUBMISSION: LCSubmission = {
   id: "8008569420",
   name: "reverse-integer",
   title: "Reverse Integer",
   timestamp: "1693627483",
 };
 
-const FAKE_SYNCED_SEASON = {
+const FAKE_SYNCED_SEASON: api.Season = {
   "id": "01H8T4MM00BQHHK7VTTEJE1WAS",
   "start_date": "Sun, 27 Aug 2023 00:00:00 GMT",
   "players": {
@@ -87,6 +90,7 @@ const FAKE_SYNCED_SEASON = {
   },
   "questions": {
     "implement-stack-using-queues": {
+      "number": 225,
       "name": "implement-stack-using-queues",
       "date": "2023-08-28",
       "title": "Implement Stack using Queues",
@@ -94,6 +98,7 @@ const FAKE_SYNCED_SEASON = {
       "url": "https://leetcode.com/problems/implement-stack-using-queues/",
     },
     "counting-bits": {
+      "number": 338,
       "name": "counting-bits",
       "date": "2023-09-01",
       "title": "Counting Bits",

@@ -1,4 +1,4 @@
-import type { Question } from "lc-dailies/lib/api/mod.ts";
+import type { Question } from "lc-dailies/lib/api/api.ts";
 
 /**
  * LCQuestion is an alias interface for a Leetcode question.
