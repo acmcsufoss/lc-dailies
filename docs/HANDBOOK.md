@@ -21,6 +21,22 @@ submitted by players during a season.
 
 Submissions are automatically synced with Leetcode's API every 15 minutes.
 
+## Scoring
+
+The scoring system for our weekly competitions is based on the time it takes for
+the player to submit an accepted solution to Leetcode's daily challenges. A
+player's total season score is the sum of their daily scores for each day of the
+season.
+
+The following is a representation of the submission scoring algorithm
+implemented by function `calculateSubmissionScore`, located in file
+`lib/leaderboard/scores.ts`.
+
+```ts
+const score =
+  (1 - Math.min(Math.max(msElapsed / msAllotted, 0), 1)) * (hi - lo) + lo;
+```
+
 ## Slash command
 
 Slash commands are a way to integrate custom logic into Discord servers. In our
