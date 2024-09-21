@@ -123,6 +123,7 @@ export function makeDailyWebhookEmbeds(
         "```",
         leaderboard.formatScores(options.season),
         "```",
+        `View the leaderboard on [acmcsuf.com/lc-dailies/${options.season.id}](https://acmcsuf.com/lc-dailies/${options.season.id})!`,
       ].join("\n"),
     });
   }
