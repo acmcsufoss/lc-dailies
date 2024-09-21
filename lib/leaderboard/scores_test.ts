@@ -4,8 +4,9 @@ import {
   calculateScores,
   makeDefaultCalculateScoresOptions,
 } from "./scores.ts";
+import type * as api from "lc-dailies/lib/api/types.ts";
 
-const FAKE_SEASON = {
+const FAKE_SEASON: api.Season = {
   "id": "01H8T4MM00BQHHK7VTTEJE1WAS",
   "start_date": "Sun, 27 Aug 2023 00:00:00 GMT",
   "players": {
@@ -20,6 +21,7 @@ const FAKE_SEASON = {
   },
   "questions": {
     "implement-stack-using-queues": {
+      "number": 225,
       "name": "implement-stack-using-queues",
       "date": "2023-08-28",
       "title": "Implement Stack using Queues",
@@ -27,6 +29,7 @@ const FAKE_SEASON = {
       "url": "https://leetcode.com/problems/implement-stack-using-queues/",
     },
     "counting-bits": {
+      "number": 338,
       "name": "counting-bits",
       "date": "2023-09-01",
       "title": "Counting Bits",
@@ -56,6 +59,7 @@ const FAKE_SEASON = {
       },
     },
   },
+  scores: {},
 };
 
 Deno.test("calculatePlayerScore calculates the score of a player", () => {

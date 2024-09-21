@@ -11,7 +11,9 @@ import { gql } from "./gql.ts";
  */
 export class LCClient implements LCClientInterface {
   constructor(
-    private readonly fetch: typeof window.fetch = window.fetch.bind(window),
+    private readonly fetch: typeof globalThis.fetch = globalThis.fetch.bind(
+      globalThis,
+    ),
   ) {}
 
   /**
