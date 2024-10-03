@@ -42,10 +42,15 @@ export async function executeDailyWebhook(
     : null;
 
   // Format the webhook embed.
+  const season = syncedSeason ?? storedSeason;
+  if (season === null) {
+    throw new Error("Season not found.");
+  }
+
   const embeds = makeDailyWebhookEmbeds({
     question,
     questionDate,
-    season: syncedSeason ?? storedSeason,
+    season,
   });
 
   // Execute the webhook.
@@ -83,7 +88,7 @@ export interface DailyWebhookOptions {
   /**
    * season is the season to recap.
    */
-  season: api.Season | null;
+  season: api.Season;
 }
 
 /**
@@ -114,19 +119,20 @@ export function makeDailyWebhookEmbeds(
         value: "[See more…](https://acmcsuf.com/lc-dailies-handbook)",
       },
     ],
+    footer: {
+      text: `Share: https://acmcsuf.com/lc-dailies/${options.season.id}`,
+      icon_url: "https://acmcsuf.com/favicon.ico",
+    },
   };
 
-  if (options.season) {
-    embed.fields?.push({
-      name: `Leaderboard for week of ${options.season.start_date}`,
-      value: [
-        "```",
-        leaderboard.formatScores(options.season),
-        "```",
-        `View the leaderboard on [acmcsuf.com/lc-dailies/${options.season.id}](https://acmcsuf.com/lc-dailies/${options.season.id})!`,
-      ].join("\n"),
-    });
-  }
+  embed.fields?.push({
+    name: `Leaderboard for week of ${options.season.start_date}`,
+    value: [
+      "```",
+      leaderboard.formatScores(options.season),
+      "```",
+    ].join("\n"),
+  });
 
   return [embed];
 }
