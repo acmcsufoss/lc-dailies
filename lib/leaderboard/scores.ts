@@ -264,7 +264,7 @@ export function formatDifficulty(difficulty?: string): string {
     }
 
     case "Medium": {
-      return "🟧";
+      return "🟨";
     }
 
     case "Hard": {

@@ -143,15 +143,15 @@ export function makeDailyWebhookEmbeds(
 export function getColorByDifficulty(difficulty: string): number | undefined {
   switch (difficulty) {
     case "Easy": {
-      return 0x339933;
+      return 0x46c6c2;
     }
 
     case "Medium": {
-      return 0xff6600;
+      return 0xfac31d;
     }
 
     case "Hard": {
-      return 0xe91e63;
+      return 0xf8615c;
     }
   }
 }
