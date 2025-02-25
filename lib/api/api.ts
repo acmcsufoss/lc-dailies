@@ -100,19 +100,19 @@ export function makeOnListen(
    */
   return function onLoad() {
     console.log(
-      "- Discord application information:",
+      "Discord application information:",
       `https://discord.com/developers/applications/${discordApplicationID}/`,
     );
     console.log(
-      "- Interaction endpoint:",
+      "Interaction endpoint:",
       `http://127.0.0.1:${port}/`,
     );
     console.log(
-      "- Invite LC-Dailies to your server:",
+      "Invite LC-Dailies to your server:",
       `http://127.0.0.1:${port}/invite`,
     );
     console.log(
-      "- Latest season:",
+      "Latest season:",
       `http://127.0.0.1:${port}/seasons/latest`,
     );
   };
