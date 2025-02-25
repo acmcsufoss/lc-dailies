@@ -47,11 +47,10 @@ export async function executeDailyWebhook(
     throw new Error("Season not found.");
   }
 
-  const embeds = makeDailyWebhookEmbeds({
-    question,
-    questionDate,
-    season,
-  });
+  // If the season is not synced, then sync it to set up the next season.
+  if (!syncedSeason) {
+    await leaderboardClient.sync(undefined, referenceDate);
+  }
 
   // Execute the webhook.
   await fetch(webhookURL, {
@@ -59,13 +58,14 @@ export async function executeDailyWebhook(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ embeds }),
+    body: JSON.stringify({
+      embeds: makeDailyWebhookEmbeds({
+        question,
+        questionDate,
+        season,
+      }),
+    }),
   });
-
-  // If the season is not synced, then sync it to set up the next season.
-  if (!syncedSeason) {
-    await leaderboardClient.sync(undefined, referenceDate);
-  }
 
   // Acknowledge the request.
   return new Response("OK");

@@ -1,7 +1,7 @@
 {
   "tasks": {
     "test": "deno test --unstable-kv",
-    "start": "deno run -A --env --unstable-kv main.ts",
+    "start": "deno run -A --env --unstable-kv --unstable-cron main.ts",
     "ngrok": "ngrok http 8080",
     "dnt": "deno run -A tasks/dnt/main.ts"
   },
