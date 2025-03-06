@@ -4,6 +4,7 @@
     "jsr:@discord-applications/app@^0.0.4": "0.0.4",
     "jsr:@fartlabs/rt@^0.0.3": "0.0.3",
     "jsr:@std/assert@^1.0.11": "1.0.11",
+    "jsr:@std/async@^1.0.11": "1.0.11",
     "jsr:@std/datetime@~0.225.3": "0.225.3",
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "jsr:@std/ulid@1": "1.0.0",
@@ -27,6 +28,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/async@1.0.11": {
+      "integrity": "eee0d3405275506638a9c8efaa849cf0d35873120c69b7caa1309c9a9e5b6f85"
     },
     "@std/datetime@0.225.3": {
       "integrity": "fda0b7791b43d9a46764986fec39922a8ceb70ffca642651fa7d0683501a171a"
@@ -54,6 +58,7 @@
       "jsr:@discord-applications/app@^0.0.4",
       "jsr:@fartlabs/rt@^0.0.3",
       "jsr:@std/assert@^1.0.11",
+      "jsr:@std/async@^1.0.11",
       "jsr:@std/datetime@~0.225.3",
       "jsr:@std/ulid@1",
       "npm:discord-api-types@~0.37.119"
