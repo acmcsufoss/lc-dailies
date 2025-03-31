@@ -1,4 +1,4 @@
-import { createRouter } from "@fartlabs/rt";
+import { Router } from "@fartlabs/rt";
 import * as leaderboard from "lc-dailies/lib/leaderboard/mod.ts";
 import * as discord_app from "./discord/mod.ts";
 import type { Season } from "./types.ts";
@@ -28,7 +28,7 @@ export async function makeAPIRouter(options: APIRouterOptions) {
     options.discordPublicKey,
     options.discordToken,
   );
-  return createRouter()
+  return new Router()
     .post(
       "/",
       (ctx) => discord_app.withErrorResponse(app)(ctx.request),
@@ -48,10 +48,10 @@ export async function makeAPIRouter(options: APIRouterOptions) {
         return withCORS(new Response(JSON.stringify(seasons)));
       },
     )
-    .get<"season_id">(
+    .get(
       "/seasons/:season_id.txt",
       async (ctx) => {
-        const seasonID = ctx.params["season_id"];
+        const seasonID = ctx.params?.pathname.groups.season_id;
         if (!seasonID) {
           return new Response("Missing season ID", { status: 400 });
         }
@@ -70,10 +70,10 @@ export async function makeAPIRouter(options: APIRouterOptions) {
         );
       },
     )
-    .get<"season_id">(
+    .get(
       "/seasons/:season_id",
       async (ctx) => {
-        const seasonID = ctx.params["season_id"];
+        const seasonID = ctx.params?.pathname.groups.season_id;
         if (!seasonID) {
           return new Response("Missing season ID", { status: 400 });
         }

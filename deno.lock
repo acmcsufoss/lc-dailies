@@ -2,11 +2,12 @@
   "version": "4",
   "specifiers": {
     "jsr:@discord-applications/app@^0.0.4": "0.0.4",
-    "jsr:@fartlabs/rt@^0.0.3": "0.0.3",
-    "jsr:@std/assert@^1.0.11": "1.0.11",
-    "jsr:@std/async@^1.0.11": "1.0.11",
+    "jsr:@fartlabs/rt@^0.0.7": "0.0.7",
+    "jsr:@std/assert@^1.0.12": "1.0.12",
+    "jsr:@std/async@^1.0.12": "1.0.12",
     "jsr:@std/datetime@~0.225.3": "0.225.3",
-    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/http@^1.0.13": "1.0.13",
+    "jsr:@std/internal@^1.0.6": "1.0.6",
     "jsr:@std/ulid@1": "1.0.0",
     "npm:discord-api-types@0.37.79": "0.37.79",
     "npm:discord-api-types@~0.37.119": "0.37.119",
@@ -20,23 +21,29 @@
         "npm:tweetnacl"
       ]
     },
-    "@fartlabs/rt@0.0.3": {
-      "integrity": "a94851f8a185f64b884120bb1d53fb203b62e8f98a27879ffa615560ef6ba806"
+    "@fartlabs/rt@0.0.7": {
+      "integrity": "b7e701e93a99487f993c841ad497f69b67772db74fda5bfff55d50970b0124a9",
+      "dependencies": [
+        "jsr:@std/http"
+      ]
     },
-    "@std/assert@1.0.11": {
-      "integrity": "2461ef3c368fe88bc60e186e7744a93112f16fd110022e113a0849e94d1c83c1",
+    "@std/assert@1.0.12": {
+      "integrity": "08009f0926dda9cbd8bef3a35d3b6a4b964b0ab5c3e140a4e0351fbf34af5b9a",
       "dependencies": [
         "jsr:@std/internal"
       ]
     },
-    "@std/async@1.0.11": {
-      "integrity": "eee0d3405275506638a9c8efaa849cf0d35873120c69b7caa1309c9a9e5b6f85"
+    "@std/async@1.0.12": {
+      "integrity": "d1bfcec459e8012846fe4e38dfc4241ab23240ecda3d8d6dfcf6d81a632e803d"
     },
     "@std/datetime@0.225.3": {
       "integrity": "fda0b7791b43d9a46764986fec39922a8ceb70ffca642651fa7d0683501a171a"
     },
-    "@std/internal@1.0.5": {
-      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    "@std/http@1.0.13": {
+      "integrity": "d29618b982f7ae44380111f7e5b43da59b15db64101198bb5f77100d44eb1e1e"
+    },
+    "@std/internal@1.0.6": {
+      "integrity": "9533b128f230f73bd209408bb07a4b12f8d4255ab2a4d22a1fd6d87304aca9a4"
     },
     "@std/ulid@1.0.0": {
       "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
@@ -56,9 +63,9 @@
   "workspace": {
     "dependencies": [
       "jsr:@discord-applications/app@^0.0.4",
-      "jsr:@fartlabs/rt@^0.0.3",
-      "jsr:@std/assert@^1.0.11",
-      "jsr:@std/async@^1.0.11",
+      "jsr:@fartlabs/rt@^0.0.7",
+      "jsr:@std/assert@^1.0.12",
+      "jsr:@std/async@^1.0.12",
       "jsr:@std/datetime@~0.225.3",
       "jsr:@std/ulid@1",
       "npm:discord-api-types@~0.37.119"
