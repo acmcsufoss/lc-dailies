@@ -1,0 +1,25 @@
+{
+  "name": "lc-dailies",
+  "version": "e1a620d2ddf53a441b7e1a21896a12213b7d6bbf",
+  "description": "LC-Dailies utility module.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acmcsufoss/lc-dailies.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/acmcsufoss/lc-dailies/issues"
+  },
+  "main": "./script/types.js",
+  "module": "./esm/types.js",
+  "exports": {
+    ".": {
+      "import": "./esm/types.js",
+      "require": "./script/types.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0"
+  },
+  "_generatedBy": "dnt@0.40.0"
+}
