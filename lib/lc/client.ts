@@ -24,10 +24,9 @@ export class LCClient implements LCClientInterface {
     const response = await retry(() =>
       this.fetch(
         `https://leetcode.com/${username}/`,
-        { headers: { "priority": "u=0, i" } },
+        { headers: { "priority": "u=0, i", "content-type": "text/html" } },
       )
     );
-
     return response.status === 200;
   }
 
