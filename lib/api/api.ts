@@ -21,21 +21,63 @@ export interface APIRouterOptions {
  * LC-Dailies API.
  */
 export async function makeAPIRouter(options: APIRouterOptions) {
-  const app = await discord_app.makeDiscordAppHandler(
-    options.leaderboardClient,
-    options.discordApplicationID,
-    options.discordChannelID,
-    options.discordPublicKey,
-    options.discordToken,
-  );
+  let app: ((request: Request) => Promise<Response>) | null = null;
+
+  // Try to create Discord app handler, but don't fail if Discord credentials are missing
+  try {
+    if (
+      options.discordApplicationID && options.discordToken &&
+      options.discordPublicKey && options.discordChannelID
+    ) {
+      app = await discord_app.makeDiscordAppHandler(
+        options.leaderboardClient,
+        options.discordApplicationID,
+        options.discordChannelID,
+        options.discordPublicKey,
+        options.discordToken,
+      );
+
+      // Attempt to register Discord commands manually
+      await discord_app.registerDiscordCommands(
+        options.discordApplicationID,
+        options.discordToken,
+      );
+    } else {
+      console.warn(
+        "Discord credentials not provided - Discord functionality will be disabled",
+      );
+    }
+  } catch (error) {
+    console.error("Failed to initialize Discord app handler:", error);
+    console.warn("Discord functionality will be disabled");
+  }
+
   return new Router()
     .post(
       "/",
-      (ctx) => discord_app.withErrorResponse(app)(ctx.request),
+      (ctx) => {
+        if (app) {
+          return discord_app.withErrorResponse(app)(ctx.request);
+        } else {
+          return new Response("Discord functionality is not available", {
+            status: 503,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
+      },
     )
     .get(
       "/invite",
-      () => Response.redirect(makeInviteURL(options.discordApplicationID)),
+      () => {
+        if (options.discordApplicationID) {
+          return Response.redirect(makeInviteURL(options.discordApplicationID));
+        } else {
+          return new Response("Discord application ID not configured", {
+            status: 503,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
+      },
     )
     .get(
       "/source",

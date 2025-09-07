@@ -14,10 +14,13 @@ async function main() {
     kv,
     lcClient,
   );
-  const discordApplicationID = Deno.env.get("DISCORD_APPLICATION_ID")!;
-  const discordChannelID = Deno.env.get("DISCORD_CHANNEL_ID")!;
-  const discordPublicKey = Deno.env.get("DISCORD_PUBLIC_KEY")!;
-  const discordToken = Deno.env.get("DISCORD_TOKEN")!;
+
+  // Get Discord credentials with fallbacks
+  const discordApplicationID = Deno.env.get("DISCORD_APPLICATION_ID") || "";
+  const discordChannelID = Deno.env.get("DISCORD_CHANNEL_ID") || "";
+  const discordPublicKey = Deno.env.get("DISCORD_PUBLIC_KEY") || "";
+  const discordToken = Deno.env.get("DISCORD_TOKEN") || "";
+
   const router = await api.makeAPIRouter({
     leaderboardClient,
     discordApplicationID,
@@ -40,12 +43,22 @@ async function main() {
     // Execute every day at 12:00:000 AM UTC.
     "0 0 * * *",
     async () => {
-      const webhookURL = Deno.env.get("DISCORD_WEBHOOK_URL")!;
-      await executeDailyWebhook(
-        lcClient,
-        leaderboardClient,
-        webhookURL,
-      );
+      const webhookURL = Deno.env.get("DISCORD_WEBHOOK_URL");
+      if (webhookURL) {
+        try {
+          await executeDailyWebhook(
+            lcClient,
+            leaderboardClient,
+            webhookURL,
+          );
+        } catch (error) {
+          console.error("Failed to execute daily webhook:", error);
+        }
+      } else {
+        console.warn(
+          "DISCORD_WEBHOOK_URL not configured - skipping daily webhook",
+        );
+      }
     },
   );
 
@@ -53,7 +66,10 @@ async function main() {
   Deno.serve(
     {
       port,
-      onListen: api.makeOnListen(port, discordApplicationID),
+      onListen: api.makeOnListen(
+        port,
+        discordApplicationID || "not-configured",
+      ),
     },
     (request) => router.fetch(request),
   );

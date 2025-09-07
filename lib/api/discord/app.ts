@@ -62,7 +62,7 @@ export function makeDiscordAppHandler(
       publicKey,
       token,
       invite: { path: "/invite", scopes: ["applications.commands"] },
-      register: true,
+      register: false, // Disable automatic registration to handle failures gracefully
     },
     {
       async register(interaction) {
@@ -193,4 +193,82 @@ export function makeRegisterInteractionResponse(
       }.`,
     },
   };
+}
+
+/**
+ * registerDiscordCommands attempts to register Discord application commands.
+ * Returns true if successful, false if failed.
+ */
+export async function registerDiscordCommands(
+  applicationID: string,
+  token: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `https://discord.com/api/v10/applications/${applicationID}/commands`,
+      {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bot ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([
+          {
+            name: "lc",
+            description:
+              "Set of commands to register and submit Leetcode solutions.",
+            type: 1, // CHAT_INPUT
+            options: [
+              {
+                name: "register",
+                description: "Register your Leetcode account",
+                type: 1, // SUB_COMMAND
+                options: [
+                  {
+                    name: "lc_username",
+                    description: "Your Leetcode username",
+                    type: 3, // STRING
+                    required: true,
+                  },
+                ],
+              },
+              {
+                name: "unregister",
+                description: "Unregister your Leetcode account",
+                type: 1, // SUB_COMMAND
+              },
+              {
+                name: "sync",
+                description: "Sync the leaderboard with the latest submissions",
+                type: 1, // SUB_COMMAND
+                options: [
+                  {
+                    name: "season_id",
+                    description: "The season ID to sync",
+                    type: 3, // STRING
+                    required: true,
+                  },
+                ],
+              },
+            ],
+          },
+        ]),
+      },
+    );
+
+    if (!response.ok) {
+      console.error(
+        `Failed to register Discord commands: ${response.status} ${response.statusText}`,
+      );
+      const errorText = await response.text();
+      console.error("Error details:", errorText);
+      return false;
+    }
+
+    console.log("Successfully registered Discord application commands");
+    return true;
+  } catch (error) {
+    console.error("Error registering Discord commands:", error);
+    return false;
+  }
 }

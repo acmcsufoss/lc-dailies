@@ -9,12 +9,12 @@
   "imports": {
     "lc-dailies/": "./",
     "@discord-applications/app": "jsr:@discord-applications/app@^0.0.4",
-    "@fartlabs/rt": "jsr:@fartlabs/rt@^0.0.7",
-    "@std/assert": "jsr:@std/assert@^1.0.12",
-    "@std/async": "jsr:@std/async@^1.0.12",
-    "@std/datetime": "jsr:@std/datetime@^0.225.3",
+    "@fartlabs/rt": "jsr:@fartlabs/rt@^0.0.10",
+    "@std/assert": "jsr:@std/assert@^1.0.14",
+    "@std/async": "jsr:@std/async@^1.0.14",
+    "@std/datetime": "jsr:@std/datetime@^0.225.5",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
-    "discord-api-types": "npm:discord-api-types@^0.37.119"
+    "discord-api-types": "npm:discord-api-types@^0.38.23"
   },
   "fmt": {
     "exclude": ["./npm"]
