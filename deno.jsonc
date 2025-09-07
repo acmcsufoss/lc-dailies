@@ -14,6 +14,7 @@
     "@std/async": "jsr:@std/async@^1.0.14",
     "@std/datetime": "jsr:@std/datetime@^0.225.5",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
     "discord-api-types": "npm:discord-api-types@^0.38.23"
   },
   "fmt": {
